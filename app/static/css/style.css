@@ -1205,6 +1205,33 @@ textarea {
 }
 
 
+
+
+/* =========================================================
+   SELECTEURS — PAYS / RÉGIONS
+   ========================================================= */
+
+select {
+    color: var(--text);
+    background-color: #0a0d16;
+    color-scheme: dark;
+}
+
+select option {
+    color: #f5f7ff;
+    background-color: #111522;
+}
+
+select option:checked {
+    color: #ffffff;
+    background-color: #7568ff;
+}
+
+select option:hover {
+    color: #ffffff;
+    background-color: #1a2030;
+}
+
 /* =========================================================
    CARDS
 ========================================================= */

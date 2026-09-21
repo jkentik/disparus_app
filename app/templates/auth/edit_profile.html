@@ -1,237 +1,1029 @@
 {% extends "base.html" %}
 
+{% block title %}Modifier mon profil · Retrouve+{% endblock %}
+
 {% block content %}
+
+<style>
+/* =========================================================
+   RETROUVE+ — PROFILE EDIT
+   Design moderne / premium / responsive
+   ========================================================= */
+
+.profile-edit-page {
+    width: 100%;
+    max-width: 1050px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+}
+
+/* =========================
+   HEADER
+   ========================= */
+
+.profile-edit-top {
+    margin-bottom: 28px;
+}
+
+.profile-edit-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    color: var(--muted, #8b98a5);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 18px;
+    transition: .2s ease;
+}
+
+.profile-edit-back:hover {
+    color: var(--text, #e6edf3);
+    transform: translateX(-3px);
+}
+
+.profile-edit-back-icon {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #26313d;
+    border-radius: 9px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #111821;
+}
+
+.profile-edit-title-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.profile-edit-title h1 {
+    margin: 0 0 7px;
+    color: #e6edf3;
+    font-size: clamp(26px, 4vw, 38px);
+    line-height: 1.1;
+    letter-spacing: -1px;
+    font-weight: 750;
+}
+
+.profile-edit-title p {
+    margin: 0;
+    color: #8b98a5;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.profile-edit-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border: 1px solid rgba(63, 185, 80, .2);
+    border-radius: 999px;
+    background: rgba(63, 185, 80, .06);
+    color: #7ee787;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.profile-edit-status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #3fb950;
+    box-shadow: 0 0 0 4px rgba(63, 185, 80, .08);
+}
+
+/* =========================
+   MAIN CARD
+   ========================= */
+
+.profile-edit-card {
+    background:
+        linear-gradient(180deg, rgba(255,255,255,.018), transparent 180px),
+        #121821;
+    border: 1px solid #1f2937;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow:
+        0 20px 60px rgba(0,0,0,.22),
+        0 2px 8px rgba(0,0,0,.12);
+}
+
+/* =========================
+   PROFILE PREVIEW
+   ========================= */
+
+.profile-preview {
+    position: relative;
+    padding: 30px;
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    border-bottom: 1px solid #1f2937;
+    background:
+        radial-gradient(
+            circle at 0% 50%,
+            rgba(124, 58, 237, .10),
+            transparent 38%
+        );
+}
+
+.profile-preview::after {
+    content: "";
+    position: absolute;
+    right: 30px;
+    top: 50%;
+    width: 130px;
+    height: 130px;
+    transform: translateY(-50%);
+    border-radius: 50%;
+    background: rgba(124, 58, 237, .035);
+    pointer-events: none;
+}
+
+.profile-avatar-large {
+    position: relative;
+    width: 86px;
+    height: 86px;
+    flex: 0 0 86px;
+    border-radius: 22px;
+    overflow: hidden;
+    border: 1px solid #344152;
+    background:
+        linear-gradient(135deg, #7c3aed, #4f46e5);
+    box-shadow:
+        0 12px 30px rgba(0,0,0,.25),
+        inset 0 1px rgba(255,255,255,.15);
+}
+
+.profile-avatar-large img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.profile-avatar-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 31px;
+    font-weight: 750;
+}
+
+.profile-preview-info {
+    position: relative;
+    z-index: 1;
+    min-width: 0;
+}
+
+.profile-preview-name {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 5px;
+}
+
+.profile-preview-name h2 {
+    margin: 0;
+    color: #f0f4f8;
+    font-size: 20px;
+    font-weight: 720;
+}
+
+.profile-user-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 9px;
+    border-radius: 999px;
+    background: rgba(124, 58, 237, .10);
+    border: 1px solid rgba(124, 58, 237, .24);
+    color: #b9a0ff;
+    font-size: 10px;
+    font-weight: 750;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+}
+
+.profile-preview-email {
+    margin: 0 0 8px;
+    color: #8b98a5;
+    font-size: 12px;
+}
+
+.profile-preview-description {
+    margin: 0;
+    max-width: 620px;
+    color: #687686;
+    font-size: 12px;
+    line-height: 1.55;
+}
+
+/* =========================
+   FORM
+   ========================= */
+
+.profile-edit-form {
+    padding: 30px;
+}
+
+.profile-section {
+    padding: 0 0 30px;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #1f2937;
+}
+
+.profile-section:last-of-type {
+    margin-bottom: 0;
+}
+
+.profile-section-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+    margin-bottom: 22px;
+}
+
+.profile-section-icon {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 11px;
+    background: #171f2a;
+    border: 1px solid #273342;
+    color: #a78bfa;
+    font-size: 16px;
+}
+
+.profile-section-title {
+    color: #e6edf3;
+    font-size: 14px;
+    font-weight: 720;
+    margin-bottom: 4px;
+}
+
+.profile-section-description {
+    margin: 0;
+    color: #697786;
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+/* =========================
+   FIELDS
+   ========================= */
+
+.profile-fields-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.profile-field {
+    min-width: 0;
+}
+
+.profile-field label {
+    display: block;
+    margin-bottom: 8px;
+    color: #c9d1d9;
+    font-size: 12px;
+    font-weight: 650;
+}
+
+.profile-field input,
+.profile-field select {
+    width: 100%;
+    height: 48px;
+    padding: 0 14px;
+    border: 1px solid #293544;
+    border-radius: 11px;
+    outline: none;
+    background: #0d131a;
+    color: #e6edf3;
+    font-family: inherit;
+    font-size: 13px;
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease,
+        background .2s ease;
+    box-sizing: border-box;
+}
+
+.profile-field input::placeholder {
+    color: #566473;
+}
+
+.profile-field input:hover,
+.profile-field select:hover {
+    border-color: #39485a;
+}
+
+.profile-field input:focus,
+.profile-field select:focus {
+    border-color: #7c3aed;
+    background: #101720;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, .11);
+}
+
+.profile-field select {
+    cursor: pointer;
+}
+
+.profile-field select option {
+    background: #121821;
+    color: #e6edf3;
+}
+
+.profile-field-help {
+    display: block;
+    margin-top: 7px;
+    color: #596878;
+    font-size: 10px;
+    line-height: 1.45;
+}
+
+/* =========================
+   PHOTO UPLOAD
+   ========================= */
+
+.photo-upload {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 22px;
+    padding: 20px;
+    border: 1px solid #26313e;
+    border-radius: 15px;
+    background: #0d131a;
+}
+
+.photo-preview {
+    width: 82px;
+    height: 82px;
+    overflow: hidden;
+    border-radius: 19px;
+    border: 1px solid #344152;
+    background: #171f29;
+}
+
+.photo-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.photo-preview-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #7c3aed, #4f46e5);
+    color: white;
+    font-size: 27px;
+    font-weight: 750;
+}
+
+.photo-content {
+    min-width: 0;
+}
+
+.photo-title {
+    display: block;
+    margin-bottom: 5px;
+    color: #dbe3eb;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.photo-info {
+    display: block;
+    margin-bottom: 13px;
+    color: #667586;
+    font-size: 10px;
+}
+
+.photo-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 36px;
+    padding: 0 13px;
+    border-radius: 9px;
+    border: 1px solid #354354;
+    background: #151e28;
+    color: #cdd6df;
+    font-size: 11px;
+    font-weight: 650;
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+.photo-button:hover {
+    border-color: #7c3aed;
+    color: #c4b5fd;
+    background: rgba(124, 58, 237, .08);
+}
+
+/* =========================
+   ACTIONS
+   ========================= */
+
+.profile-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 11px;
+    padding-top: 27px;
+}
+
+.profile-btn {
+    min-height: 44px;
+    padding: 0 18px;
+    border-radius: 10px;
+    text-decoration: none;
+    border: 1px solid transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition:
+        transform .18s ease,
+        border-color .18s ease,
+        background .18s ease;
+}
+
+.profile-btn:hover {
+    transform: translateY(-1px);
+}
+
+.profile-btn-secondary {
+    background: #151d27;
+    border-color: #2a3644;
+    color: #aeb9c5;
+}
+
+.profile-btn-secondary:hover {
+    background: #1a2430;
+    color: #e6edf3;
+    border-color: #3a4859;
+}
+
+.profile-btn-primary {
+    background: linear-gradient(135deg, #7c3aed, #6d28d9);
+    color: white;
+    box-shadow: 0 8px 22px rgba(124, 58, 237, .18);
+}
+
+.profile-btn-primary:hover {
+    box-shadow: 0 11px 28px rgba(124, 58, 237, .25);
+}
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+
+@media (max-width: 760px) {
+
+    .profile-edit-page {
+        padding: 20px 14px 45px;
+    }
+
+    .profile-edit-title-row {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .profile-edit-status {
+        display: none;
+    }
+
+    .profile-preview {
+        padding: 22px;
+    }
+
+    .profile-avatar-large {
+        width: 70px;
+        height: 70px;
+        flex-basis: 70px;
+        border-radius: 18px;
+    }
+
+    .profile-avatar-placeholder {
+        font-size: 25px;
+    }
+
+    .profile-preview-name h2 {
+        font-size: 17px;
+    }
+
+    .profile-edit-form {
+        padding: 22px;
+    }
+
+    .profile-fields-grid {
+        grid-template-columns: 1fr;
+        gap: 17px;
+    }
+
+    .photo-upload {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .photo-preview {
+        margin: 0 auto;
+    }
+
+    .photo-button {
+        width: 100%;
+    }
+
+    .profile-actions {
+        flex-direction: column-reverse;
+    }
+
+    .profile-btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .profile-edit-title h1 {
+        font-size: 28px;
+    }
+
+    .profile-preview {
+        align-items: flex-start;
+    }
+
+    .profile-preview-description {
+        display: none;
+    }
+
+    .profile-section-header {
+        gap: 10px;
+    }
+
+    .profile-section-icon {
+        width: 34px;
+        height: 34px;
+        flex-basis: 34px;
+    }
+}
+</style>
+
 
 <div class="profile-edit-page">
 
-```
-<!-- EN-TÊTE -->
-<div class="page-heading">
-    <a href="{{ url_for('auth.profile') }}" class="back-link">
-        ← Retour au profil
-    </a>
+    <!-- =========================
+         EN-TÊTE
+         ========================= -->
 
-    <h1>Modifier mon profil</h1>
-    <p class="muted">
-        Mets à jour tes informations personnelles.
-    </p>
-</div>
+    <div class="profile-edit-top">
 
+        <a
+            href="{{ url_for('auth.profile') }}"
+            class="profile-edit-back"
+        >
+            <span class="profile-edit-back-icon">←</span>
+            <span>Retour au profil</span>
+        </a>
 
-<!-- CARTE PROFIL -->
-<div class="profile-edit-card">
+        <div class="profile-edit-title-row">
 
-    <div class="profile-edit-header">
+            <div class="profile-edit-title">
+                <h1>Modifier mon profil</h1>
 
-        <div class="profile-edit-avatar">
+                <p>
+                    Mets à jour tes informations personnelles et ta photo de profil.
+                </p>
+            </div>
 
-            {% if current_user.photo %}
-
-                <img
-                    src="{{ url_for('static', filename='uploads/' + current_user.photo) }}"
-                    alt="{{ current_user.name }}"
-                    class="edit-avatar-image"
-                >
-
-            {% else %}
-
-                <div class="edit-avatar-placeholder">
-                    {{ current_user.name[0] | upper }}
-                </div>
-
-            {% endif %}
-
-        </div>
-
-
-        <div class="profile-edit-user">
-
-            <h2>{{ current_user.name }}</h2>
-
-            <p class="muted">
-                {{ current_user.email }}
-            </p>
-
-            <span class="badge">
-                Profil utilisateur
-            </span>
+            <div class="profile-edit-status">
+                <span class="profile-edit-status-dot"></span>
+                Compte actif
+            </div>
 
         </div>
 
     </div>
 
 
-    <!-- FORMULAIRE -->
-    <form
-        method="POST"
-        enctype="multipart/form-data"
-        class="profile-edit-form"
-    >
+    <!-- =========================
+         CARTE PRINCIPALE
+         ========================= -->
 
-        <!-- NOM -->
-        <div class="form-section">
-
-            <div class="form-section-title">
-                Informations personnelles
-            </div>
-
-            <div class="form-field">
-
-                <label for="name">
-                    Nom
-                </label>
-
-                <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value="{{ current_user.name }}"
-                    placeholder="Ton nom"
-                    required
-                >
-
-            </div>
+    <div class="profile-edit-card">
 
 
-            <!-- PAYS -->
-            <div class="form-field">
+        <!-- =========================
+             APERÇU DU PROFIL
+             ========================= -->
 
-                <label for="country_id">
-                    Pays
-                </label>
+        <div class="profile-preview">
 
-                <select
-                    id="country_id"
-                    name="country_id"
-                    required
-                >
+            <div class="profile-avatar-large">
 
-                    <option value="">
-                        Sélectionner un pays
-                    </option>
+                {% if current_user.photo %}
 
-                    {% for c in countries %}
+                    <img
+                        id="profilePreview"
+                        src="{{ url_for('static', filename='uploads/' + current_user.photo) }}"
+                        alt="Photo de {{ current_user.name }}"
+                    >
 
-                        <option
-                            value="{{ c.id }}"
-                            {% if current_user.country_id == c.id %}
-                                selected
-                            {% endif %}
-                        >
-                            {{ c.name }}
-                        </option>
+                {% else %}
 
-                    {% endfor %}
+                    <div
+                        id="profilePlaceholder"
+                        class="profile-avatar-placeholder"
+                    >
+                        {{ current_user.name[0] | upper }}
+                    </div>
 
-                </select>
+                {% endif %}
 
             </div>
 
-        </div>
 
+            <div class="profile-preview-info">
 
-        <!-- PHOTO -->
-        <div class="form-section">
+                <div class="profile-preview-name">
 
-            <div class="form-section-title">
-                Photo de profil
-            </div>
+                    <h2 id="profileNamePreview">
+                        {{ current_user.name }}
+                    </h2>
 
-            <div class="photo-upload-box">
-
-                <div class="photo-upload-icon">
-                    ◉
-                </div>
-
-                <div class="photo-upload-content">
-
-                    <strong>
-                        Modifier ma photo
-                    </strong>
-
-                    <span>
-                        JPG, PNG ou WEBP · Image recommandée : carrée
+                    <span class="profile-user-badge">
+                        Utilisateur
                     </span>
 
                 </div>
 
-                <label
-                    for="photo"
-                    class="btn btn-outline btn-small"
-                >
-                    Choisir
-                </label>
+                <p class="profile-preview-email">
+                    {{ current_user.email }}
+                </p>
 
-                <input
-                    type="file"
-                    id="photo"
-                    name="photo"
-                    accept="image/png,image/jpeg,image/webp"
-                    hidden
-                >
+                <p class="profile-preview-description">
+                    Ton profil permet aux autres utilisateurs de mieux
+                    identifier tes signalements sur Retrouve+.
+                </p>
 
             </div>
 
         </div>
 
 
-        <!-- ACTIONS -->
-        <div class="profile-edit-actions">
+        <!-- =========================
+             FORMULAIRE
+             ========================= -->
 
-            <a
-                href="{{ url_for('auth.profile') }}"
-                class="btn btn-outline"
-            >
-                Annuler
-            </a>
+        <form
+            method="POST"
+            enctype="multipart/form-data"
+            class="profile-edit-form"
+        >
 
-            <button
-                type="submit"
-                class="btn"
-            >
-                Enregistrer les modifications
-            </button>
 
-        </div>
+            <!-- =========================
+                 INFORMATIONS
+                 ========================= -->
 
-    </form>
+            <section class="profile-section">
+
+                <div class="profile-section-header">
+
+                    <div class="profile-section-icon">
+                        👤
+                    </div>
+
+                    <div>
+
+                        <div class="profile-section-title">
+                            Informations personnelles
+                        </div>
+
+                        <p class="profile-section-description">
+                            Ces informations sont associées à ton compte.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="profile-fields-grid">
+
+                    <!-- NOM -->
+
+                    <div class="profile-field">
+
+                        <label for="name">
+                            Nom
+                        </label>
+
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            value="{{ current_user.name }}"
+                            placeholder="Entre ton nom"
+                            autocomplete="name"
+                            maxlength="100"
+                            required
+                        >
+
+                        <small class="profile-field-help">
+                            Utilise le nom sous lequel tu souhaites apparaître.
+                        </small>
+
+                    </div>
+
+
+                    <!-- PAYS -->
+
+                    <div class="profile-field">
+
+                        <label for="country_id">
+                            Pays
+                        </label>
+
+                        <select
+                            id="country_id"
+                            name="country_id"
+                            required
+                        >
+
+                            <option value="">
+                                Sélectionner ton pays
+                            </option>
+
+                            {% for c in countries %}
+
+                                <option
+                                    value="{{ c.id }}"
+                                    {% if current_user.country_id == c.id %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    {{ c.name }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                        <small class="profile-field-help">
+                            Ton pays peut servir à adapter certaines informations.
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =========================
+                 PHOTO
+                 ========================= -->
+
+            <section class="profile-section">
+
+                <div class="profile-section-header">
+
+                    <div class="profile-section-icon">
+                        📷
+                    </div>
+
+                    <div>
+
+                        <div class="profile-section-title">
+                            Photo de profil
+                        </div>
+
+                        <p class="profile-section-description">
+                            Personnalise ton profil avec une image.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="photo-upload">
+
+                    <div class="photo-preview">
+
+                        {% if current_user.photo %}
+
+                            <img
+                                id="uploadPreview"
+                                src="{{ url_for('static', filename='uploads/' + current_user.photo) }}"
+                                alt="Aperçu de la photo"
+                            >
+
+                        {% else %}
+
+                            <div
+                                id="uploadPlaceholder"
+                                class="photo-preview-placeholder"
+                            >
+                                {{ current_user.name[0] | upper }}
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="photo-content">
+
+                        <strong
+                            id="photoFileName"
+                            class="photo-title"
+                        >
+                            Modifier ma photo
+                        </strong>
+
+                        <span
+                            id="photoFileInfo"
+                            class="photo-info"
+                        >
+                            JPG, PNG ou WEBP · Image carrée recommandée
+                        </span>
+
+                        <label
+                            for="photo"
+                            class="photo-button"
+                        >
+                            📁 Choisir une image
+                        </label>
+
+                        <input
+                            type="file"
+                            id="photo"
+                            name="photo"
+                            accept="image/png,image/jpeg,image/webp"
+                            hidden
+                        >
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =========================
+                 ACTIONS
+                 ========================= -->
+
+            <div class="profile-actions">
+
+                <a
+                    href="{{ url_for('auth.profile') }}"
+                    class="profile-btn profile-btn-secondary"
+                >
+                    Annuler
+                </a>
+
+                <button
+                    type="submit"
+                    class="profile-btn profile-btn-primary"
+                    id="saveProfileButton"
+                >
+                    Enregistrer les modifications
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
 
 </div>
-```
 
-</div>
-
-<!-- PETIT SCRIPT POUR AFFICHER LE NOM DU FICHIER -->
 
 <script>
+/* =========================================================
+   APERÇU PHOTO
+   ========================================================= */
 
 const photoInput = document.getElementById("photo");
+const uploadPreview = document.getElementById("uploadPreview");
+const uploadPlaceholder = document.getElementById("uploadPlaceholder");
+const photoFileName = document.getElementById("photoFileName");
+const photoFileInfo = document.getElementById("photoFileInfo");
 
 if (photoInput) {
 
     photoInput.addEventListener("change", function () {
 
-        const file = this.files[0];
+        const file = this.files && this.files[0];
 
-        if (file) {
+        if (!file) {
+            return;
+        }
 
-            const box = document.querySelector(".photo-upload-content");
+        photoFileName.textContent = file.name;
 
-            if (box) {
+        const sizeMB = file.size / (1024 * 1024);
 
-                box.querySelector("strong").textContent = file.name;
+        photoFileInfo.textContent =
+            `${file.type.replace("image/", "").toUpperCase()} · ${sizeMB.toFixed(2)} Mo`;
 
-                box.querySelector("span").textContent =
-                    "Nouvelle photo sélectionnée";
+        const reader = new FileReader();
+
+        reader.onload = function (event) {
+
+            if (uploadPreview) {
+
+                uploadPreview.src = event.target.result;
+
+            } else if (uploadPlaceholder) {
+
+                uploadPlaceholder.outerHTML = `
+                    <img
+                        id="uploadPreview"
+                        src="${event.target.result}"
+                        alt="Aperçu de la nouvelle photo"
+                    >
+                `;
 
             }
 
-        }
+            const profilePreview =
+                document.getElementById("profilePreview");
+
+            const profilePlaceholder =
+                document.getElementById("profilePlaceholder");
+
+            if (profilePreview) {
+
+                profilePreview.src = event.target.result;
+
+            } else if (profilePlaceholder) {
+
+                profilePlaceholder.outerHTML = `
+                    <img
+                        id="profilePreview"
+                        src="${event.target.result}"
+                        alt="Aperçu du profil"
+                    >
+                `;
+
+            }
+
+        };
+
+        reader.readAsDataURL(file);
 
     });
 
 }
 
+
+/* =========================================================
+   APERÇU DU NOM
+   ========================================================= */
+
+const nameInput = document.getElementById("name");
+const profileNamePreview =
+    document.getElementById("profileNamePreview");
+
+if (nameInput && profileNamePreview) {
+
+    nameInput.addEventListener("input", function () {
+
+        const value = this.value.trim();
+
+        profileNamePreview.textContent =
+            value || "Votre nom";
+
+    });
+
+}
 </script>
 
 {% endblock %}

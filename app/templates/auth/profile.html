@@ -1,3 +1,4 @@
+
 {% extends "base.html" %}
 
 {% block title %}Mon profil · Retrouve+{% endblock %}
@@ -6,392 +7,1481 @@
 
 <div class="profile-page">
 
-```
-<!-- =====================================================
-     RETOUR
-====================================================== -->
+    <!-- =====================================================
+         TOP BAR
+    ====================================================== -->
 
-<a href="{{ url_for('posts.index') }}" class="back-link">
-    ← Retour à l'accueil
-</a>
+    <div class="profile-topbar">
 
-
-<!-- =====================================================
-     PROFIL
-====================================================== -->
-
-<section class="form-card" style="max-width:100%; margin-bottom:20px;">
-
-    <div class="profile-header">
-
-        <div class="avatar">
-
-            {% if user.photo %}
-
-                <img
-                    src="{{ url_for('static', filename='uploads/' + user.photo) }}"
-                    alt="{{ user.name }}"
-                    style="width:100%;height:100%;object-fit:cover;"
-                >
-
-            {% else %}
-
-                {{ user.name[0] | upper }}
-
-            {% endif %}
-
-        </div>
-
-
-        <div style="min-width:0; flex:1;">
-
-            <span style="
-                display:block;
-                margin-bottom:4px;
-                color:var(--accent);
-                font-size:.68rem;
-                font-weight:800;
-                letter-spacing:.08em;
-            ">
-                MON COMPTE
-            </span>
-
-            <h1 style="margin-bottom:4px;">
-                {{ user.name }}
-            </h1>
-
-            <p class="muted" style="margin:0;">
-                {{ user.email }}
-            </p>
-
-            <p class="muted" style="margin:5px 0 0;">
-
-                {% if user.country %}
-                    📍 {{ user.country.name }}
-                {% else %}
-                    📍 Pays non renseigné
-                {% endif %}
-
-            </p>
-
-        </div>
-
-    </div>
-
-
-    <div style="
-        display:flex;
-        gap:9px;
-        flex-wrap:wrap;
-        margin-top:18px;
-    ">
-
-        <a
-            href="{{ url_for('auth.edit_profile') }}"
-            class="btn"
-        >
-            ✎ Modifier mon profil
+        <a href="{{ url_for('posts.index') }}" class="back-link">
+            <span class="back-icon">←</span>
+            Retour à l'accueil
         </a>
 
-        <a
-            href="{{ url_for('auth.logout') }}"
-            class="btn btn-outline"
-        >
-            ↪ Se déconnecter
-        </a>
-
-    </div>
-
-</section>
-
-
-<!-- =====================================================
-     STATISTIQUES
-====================================================== -->
-
-<section class="profile-stats">
-
-    <div>
-
-        <strong>
-            {{ posts | length }}
-        </strong>
-
-        <span>
-            Signalements
+        <span class="profile-page-label">
+            ESPACE PERSONNEL
         </span>
 
     </div>
 
 
-    <div>
+    <!-- =====================================================
+         HERO PROFIL
+    ====================================================== -->
 
-        <strong>
-            {{ posts | selectattr("status", "equalto", "retrouvee") | list | length }}
-        </strong>
+    <section class="profile-hero">
 
-        <span>
-            Retrouvés
-        </span>
+        <!-- décoration -->
 
-    </div>
+        <div class="hero-glow hero-glow-one"></div>
+        <div class="hero-glow hero-glow-two"></div>
 
-
-    <div>
-
-        <strong>
-            {{ posts | selectattr("status", "equalto", "en_attente") | list | length }}
-        </strong>
-
-        <span>
-            En attente
-        </span>
-
-    </div>
-
-</section>
+        <div class="hero-grid"></div>
 
 
-<!-- =====================================================
-     MES SIGNALEMENTS
-====================================================== -->
+        <div class="profile-hero-content">
 
-<section style="margin-top:28px;">
+            <!-- AVATAR -->
 
-    <div style="
-        display:flex;
-        align-items:center;
-        justify-content:space-between;
-        gap:15px;
-        margin-bottom:15px;
-    ">
+            <div class="avatar-wrapper">
 
-        <div>
+                <div class="avatar-ring"></div>
 
-            <span style="
-                color:var(--accent);
-                font-size:.68rem;
-                font-weight:800;
-                letter-spacing:.08em;
-            ">
-                ACTIVITÉ
-            </span>
+                <div class="avatar profile-avatar">
 
-            <h2 style="margin:4px 0 0;">
-                Mes signalements
-            </h2>
+                    {% if user.photo %}
 
-        </div>
+                        <img
+                            src="{{ url_for('static', filename='uploads/' + user.photo) }}"
+                            alt="{{ user.name }}"
+                        >
 
-        <span class="badge">
-            {{ posts | length }}
-        </span>
+                    {% else %}
 
-    </div>
+                        {{ user.name[0] | upper }}
 
-
-    <div class="feed">
-
-        {% for post in posts %}
-
-            <a
-                href="{{ url_for('posts.detail', post_id=post.id) }}"
-                class="row-card"
-            >
-
-                <!-- IMAGE -->
-
-                {% if post.photo %}
-
-                    <img
-                        src="{{ url_for('static', filename='uploads/' + post.photo) }}"
-                        alt="{{ post.title }}"
-                        class="row-thumb"
-                    >
-
-                {% else %}
-
-                    <div
-                        class="row-thumb"
-                        style="
-                            display:flex;
-                            align-items:center;
-                            justify-content:center;
-                            color:var(--muted-2);
-                            font-size:1.3rem;
-                        "
-                    >
-                        ◈
-                    </div>
-
-                {% endif %}
-
-
-                <!-- INFORMATIONS -->
-
-                <div class="row-body">
-
-                    <p class="row-title">
-                        {{ post.title }}
-                    </p>
-
-
-                    <p class="row-meta">
-
-                        {% if post.type == "personne_disparue" %}
-                            Personne disparue
-
-                        {% elif post.type == "personne_retrouvee" %}
-                            Personne retrouvée
-
-                        {% elif post.type == "objet_perdu" %}
-                            Objet perdu
-
-                        {% elif post.type == "objet_retrouve" %}
-                            Objet retrouvé
-
-                        {% else %}
-                            {{ post.type or "Information" }}
-
-                        {% endif %}
-
-                        {% if post.location %}
-                            · {{ post.location }}
-                        {% endif %}
-
-                    </p>
-
-
-                    <div style="
-                        margin-top:7px;
-                        display:flex;
-                        align-items:center;
-                        gap:7px;
-                        flex-wrap:wrap;
-                    ">
-
-                        {% if post.status == "retrouvee" %}
-
-                            <span class="badge badge-retrouvee">
-                                Retrouvé
-                            </span>
-
-                        {% elif post.status == "en_attente" %}
-
-                            <span class="badge badge-disparue">
-                                En attente
-                            </span>
-
-                        {% elif post.status == "active" %}
-
-                            <span class="badge badge-objet">
-                                Actif
-                            </span>
-
-                        {% elif post.status == "retrouve_a_confirmer" %}
-
-                            <span class="badge">
-                                À confirmer
-                            </span>
-
-                        {% else %}
-
-                            <span class="badge badge-defaut">
-                                {{ post.status }}
-                            </span>
-
-                        {% endif %}
-
-                    </div>
+                    {% endif %}
 
                 </div>
 
+                <span class="online-dot"></span>
 
-                <span class="row-chevron">
-                    ›
+            </div>
+
+
+            <!-- IDENTITÉ -->
+
+            <div class="profile-identity">
+
+                <span class="profile-eyebrow">
+                    PROFIL RETROUVE+
                 </span>
 
-            </a>
+                <h1>
+                    {{ user.name }}
+                </h1>
 
-        {% else %}
-
-            <div class="post-card empty">
-
-                <h3>
-                    Aucun signalement
-                </h3>
-
-                <p>
-                    Vous n'avez encore publié aucun signalement.
+                <p class="profile-email">
+                    {{ user.email }}
                 </p>
 
+                <div class="profile-location">
+
+                    <span class="location-pin">⌖</span>
+
+                    <span>
+                        {% if user.country %}
+                            {{ user.country.name }}
+                        {% else %}
+                            Pays non renseigné
+                        {% endif %}
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- ACTIONS -->
+
+            <div class="hero-actions">
+
                 <a
-                    href="{{ url_for('posts.create') }}"
-                    class="btn"
-                    style="margin-top:12px;"
+                    href="{{ url_for('auth.edit_profile') }}"
+                    class="btn profile-main-action"
                 >
-                    + Créer un signalement
+                    <span>✎</span>
+                    Modifier
+                </a>
+
+                <a
+                    href="{{ url_for('auth.logout') }}"
+                    class="profile-logout"
+                    title="Se déconnecter"
+                >
+                    ↪
                 </a>
 
             </div>
 
-        {% endfor %}
-
-    </div>
-
-</section>
+        </div>
 
 
-<!-- =====================================================
-     ZONE DANGEREUSE
-====================================================== -->
+        <!-- MINI INFOS -->
 
-<section
-    class="form-card"
-    style="
-        max-width:100%;
-        margin-top:35px;
-        border-color:rgba(224,103,79,.20);
-    "
->
+        <div class="profile-hero-footer">
 
-    <span style="
-        color:var(--danger);
-        font-size:.68rem;
-        font-weight:800;
-        letter-spacing:.08em;
-    ">
-        ZONE SENSIBLE
-    </span>
+            <div class="hero-info">
+                <span class="hero-info-dot"></span>
+                Compte actif
+            </div>
 
-    <h3 style="margin:5px 0 0;">
-        Supprimer mon compte
-    </h3>
+            <div class="hero-info-separator"></div>
 
-    <p class="muted" style="margin:0 0 8px;">
-        Cette action supprimera définitivement votre compte
-        et vos signalements.
-    </p>
+            <div class="hero-info">
+                <span>◈</span>
+                {{ posts | length }} signalement{{ 's' if posts | length != 1 else '' }}
+            </div>
+
+        </div>
+
+    </section>
 
 
-    <form
-        method="POST"
-        action="{{ url_for('auth.delete_account') }}"
-        onsubmit="return confirm('Supprimer définitivement ton compte et toutes tes données ?');"
-    >
 
-        <button
-            type="submit"
-            class="btn btn-danger"
+    <!-- =====================================================
+         STATISTIQUES
+    ====================================================== -->
+
+    <section class="profile-stats">
+
+        <div class="stat-card">
+
+            <div class="stat-card-top">
+
+                <div class="stat-icon">
+                    ◈
+                </div>
+
+                <span class="stat-label">
+                    TOTAL
+                </span>
+
+            </div>
+
+            <div class="stat-number">
+                {{ posts | length }}
+            </div>
+
+            <div class="stat-name">
+                Signalements
+            </div>
+
+            <div class="stat-line">
+                <span></span>
+            </div>
+
+        </div>
+
+
+        <div class="stat-card stat-success">
+
+            <div class="stat-card-top">
+
+                <div class="stat-icon">
+                    ✓
+                </div>
+
+                <span class="stat-label">
+                    RÉSOLUS
+                </span>
+
+            </div>
+
+            <div class="stat-number">
+                {{ posts | selectattr("status", "equalto", "retrouvee") | list | length }}
+            </div>
+
+            <div class="stat-name">
+                Retrouvés
+            </div>
+
+            <div class="stat-line">
+                <span></span>
+            </div>
+
+        </div>
+
+
+        <div class="stat-card stat-warning">
+
+            <div class="stat-card-top">
+
+                <div class="stat-icon">
+                    ◷
+                </div>
+
+                <span class="stat-label">
+                    EN COURS
+                </span>
+
+            </div>
+
+            <div class="stat-number">
+                {{ posts | selectattr("status", "equalto", "en_attente") | list | length }}
+            </div>
+
+            <div class="stat-name">
+                En attente
+            </div>
+
+            <div class="stat-line">
+                <span></span>
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         ACTIVITÉ
+    ====================================================== -->
+
+    <section class="activity-section">
+
+        <div class="activity-heading">
+
+            <div>
+
+                <span class="section-kicker">
+                    VOTRE ACTIVITÉ
+                </span>
+
+                <h2>
+                    Mes signalements
+                </h2>
+
+                <p>
+                    Suivez l'état de vos signalements depuis un seul endroit.
+                </p>
+
+            </div>
+
+            <div class="activity-count">
+                <strong>{{ posts | length }}</strong>
+                <span>total</span>
+            </div>
+
+        </div>
+
+
+        <!-- LISTE -->
+
+        <div class="feed profile-feed">
+
+            {% for post in posts %}
+
+                <a
+                    href="{{ url_for('posts.detail', post_id=post.id) }}"
+                    class="profile-post"
+                >
+
+                    <!-- IMAGE -->
+
+                    <div class="post-visual">
+
+                        {% if post.photo %}
+
+                            <img
+                                src="{{ url_for('static', filename='uploads/' + post.photo) }}"
+                                alt="{{ post.title }}"
+                            >
+
+                        {% else %}
+
+                            <div class="post-placeholder">
+                                <span>◈</span>
+                            </div>
+
+                        {% endif %}
+
+                        <div class="visual-overlay"></div>
+
+                    </div>
+
+
+                    <!-- CONTENU -->
+
+                    <div class="post-information">
+
+                        <div class="post-type">
+
+                            {% if post.type == "personne_disparue" %}
+                                PERSONNE DISPARUE
+
+                            {% elif post.type == "personne_retrouvee" %}
+                                PERSONNE RETROUVÉE
+
+                            {% elif post.type == "objet_perdu" %}
+                                OBJET PERDU
+
+                            {% elif post.type == "objet_retrouve" %}
+                                OBJET RETROUVÉ
+
+                            {% else %}
+                                {{ post.type or "INFORMATION" }}
+                            {% endif %}
+
+                        </div>
+
+
+                        <h3>
+                            {{ post.title }}
+                        </h3>
+
+
+                        <div class="post-meta">
+
+                            {% if post.location %}
+
+                                <span>
+                                    ⌖ {{ post.location }}
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="post-bottom">
+
+                            {% if post.status == "retrouvee" %}
+
+                                <span class="status-pill status-found">
+                                    <span>✓</span>
+                                    Retrouvé
+                                </span>
+
+                            {% elif post.status == "en_attente" %}
+
+                                <span class="status-pill status-pending">
+                                    <span>◷</span>
+                                    En attente
+                                </span>
+
+                            {% elif post.status == "active" %}
+
+                                <span class="status-pill status-active">
+                                    <span>●</span>
+                                    Actif
+                                </span>
+
+                            {% elif post.status == "retrouve_a_confirmer" %}
+
+                                <span class="status-pill status-confirm">
+                                    <span>!</span>
+                                    À confirmer
+                                </span>
+
+                            {% else %}
+
+                                <span class="status-pill status-default">
+                                    {{ post.status }}
+                                </span>
+
+                            {% endif %}
+
+                            <span class="post-open">
+                                Voir le signalement
+                                <b>→</b>
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </a>
+
+            {% else %}
+
+                <!-- EMPTY STATE -->
+
+                <div class="empty-profile">
+
+                    <div class="empty-orbit">
+
+                        <div class="empty-icon">
+                            ◈
+                        </div>
+
+                    </div>
+
+                    <span class="section-kicker">
+                        VOTRE ESPACE
+                    </span>
+
+                    <h3>
+                        Aucun signalement
+                    </h3>
+
+                    <p>
+                        Vous n'avez encore publié aucun signalement.
+                        Créez votre premier signalement pour commencer.
+                    </p>
+
+                    <a
+                        href="{{ url_for('posts.create') }}"
+                        class="btn empty-action"
+                    >
+                        <span>+</span>
+                        Créer un signalement
+                    </a>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         ZONE SENSIBLE
+    ====================================================== -->
+
+    <section class="danger-zone">
+
+        <div class="danger-content">
+
+            <div class="danger-symbol">
+                !
+            </div>
+
+            <div>
+
+                <span class="danger-label">
+                    ZONE SENSIBLE
+                </span>
+
+                <h3>
+                    Supprimer mon compte
+                </h3>
+
+                <p>
+                    La suppression de votre compte entraîne la suppression
+                    définitive de vos données et signalements.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <form
+            method="POST"
+            action="{{ url_for('auth.delete_account') }}"
+            onsubmit="return confirm('Supprimer définitivement ton compte et toutes tes données ?');"
         >
-            Supprimer définitivement mon compte
-        </button>
 
-    </form>
+            <button
+                type="submit"
+                class="danger-button"
+            >
+                Supprimer mon compte
+            </button>
 
-</section>
-```
+        </form>
+
+    </section>
+
 
 </div>
 
+
+
+<!-- =====================================================
+     DESIGN PREMIUM
+====================================================== -->
+
+<style>
+
+.profile-page {
+    width: min(1120px, 100%);
+    margin: 0 auto;
+    padding: 8px 0 65px;
+}
+
+
+/* =====================================================
+   TOPBAR
+===================================================== */
+
+.profile-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 16px;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    text-decoration: none;
+}
+
+.back-icon {
+    font-size: 1.1rem;
+    transition: transform .2s ease;
+}
+
+.back-link:hover .back-icon {
+    transform: translateX(-4px);
+}
+
+.profile-page-label {
+    color: var(--muted);
+    font-size: .62rem;
+    font-weight: 800;
+    letter-spacing: .16em;
+    opacity: .7;
+}
+
+
+/* =====================================================
+   HERO
+===================================================== */
+
+.profile-hero {
+    position: relative;
+    overflow: hidden;
+    min-height: 245px;
+    border: 1px solid var(--border, #1f2937);
+    border-radius: 25px;
+    background:
+        radial-gradient(
+            circle at 85% 15%,
+            color-mix(in srgb, var(--accent) 12%, transparent),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 5% 90%,
+            rgba(255,255,255,.025),
+            transparent 30%
+        ),
+        var(--panel, #121821);
+    box-shadow: 0 22px 55px rgba(0,0,0,.20);
+}
+
+.profile-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,.035),
+            transparent 30%
+        );
+}
+
+.hero-grid {
+    position: absolute;
+    inset: 0;
+    opacity: .20;
+    background-image:
+        linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+    background-size: 32px 32px;
+    mask-image: linear-gradient(to bottom, black, transparent 75%);
+}
+
+.hero-glow {
+    position: absolute;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    filter: blur(65px);
+    opacity: .14;
+    pointer-events: none;
+}
+
+.hero-glow-one {
+    background: var(--accent);
+    right: -70px;
+    top: -80px;
+}
+
+.hero-glow-two {
+    background: var(--accent);
+    left: -130px;
+    bottom: -140px;
+}
+
+.profile-hero-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 23px;
+    padding: 38px 38px 30px;
+}
+
+
+/* =====================================================
+   AVATAR
+===================================================== */
+
+.avatar-wrapper {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    flex-shrink: 0;
+}
+
+.profile-avatar {
+    position: relative;
+    z-index: 2;
+    width: 88px !important;
+    height: 88px !important;
+    min-width: 88px;
+    margin: 6px;
+    border-radius: 25px !important;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.1rem;
+    font-weight: 850;
+    border: 1px solid rgba(255,255,255,.13);
+    background: rgba(255,255,255,.045);
+    box-shadow:
+        0 15px 35px rgba(0,0,0,.3),
+        inset 0 1px rgba(255,255,255,.06);
+}
+
+.profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatar-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 30px;
+    border: 1px solid color-mix(
+        in srgb,
+        var(--accent) 35%,
+        transparent
+    );
+    transform: rotate(8deg);
+}
+
+.online-dot {
+    position: absolute;
+    z-index: 4;
+    right: 5px;
+    bottom: 7px;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: #3fb950;
+    border: 3px solid var(--panel, #121821);
+    box-shadow: 0 0 0 4px rgba(63,185,80,.10);
+}
+
+
+/* =====================================================
+   IDENTITÉ
+===================================================== */
+
+.profile-identity {
+    min-width: 0;
+    flex: 1;
+}
+
+.profile-eyebrow,
+.section-kicker {
+    display: block;
+    color: var(--accent);
+    font-size: .62rem;
+    font-weight: 850;
+    letter-spacing: .15em;
+}
+
+.profile-identity h1 {
+    margin: 6px 0 3px;
+    font-size: clamp(1.65rem, 4vw, 2.35rem);
+    line-height: 1.05;
+    letter-spacing: -.045em;
+}
+
+.profile-email {
+    margin: 0;
+    color: var(--muted);
+    font-size: .9rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.profile-location {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 9px;
+    color: var(--muted);
+    font-size: .8rem;
+}
+
+.location-pin {
+    color: var(--accent);
+}
+
+
+/* =====================================================
+   HERO ACTIONS
+===================================================== */
+
+.hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.profile-main-action {
+    padding-left: 18px;
+    padding-right: 18px;
+}
+
+.profile-logout {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 13px;
+    color: var(--muted);
+    border: 1px solid var(--border, #1f2937);
+    background: rgba(255,255,255,.025);
+    text-decoration: none;
+    transition: all .2s ease;
+}
+
+.profile-logout:hover {
+    color: var(--text, #e6edf3);
+    background: rgba(255,255,255,.06);
+    transform: translateY(-2px);
+}
+
+
+/* =====================================================
+   HERO FOOTER
+===================================================== */
+
+.profile-hero-footer {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 13px 38px;
+    border-top: 1px solid rgba(255,255,255,.055);
+    background: rgba(0,0,0,.10);
+}
+
+.hero-info {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--muted);
+    font-size: .72rem;
+}
+
+.hero-info-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #3fb950;
+    box-shadow: 0 0 9px rgba(63,185,80,.55);
+}
+
+.hero-info-separator {
+    width: 1px;
+    height: 13px;
+    background: var(--border);
+}
+
+
+/* =====================================================
+   STATS
+===================================================== */
+
+.profile-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 15px 0 42px;
+}
+
+.stat-card {
+    position: relative;
+    overflow: hidden;
+    min-height: 145px;
+    padding: 18px;
+    border: 1px solid var(--border, #1f2937);
+    border-radius: 19px;
+    background: var(--panel, #121821);
+    transition:
+        transform .22s ease,
+        border-color .22s ease,
+        box-shadow .22s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255,255,255,.13);
+    box-shadow: 0 17px 35px rgba(0,0,0,.17);
+}
+
+.stat-card::after {
+    content: "";
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    right: -45px;
+    bottom: -55px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: .035;
+    filter: blur(10px);
+}
+
+.stat-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.stat-icon {
+    width: 39px;
+    height: 39px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    color: var(--accent);
+    background: rgba(255,255,255,.045);
+    font-weight: 900;
+}
+
+.stat-label {
+    color: var(--muted);
+    font-size: .58rem;
+    font-weight: 800;
+    letter-spacing: .12em;
+}
+
+.stat-number {
+    margin-top: 17px;
+    font-size: 1.8rem;
+    line-height: 1;
+    font-weight: 850;
+    letter-spacing: -.05em;
+}
+
+.stat-name {
+    margin-top: 5px;
+    color: var(--muted);
+    font-size: .78rem;
+}
+
+.stat-line {
+    width: 100%;
+    height: 2px;
+    margin-top: 15px;
+    background: rgba(255,255,255,.05);
+    overflow: hidden;
+}
+
+.stat-line span {
+    display: block;
+    width: 35%;
+    height: 100%;
+    background: var(--accent);
+    opacity: .65;
+}
+
+.stat-success .stat-icon {
+    color: #3fb950;
+}
+
+.stat-success .stat-line span {
+    background: #3fb950;
+}
+
+.stat-warning .stat-icon {
+    color: #e8a33d;
+}
+
+.stat-warning .stat-line span {
+    background: #e8a33d;
+}
+
+
+/* =====================================================
+   ACTIVITÉ
+===================================================== */
+
+.activity-section {
+    margin-top: 5px;
+}
+
+.activity-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 18px;
+}
+
+.activity-heading h2 {
+    margin: 5px 0 4px;
+    font-size: 1.45rem;
+    letter-spacing: -.035em;
+}
+
+.activity-heading p {
+    margin: 0;
+    color: var(--muted);
+    font-size: .82rem;
+}
+
+.activity-count {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+    color: var(--muted);
+}
+
+.activity-count strong {
+    color: var(--text, #e6edf3);
+    font-size: 1.25rem;
+}
+
+.activity-count span {
+    font-size: .7rem;
+}
+
+
+/* =====================================================
+   POSTS
+===================================================== */
+
+.profile-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.profile-post {
+    position: relative;
+    display: grid;
+    grid-template-columns: 104px 1fr auto;
+    align-items: stretch;
+    min-height: 125px;
+    overflow: hidden;
+    border: 1px solid var(--border, #1f2937);
+    border-radius: 18px;
+    background: var(--panel, #121821);
+    text-decoration: none;
+    transition:
+        transform .22s ease,
+        border-color .22s ease,
+        box-shadow .22s ease;
+}
+
+.profile-post:hover {
+    transform: translateY(-3px);
+    border-color: color-mix(
+        in srgb,
+        var(--accent) 30%,
+        var(--border)
+    );
+    box-shadow: 0 16px 34px rgba(0,0,0,.18);
+}
+
+
+/* IMAGE */
+
+.post-visual {
+    position: relative;
+    overflow: hidden;
+    background: rgba(255,255,255,.025);
+}
+
+.post-visual img {
+    width: 100%;
+    height: 100%;
+    min-height: 125px;
+    display: block;
+    object-fit: cover;
+    transition: transform .4s ease;
+}
+
+.profile-post:hover .post-visual img {
+    transform: scale(1.06);
+}
+
+.visual-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(0,0,0,.10)
+    );
+}
+
+.post-placeholder {
+    width: 100%;
+    height: 100%;
+    min-height: 125px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(255,255,255,.055),
+            transparent 65%
+        );
+}
+
+.post-placeholder span {
+    color: var(--accent);
+    font-size: 1.6rem;
+    opacity: .75;
+}
+
+
+/* INFORMATION */
+
+.post-information {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 17px 19px;
+}
+
+.post-type {
+    color: var(--accent);
+    font-size: .58rem;
+    font-weight: 850;
+    letter-spacing: .1em;
+}
+
+.post-information h3 {
+    margin: 5px 0 6px;
+    color: var(--text, #e6edf3);
+    font-size: 1rem;
+    line-height: 1.25;
+    letter-spacing: -.015em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.post-meta {
+    color: var(--muted);
+    font-size: .72rem;
+}
+
+.post-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 13px;
+}
+
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    width: fit-content;
+    padding: 5px 9px;
+    border-radius: 999px;
+    font-size: .62rem;
+    font-weight: 750;
+    border: 1px solid transparent;
+}
+
+.status-found {
+    color: #3fb950;
+    background: rgba(63,185,80,.08);
+    border-color: rgba(63,185,80,.12);
+}
+
+.status-pending {
+    color: #e8a33d;
+    background: rgba(232,163,61,.08);
+    border-color: rgba(232,163,61,.12);
+}
+
+.status-active {
+    color: var(--accent);
+    background: rgba(255,255,255,.045);
+    border-color: rgba(255,255,255,.07);
+}
+
+.status-confirm {
+    color: #e8a33d;
+    background: rgba(232,163,61,.08);
+}
+
+.status-default {
+    color: var(--muted);
+    background: rgba(255,255,255,.04);
+}
+
+.post-open {
+    color: var(--muted);
+    font-size: .65rem;
+    white-space: nowrap;
+    opacity: .7;
+}
+
+.post-open b {
+    display: inline-block;
+    margin-left: 4px;
+    transition: transform .2s ease;
+}
+
+.profile-post:hover .post-open b {
+    transform: translateX(4px);
+}
+
+
+/* =====================================================
+   EMPTY
+===================================================== */
+
+.empty-profile {
+    padding: 55px 25px;
+    text-align: center;
+    border: 1px dashed var(--border, #1f2937);
+    border-radius: 20px;
+    background: rgba(255,255,255,.012);
+}
+
+.empty-orbit {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 1px dashed color-mix(
+        in srgb,
+        var(--accent) 30%,
+        transparent
+    );
+}
+
+.empty-icon {
+    width: 46px;
+    height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px;
+    color: var(--accent);
+    background: rgba(255,255,255,.045);
+}
+
+.empty-profile h3 {
+    margin: 7px 0 5px;
+}
+
+.empty-profile p {
+    max-width: 420px;
+    margin: 0 auto;
+    color: var(--muted);
+    font-size: .82rem;
+    line-height: 1.6;
+}
+
+.empty-action {
+    margin-top: 18px;
+}
+
+
+/* =====================================================
+   DANGER ZONE
+===================================================== */
+
+.danger-zone {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+    margin-top: 45px;
+    padding: 22px;
+    border: 1px solid rgba(224,103,79,.17);
+    border-radius: 19px;
+    background:
+        linear-gradient(
+            120deg,
+            rgba(224,103,79,.035),
+            transparent 65%
+        ),
+        var(--panel, #121821);
+}
+
+.danger-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+}
+
+.danger-symbol {
+    width: 39px;
+    height: 39px;
+    min-width: 39px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    color: var(--danger);
+    background: rgba(224,103,79,.08);
+    border: 1px solid rgba(224,103,79,.12);
+    font-weight: 900;
+}
+
+.danger-label {
+    color: var(--danger);
+    font-size: .58rem;
+    font-weight: 850;
+    letter-spacing: .13em;
+}
+
+.danger-zone h3 {
+    margin: 4px 0 3px;
+    font-size: .98rem;
+}
+
+.danger-zone p {
+    max-width: 600px;
+    margin: 0;
+    color: var(--muted);
+    font-size: .75rem;
+    line-height: 1.5;
+}
+
+.danger-button {
+    flex-shrink: 0;
+    padding: 10px 14px;
+    border: 1px solid rgba(224,103,79,.18);
+    border-radius: 11px;
+    color: var(--danger);
+    background: rgba(224,103,79,.06);
+    font: inherit;
+    font-size: .72rem;
+    font-weight: 750;
+    cursor: pointer;
+    transition: all .2s ease;
+}
+
+.danger-button:hover {
+    background: rgba(224,103,79,.12);
+    border-color: rgba(224,103,79,.30);
+    transform: translateY(-1px);
+}
+
+
+/* =====================================================
+   RESPONSIVE TABLETTE
+===================================================== */
+
+@media (max-width: 800px) {
+
+    .profile-hero-content {
+        padding: 30px 25px 24px;
+    }
+
+    .profile-hero-footer {
+        padding: 12px 25px;
+    }
+
+    .profile-post {
+        grid-template-columns: 88px 1fr;
+    }
+
+    .post-open {
+        display: none;
+    }
+
+    .danger-zone {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .danger-button {
+        width: 100%;
+    }
+
+}
+
+
+/* =====================================================
+   RESPONSIVE MOBILE
+===================================================== */
+
+@media (max-width: 600px) {
+
+    .profile-page {
+        padding-bottom: 40px;
+    }
+
+    .profile-topbar {
+        margin-bottom: 12px;
+    }
+
+    .profile-page-label {
+        display: none;
+    }
+
+    .profile-hero {
+        border-radius: 20px;
+    }
+
+    .profile-hero-content {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 28px 20px 22px;
+    }
+
+    .avatar-wrapper {
+        margin-bottom: 4px;
+    }
+
+    .profile-identity {
+        width: 100%;
+    }
+
+    .profile-identity h1 {
+        font-size: 1.75rem;
+    }
+
+    .hero-actions {
+        width: 100%;
+    }
+
+    .profile-main-action {
+        flex: 1;
+        justify-content: center;
+    }
+
+    .profile-logout {
+        width: 43px;
+        min-width: 43px;
+    }
+
+    .profile-hero-footer {
+        padding: 12px 20px;
+    }
+
+    .profile-stats {
+        grid-template-columns: 1fr;
+        gap: 9px;
+        margin-bottom: 32px;
+    }
+
+    .stat-card {
+        min-height: 120px;
+    }
+
+    .activity-heading {
+        align-items: flex-start;
+    }
+
+    .activity-heading p {
+        display: none;
+    }
+
+    .activity-count {
+        padding-top: 5px;
+    }
+
+    .profile-post {
+        grid-template-columns: 75px 1fr;
+        min-height: 110px;
+    }
+
+    .post-visual img,
+    .post-placeholder {
+        min-height: 110px;
+    }
+
+    .post-information {
+        padding: 14px;
+    }
+
+    .post-information h3 {
+        font-size: .9rem;
+    }
+
+    .post-bottom {
+        margin-top: 9px;
+    }
+
+    .post-meta {
+        font-size: .68rem;
+    }
+
+    .danger-zone {
+        margin-top: 35px;
+        padding: 18px;
+    }
+
+}
+
+
+/* =====================================================
+   PETIT MOBILE
+===================================================== */
+
+@media (max-width: 390px) {
+
+    .profile-post {
+        grid-template-columns: 62px 1fr;
+    }
+
+    .post-information {
+        padding: 12px;
+    }
+
+    .status-pill {
+        font-size: .57rem;
+    }
+
+    .profile-email {
+        font-size: .78rem;
+    }
+
+}
+
+</style>
+
 {% endblock %}
+

@@ -9,7 +9,8 @@ class Config:
         "change-me-en-prod"
     )
 
-    SQLALCHEMY_DATABASE_URI = (
+    SQLALCHEMY_DATABASE_URI = os.environ.get(
+        "DATABASE_URL",
         "postgresql+psycopg2://postgres:70142124@localhost:5432/retrouve_db"
     )
 
