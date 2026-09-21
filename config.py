@@ -9,10 +9,7 @@ class Config:
         "change-me-en-prod"
     )
 
-    SQLALCHEMY_DATABASE_URI = os.environ.get(
-        "DATABASE_URL",
-        "postgresql+psycopg2://postgres:70142124@localhost:5432/retrouve_db"
-    )
+    SQLALCHEMY_DATABASE_URI = os.environ.get("postgresql://disparus_db_user:IfhDhABebPqt66ZO53XMWla3UyV9MAYZ@dpg-dao0s60ae00c73aca2a0-a/disparus_db")
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
@@ -24,3 +21,21 @@ class Config:
     )
 
     MAX_CONTENT_LENGTH = 5 * 1024 * 1024  # 5 Mo par fichier
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
