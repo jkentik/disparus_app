@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Inviter une autorité</h1>
+
+<form method="POST">
+    <label>Nom de l'agence</label>
+    <input type="text" name="agency_name" placeholder="Ex: Police nationale - Ouaga"><br>
+
+    <label>Restreindre à un pays (optionnel)</label>
+    <select name="country_id">
+        <option value="">-- Laisser l'autorité choisir --</option>
+        {% for c in countries %}
+            <option value="{{ c.id }}">{{ c.name }}</option>
+        {% endfor %}
+    </select><br>
+
+    <label>Restreindre à une région (optionnel)</label>
+    <select name="region_id">
+        <option value="">-- Laisser l'autorité choisir --</option>
+        {% for r in regions %}
+            <option value="{{ r.id }}">{{ r.name }} ({{ r.country.name }})</option>
+        {% endfor %}
+    </select><br>
+
+    <label>Expire dans (jours, optionnel)</label>
+    <input type="number" name="expires_days" placeholder="Ex: 7"><br>
+
+    <button type="submit" class="btn btn-primary">Générer le code</button>
+</form>
+
+<h2>Codes générés</h2>
+<table style="width:100%; border-collapse: collapse;">
+    <thead>
+        <tr>
+            <th style="text-align:left;">Code</th>
+            <th style="text-align:left;">Agence</th>
+            <th style="text-align:left;">Statut</th>
+            <th style="text-align:left;">Lien</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for invite in invites %}
+        <tr>
+            <td>{{ invite.code }}</td>
+            <td>{{ invite.agency_name or "—" }}</td>
+            <td>
+                {% if invite.used %}Utilisé{% elif not invite.is_valid() %}Expiré{% else %}Actif{% endif %}
+            </td>
+            <td>
+                {% if invite.is_valid() %}
+                    <code>{{ url_for('auth.register_authority', code=invite.code, _external=True) }}</code>
+                {% else %}
+                    —
+                {% endif %}
+            </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="4">Aucun code généré pour l'instant.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

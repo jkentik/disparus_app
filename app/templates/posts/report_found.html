@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>J'ai retrouvé : {{ post.title }}</h1>
+<p>La police vous appellera pour confirmer avant de clôturer ce signalement.</p>
+<form method="POST">
+    <label>Votre nom</label>
+    <input type="text" name="finder_name" required><br>
+    <label>Votre numéro de téléphone</label>
+    <input type="tel" name="finder_phone" required><br>
+    <button type="submit">Envoyer</button>
+</form>
+{% endblock %}

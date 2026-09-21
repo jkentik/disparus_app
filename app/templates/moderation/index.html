@@ -1,0 +1,1952 @@
+{% extends "base.html" %}
+
+{% block title %}Modération · Retrouve+{% endblock %}
+
+{% block content %}
+
+<div class="moderation-page">
+
+```
+<!-- =====================================================
+     HEADER
+====================================================== -->
+
+<header class="moderation-header">
+
+    <div>
+
+        <span class="moderation-kicker">
+            RETROUVE+ / ADMINISTRATION
+        </span>
+
+        <h1>
+            Espace modération
+        </h1>
+
+        <p>
+            Contrôlez les publications et traitez les signalements
+            de la communauté.
+        </p>
+
+    </div>
+
+
+    <a
+        href="{{ url_for('posts.index') }}"
+        class="moderation-back"
+    >
+        ← Retour à la plateforme
+    </a>
+
+</header>
+
+
+
+<!-- =====================================================
+     STATS
+====================================================== -->
+
+<section class="moderation-stats">
+
+
+    <div class="moderation-stat">
+
+        <div class="stat-icon pending">
+            !
+        </div>
+
+        <div>
+
+            <span>
+                EN ATTENTE
+            </span>
+
+            <strong>
+                {{ posts|length }}
+            </strong>
+
+            <small>
+                publication{{ 's' if posts|length != 1 }}
+            </small>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="moderation-stat">
+
+        <div class="stat-icon reports">
+            ⚑
+        </div>
+
+        <div>
+
+            <span>
+                SIGNALEMENTS
+            </span>
+
+            <strong>
+                {{ reports|length }}
+            </strong>
+
+            <small>
+                à examiner
+            </small>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="moderation-stat">
+
+        <div class="stat-icon secure">
+            ✓
+        </div>
+
+        <div>
+
+            <span>
+                SYSTÈME
+            </span>
+
+            <strong>
+                Actif
+            </strong>
+
+            <small>
+                modération disponible
+            </small>
+
+        </div>
+
+    </div>
+
+
+</section>
+
+
+
+<!-- =====================================================
+     PUBLICATIONS EN ATTENTE
+====================================================== -->
+
+<section class="moderation-section">
+
+
+    <div class="moderation-section-header">
+
+        <div class="section-heading">
+
+            <div class="section-icon pending-icon">
+                !
+            </div>
+
+            <div>
+
+                <h2>
+                    Publications en attente
+                </h2>
+
+                <p>
+                    Vérifiez les nouveaux signalements avant leur publication.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <span class="section-count pending-count">
+
+            {{ posts|length }}
+
+        </span>
+
+    </div>
+
+
+
+    <div class="moderation-list">
+
+
+        {% for post in posts %}
+
+
+            <article class="moderation-card">
+
+
+                <!-- TYPE -->
+
+                <div class="moderation-type">
+
+                    {% if post.type == "personne_disparue" %}
+
+                        <span class="type-dot red"></span>
+                        Disparition
+
+                    {% elif post.type == "objet_perdu" %}
+
+                        <span class="type-dot purple"></span>
+                        Objet perdu
+
+                    {% else %}
+
+                        <span class="type-dot orange"></span>
+                        {{ post.type }}
+
+                    {% endif %}
+
+                </div>
+
+
+
+                <!-- CONTENT -->
+
+                <div class="moderation-main">
+
+                    <h3>
+                        {{ post.title }}
+                    </h3>
+
+
+                    {% if post.description %}
+
+                        <p>
+                            {{ post.description }}
+                        </p>
+
+                    {% endif %}
+
+
+                    <div class="moderation-meta">
+
+                        {% if post.location %}
+
+                            <span>
+                                ◉ {{ post.location }}
+                            </span>
+
+                        {% endif %}
+
+
+                        {% if post.created_at %}
+
+                            <span>
+                                {{ post.created_at.strftime('%d/%m/%Y à %H:%M') }}
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- ACTIONS -->
+
+                <div class="moderation-actions">
+
+
+                    <form
+                        method="POST"
+                        action="{{ url_for(
+                            'moderation.validate',
+                            post_id=post.id
+                        ) }}"
+                    >
+
+                        <button
+                            type="submit"
+                            class="moderation-button approve"
+                        >
+
+                            <span>✓</span>
+                            Valider
+
+                        </button>
+
+                    </form>
+
+
+
+                    <form
+                        method="POST"
+                        action="{{ url_for(
+                            'moderation.reject',
+                            post_id=post.id
+                        ) }}"
+                    >
+
+                        <button
+                            type="submit"
+                            class="moderation-button reject"
+                        >
+
+                            <span>×</span>
+                            Refuser
+
+                        </button>
+
+                    </form>
+
+
+                </div>
+
+            </article>
+
+
+        {% else %}
+
+
+            <div class="moderation-empty">
+
+                <div class="empty-icon success">
+                    ✓
+                </div>
+
+                <h3>
+                    Tout est à jour
+                </h3>
+
+                <p>
+                    Aucune publication n'attend actuellement
+                    votre validation.
+                </p>
+
+            </div>
+
+
+        {% endfor %}
+
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     SIGNALEMENTS D'ABUS
+====================================================== -->
+
+<section class="moderation-section">
+
+
+    <div class="moderation-section-header">
+
+        <div class="section-heading">
+
+            <div class="section-icon report-icon">
+                ⚑
+            </div>
+
+            <div>
+
+                <h2>
+                    Signalements utilisateurs
+                </h2>
+
+                <p>
+                    Examinez les publications signalées par la communauté.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <span class="section-count report-count">
+
+            {{ reports|length }}
+
+        </span>
+
+    </div>
+
+
+
+    <div class="moderation-list">
+
+
+        {% for report in reports %}
+
+
+            <article class="moderation-card report-card">
+
+
+                <!-- REPORT ICON -->
+
+                <div class="report-symbol">
+                    ⚑
+                </div>
+
+
+
+                <!-- CONTENT -->
+
+                <div class="moderation-main">
+
+
+                    <div class="report-label">
+                        PUBLICATION SIGNALÉE
+                    </div>
+
+
+                    <h3>
+
+                        <a
+                            href="{{ url_for(
+                                'posts.detail',
+                                post_id=report.post.id
+                            ) }}"
+                        >
+
+                            {{ report.post.title }}
+
+                        </a>
+
+                    </h3>
+
+
+                    <div class="report-reason">
+
+                        <span>
+                            Motif
+                        </span>
+
+                        {{ report.reason }}
+
+                    </div>
+
+
+                    <div class="moderation-meta">
+
+                        <span>
+                            Signalé par
+                            <strong>
+                                {{ report.reporter.name }}
+                            </strong>
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- ACTIONS -->
+
+                <div class="moderation-actions">
+
+
+                    <form
+                        method="POST"
+                        action="{{ url_for(
+                            'moderation.hide_post',
+                            report_id=report.id
+                        ) }}"
+                    >
+
+                        <button
+                            type="submit"
+                            class="moderation-button suspend"
+                        >
+
+                            <span>!</span>
+                            Suspendre
+
+                        </button>
+
+                    </form>
+
+
+
+                    <form
+                        method="POST"
+                        action="{{ url_for(
+                            'moderation.dismiss_report',
+                            report_id=report.id
+                        ) }}"
+                    >
+
+                        <button
+                            type="submit"
+                            class="moderation-button reject"
+                        >
+
+                            <span>×</span>
+                            Rejeter
+
+                        </button>
+
+                    </form>
+
+
+                </div>
+
+            </article>
+
+
+        {% else %}
+
+
+            <div class="moderation-empty">
+
+                <div class="empty-icon success">
+                    ✓
+                </div>
+
+                <h3>
+                    Aucun abus signalé
+                </h3>
+
+                <p>
+                    Aucun signalement d'abus n'attend actuellement
+                    votre intervention.
+                </p>
+
+            </div>
+
+
+        {% endfor %}
+
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     FOOTER INFO
+====================================================== -->
+
+<div class="moderation-footer">
+
+    <div class="moderation-footer-status">
+
+        <span></span>
+
+        Interface de modération opérationnelle
+
+    </div>
+
+
+    <a
+        href="{{ url_for('posts.index') }}"
+    >
+        Retour aux signalements →
+    </a>
+
+</div>
+```
+
+</div>
+
+<style>
+
+/* =========================================================
+   MODERATION
+   ========================================================= */
+
+.moderation-page {
+
+    width: 100%;
+
+    max-width: 1100px;
+
+    margin:
+        0 auto;
+
+}
+
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.moderation-header {
+
+    display:
+        flex;
+
+    align-items:
+        flex-end;
+
+    justify-content:
+        space-between;
+
+    gap:
+        25px;
+
+    margin-bottom:
+        24px;
+
+}
+
+
+.moderation-kicker {
+
+    display:
+        block;
+
+    margin-bottom:
+        8px;
+
+    color:
+        #a79eff;
+
+    font-size:
+        .59rem;
+
+    font-weight:
+        800;
+
+    letter-spacing:
+        .18em;
+
+}
+
+
+.moderation-header h1 {
+
+    margin:
+        0;
+
+    color:
+        #f1f4f8;
+
+    font-family:
+        "Manrope",
+        sans-serif;
+
+    font-size:
+        clamp(
+            1.9rem,
+            4vw,
+            2.7rem
+        );
+
+    letter-spacing:
+        -.05em;
+
+}
+
+
+.moderation-header p {
+
+    max-width:
+        550px;
+
+    margin:
+        8px 0 0;
+
+    color:
+        #7f899c;
+
+    font-size:
+        .68rem;
+
+    line-height:
+        1.55;
+
+}
+
+
+.moderation-back {
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    min-height:
+        37px;
+
+    padding:
+        0 13px;
+
+    color:
+        #8c96a9;
+
+    background:
+        rgba(255,255,255,.025);
+
+    border:
+        1px solid
+        rgba(255,255,255,.07);
+
+    border-radius:
+        10px;
+
+    font-size:
+        .61rem;
+
+    font-weight:
+        700;
+
+    text-decoration:
+        none;
+
+    transition:
+        .2s ease;
+
+}
+
+
+.moderation-back:hover {
+
+    color:
+        white;
+
+    background:
+        rgba(255,255,255,.05);
+
+}
+
+
+
+/* =========================================================
+   STATS
+   ========================================================= */
+
+.moderation-stats {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap:
+        11px;
+
+    margin-bottom:
+        25px;
+
+}
+
+
+.moderation-stat {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        12px;
+
+    padding:
+        14px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(16,21,33,.96),
+            rgba(11,15,24,.96)
+        );
+
+    border:
+        1px solid
+        rgba(255,255,255,.065);
+
+    border-radius:
+        15px;
+
+}
+
+
+.stat-icon {
+
+    width:
+        38px;
+
+    height:
+        38px;
+
+    flex:
+        0 0 38px;
+
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    border-radius:
+        11px;
+
+    font-size:
+        .78rem;
+
+    font-weight:
+        900;
+
+}
+
+
+.stat-icon.pending {
+
+    color:
+        #f2b84b;
+
+    background:
+        rgba(242,184,75,.09);
+
+    border:
+        1px solid
+        rgba(242,184,75,.13);
+
+}
+
+
+.stat-icon.reports {
+
+    color:
+        #a79eff;
+
+    background:
+        rgba(117,104,255,.09);
+
+    border:
+        1px solid
+        rgba(117,104,255,.13);
+
+}
+
+
+.stat-icon.secure {
+
+    color:
+        #43d99b;
+
+    background:
+        rgba(67,217,155,.08);
+
+    border:
+        1px solid
+        rgba(67,217,155,.12);
+
+}
+
+
+.moderation-stat span {
+
+    display:
+        block;
+
+    color:
+        #626d81;
+
+    font-size:
+        .52rem;
+
+    font-weight:
+        800;
+
+    letter-spacing:
+        .08em;
+
+}
+
+
+.moderation-stat strong {
+
+    display:
+        inline-block;
+
+    margin-top:
+        3px;
+
+    color:
+        #f0f3f7;
+
+    font-family:
+        "Manrope",
+        sans-serif;
+
+    font-size:
+        1rem;
+
+}
+
+
+.moderation-stat small {
+
+    margin-left:
+        5px;
+
+    color:
+        #697389;
+
+    font-size:
+        .53rem;
+
+}
+
+
+
+/* =========================================================
+   SECTION
+   ========================================================= */
+
+.moderation-section {
+
+    margin-bottom:
+        20px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(16,21,33,.97),
+            rgba(9,13,21,.97)
+        );
+
+    border:
+        1px solid
+        rgba(255,255,255,.065);
+
+    border-radius:
+        19px;
+
+    overflow:
+        hidden;
+
+}
+
+
+.moderation-section-header {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    gap:
+        15px;
+
+    padding:
+        16px 18px;
+
+    border-bottom:
+        1px solid
+        rgba(255,255,255,.055);
+
+}
+
+
+.section-heading {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        11px;
+
+}
+
+
+.section-icon {
+
+    width:
+        35px;
+
+    height:
+        35px;
+
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    flex:
+        0 0 35px;
+
+    border-radius:
+        10px;
+
+    font-size:
+        .75rem;
+
+    font-weight:
+        900;
+
+}
+
+
+.pending-icon {
+
+    color:
+        #f2b84b;
+
+    background:
+        rgba(242,184,75,.08);
+
+}
+
+
+.report-icon {
+
+    color:
+        #a79eff;
+
+    background:
+        rgba(117,104,255,.08);
+
+}
+
+
+.section-heading h2 {
+
+    margin:
+        0;
+
+    color:
+        #e9edf3;
+
+    font-family:
+        "Manrope",
+        sans-serif;
+
+    font-size:
+        .82rem;
+
+    font-weight:
+        800;
+
+}
+
+
+.section-heading p {
+
+    margin:
+        3px 0 0;
+
+    color:
+        #6f7a8e;
+
+    font-size:
+        .57rem;
+
+}
+
+
+.section-count {
+
+    min-width:
+        27px;
+
+    height:
+        27px;
+
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    border-radius:
+        8px;
+
+    font-size:
+        .59rem;
+
+    font-weight:
+        800;
+
+}
+
+
+.pending-count {
+
+    color:
+        #f2b84b;
+
+    background:
+        rgba(242,184,75,.08);
+
+}
+
+
+.report-count {
+
+    color:
+        #a79eff;
+
+    background:
+        rgba(117,104,255,.08);
+
+}
+
+
+
+/* =========================================================
+   MODERATION CARD
+   ========================================================= */
+
+.moderation-card {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        125px minmax(0,1fr) auto;
+
+    align-items:
+        center;
+
+    gap:
+        15px;
+
+    padding:
+        15px 18px;
+
+    border-bottom:
+        1px solid
+        rgba(255,255,255,.045);
+
+    transition:
+        background .18s ease;
+
+}
+
+
+.moderation-card:last-child {
+
+    border-bottom:
+        0;
+
+}
+
+
+.moderation-card:hover {
+
+    background:
+        rgba(117,104,255,.025);
+
+}
+
+
+.moderation-type {
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    gap:
+        7px;
+
+    width:
+        fit-content;
+
+    padding:
+        6px 8px;
+
+    color:
+        #929bae;
+
+    background:
+        rgba(255,255,255,.035);
+
+    border:
+        1px solid
+        rgba(255,255,255,.055);
+
+    border-radius:
+        8px;
+
+    font-size:
+        .55rem;
+
+    font-weight:
+        800;
+
+}
+
+
+.type-dot {
+
+    width:
+        6px;
+
+    height:
+        6px;
+
+    border-radius:
+        50%;
+
+}
+
+
+.type-dot.red {
+
+    background:
+        #ff665f;
+
+}
+
+
+.type-dot.purple {
+
+    background:
+        #a79eff;
+
+}
+
+
+.type-dot.orange {
+
+    background:
+        #f2b84b;
+
+}
+
+
+
+/* =========================================================
+   MAIN CONTENT
+   ========================================================= */
+
+.moderation-main {
+
+    min-width:
+        0;
+
+}
+
+
+.moderation-main h3 {
+
+    margin:
+        0;
+
+    color:
+        #e8ecf2;
+
+    font-family:
+        "Manrope",
+        sans-serif;
+
+    font-size:
+        .76rem;
+
+    line-height:
+        1.35;
+
+}
+
+
+.moderation-main h3 a {
+
+    color:
+        inherit;
+
+    text-decoration:
+        none;
+
+}
+
+
+.moderation-main h3 a:hover {
+
+    color:
+        #a79eff;
+
+}
+
+
+.moderation-main p {
+
+    margin:
+        5px 0 0;
+
+    max-width:
+        650px;
+
+    color:
+        #737e92;
+
+    font-size:
+        .59rem;
+
+    line-height:
+        1.45;
+
+    display:
+        -webkit-box;
+
+    -webkit-line-clamp:
+        2;
+
+    -webkit-box-orient:
+        vertical;
+
+    overflow:
+        hidden;
+
+}
+
+
+.moderation-meta {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    flex-wrap:
+        wrap;
+
+    gap:
+        12px;
+
+    margin-top:
+        7px;
+
+    color:
+        #626d81;
+
+    font-size:
+        .52rem;
+
+}
+
+
+.moderation-meta strong {
+
+    color:
+        #9ca6b8;
+
+    font-weight:
+        700;
+
+}
+
+
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
+
+.moderation-actions {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        6px;
+
+}
+
+
+.moderation-actions form {
+
+    margin:
+        0;
+
+}
+
+
+.moderation-button {
+
+    min-height:
+        33px;
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    gap:
+        5px;
+
+    padding:
+        0 10px;
+
+    border:
+        1px solid transparent;
+
+    border-radius:
+        9px;
+
+    font-family:
+        inherit;
+
+    font-size:
+        .56rem;
+
+    font-weight:
+        800;
+
+    cursor:
+        pointer;
+
+    transition:
+        .2s ease;
+
+}
+
+
+.moderation-button span {
+
+    font-size:
+        .72rem;
+
+}
+
+
+.moderation-button.approve {
+
+    color:
+        #43d99b;
+
+    background:
+        rgba(67,217,155,.07);
+
+    border-color:
+        rgba(67,217,155,.13);
+
+}
+
+
+.moderation-button.approve:hover {
+
+    color:
+        #06130e;
+
+    background:
+        #43d99b;
+
+}
+
+
+.moderation-button.reject {
+
+    color:
+        #9ba4b6;
+
+    background:
+        rgba(255,255,255,.035);
+
+    border-color:
+        rgba(255,255,255,.065);
+
+}
+
+
+.moderation-button.reject:hover {
+
+    color:
+        white;
+
+    background:
+        rgba(255,255,255,.08);
+
+}
+
+
+.moderation-button.suspend {
+
+    color:
+        #ff746d;
+
+    background:
+        rgba(255,102,95,.07);
+
+    border-color:
+        rgba(255,102,95,.13);
+
+}
+
+
+.moderation-button.suspend:hover {
+
+    color:
+        white;
+
+    background:
+        #d9534f;
+
+}
+
+
+
+/* =========================================================
+   REPORT
+   ========================================================= */
+
+.report-card {
+
+    grid-template-columns:
+        38px minmax(0,1fr) auto;
+
+}
+
+
+.report-symbol {
+
+    width:
+        34px;
+
+    height:
+        34px;
+
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    color:
+        #ff746d;
+
+    background:
+        rgba(255,102,95,.07);
+
+    border:
+        1px solid
+        rgba(255,102,95,.11);
+
+    border-radius:
+        10px;
+
+    font-size:
+        .72rem;
+
+}
+
+
+.report-label {
+
+    margin-bottom:
+        4px;
+
+    color:
+        #667187;
+
+    font-size:
+        .49rem;
+
+    font-weight:
+        800;
+
+    letter-spacing:
+        .1em;
+
+}
+
+
+.report-reason {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        5px;
+
+    margin-top:
+        6px;
+
+    color:
+        #a0a9b9;
+
+    font-size:
+        .57rem;
+
+}
+
+
+.report-reason span {
+
+    color:
+        #626d81;
+
+}
+
+
+
+/* =========================================================
+   EMPTY
+   ========================================================= */
+
+.moderation-empty {
+
+    min-height:
+        250px;
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    padding:
+        35px;
+
+    text-align:
+        center;
+
+}
+
+
+.empty-icon {
+
+    width:
+        48px;
+
+    height:
+        48px;
+
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    margin-bottom:
+        10px;
+
+    border-radius:
+        14px;
+
+    font-size:
+        .85rem;
+
+    font-weight:
+        900;
+
+}
+
+
+.empty-icon.success {
+
+    color:
+        #43d99b;
+
+    background:
+        rgba(67,217,155,.08);
+
+    border:
+        1px solid
+        rgba(67,217,155,.13);
+
+}
+
+
+.moderation-empty h3 {
+
+    margin:
+        0;
+
+    color:
+        #e2e7ee;
+
+    font-family:
+        "Manrope",
+        sans-serif;
+
+    font-size:
+        .76rem;
+
+}
+
+
+.moderation-empty p {
+
+    max-width:
+        370px;
+
+    margin:
+        6px 0 0;
+
+    color:
+        #687389;
+
+    font-size:
+        .58rem;
+
+    line-height:
+        1.5;
+
+}
+
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.moderation-footer {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    gap:
+        15px;
+
+    padding:
+        4px 4px 25px;
+
+}
+
+
+.moderation-footer-status {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        7px;
+
+    color:
+        #606b80;
+
+    font-size:
+        .53rem;
+
+}
+
+
+.moderation-footer-status span {
+
+    width:
+        6px;
+
+    height:
+        6px;
+
+    background:
+        #43d99b;
+
+    border-radius:
+        50%;
+
+    box-shadow:
+        0 0 8px
+        rgba(67,217,155,.5);
+
+}
+
+
+.moderation-footer a {
+
+    color:
+        #818ca0;
+
+    font-size:
+        .56rem;
+
+    font-weight:
+        700;
+
+    text-decoration:
+        none;
+
+}
+
+
+.moderation-footer a:hover {
+
+    color:
+        #a79eff;
+
+}
+
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 760px) {
+
+    .moderation-header {
+
+        display:
+            block;
+
+    }
+
+
+    .moderation-back {
+
+        margin-top:
+            14px;
+
+    }
+
+
+    .moderation-stats {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+
+    .moderation-card {
+
+        grid-template-columns:
+            1fr;
+
+        gap:
+            10px;
+
+        padding:
+            15px;
+
+    }
+
+
+    .moderation-type {
+
+        width:
+            fit-content;
+
+    }
+
+
+    .moderation-actions {
+
+        width:
+            100%;
+
+    }
+
+
+    .moderation-actions form {
+
+        flex:
+            1;
+
+    }
+
+
+    .moderation-button {
+
+        width:
+            100%;
+
+    }
+
+
+    .report-card {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+
+    .report-symbol {
+
+        display:
+            none;
+
+    }
+
+
+    .moderation-footer {
+
+        display:
+            block;
+
+    }
+
+
+    .moderation-footer a {
+
+        display:
+            inline-block;
+
+        margin-top:
+            9px;
+
+    }
+
+}
+
+
+@media (max-width: 430px) {
+
+    .moderation-header h1 {
+
+        font-size:
+            1.8rem;
+
+    }
+
+
+    .moderation-section-header {
+
+        padding:
+            14px;
+
+    }
+
+
+    .section-heading p {
+
+        display:
+            none;
+
+    }
+
+
+    .moderation-stat {
+
+        padding:
+            12px;
+
+    }
+
+}
+
+</style>
+
+{% endblock %}

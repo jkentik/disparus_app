@@ -1,0 +1,1203 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ post.title }} · Retrouve+
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+/* =========================================================
+   RETROUVE+ — DETAIL / SIGNAL REPORT
+   ========================================================= */
+
+.detail-page {
+    width: 100%;
+    max-width: 1050px;
+    margin: 0 auto;
+    padding: 5px 0 60px;
+    color: #e6edf3;
+    font-family: "IBM Plex Sans", Arial, sans-serif;
+}
+
+
+/* =========================================================
+   TOP BAR
+   ========================================================= */
+
+.detail-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 18px;
+}
+
+.detail-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #7d899b;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    transition: .2s ease;
+}
+
+.detail-back:hover {
+    color: #a79eff;
+    transform: translateX(-2px);
+}
+
+.detail-back-arrow {
+    font-size: 17px;
+}
+
+.detail-views {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 11px;
+    color: #7d899b;
+    background: rgba(255,255,255,.03);
+    border: 1px solid rgba(255,255,255,.06);
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.detail-views-icon {
+    font-size: 13px;
+    opacity: .8;
+}
+
+
+/* =========================================================
+   MAIN GRID
+   ========================================================= */
+
+.detail-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(320px, .65fr);
+    gap: 18px;
+    align-items: start;
+}
+
+
+/* =========================================================
+   PHOTO CARD
+   ========================================================= */
+
+.detail-photo-card {
+    position: relative;
+    overflow: hidden;
+    min-height: 500px;
+    background: #0d131b;
+    border: 1px solid #1f2937;
+    border-radius: 20px;
+}
+
+.detail-photo {
+    width: 100%;
+    height: 100%;
+    min-height: 500px;
+    max-height: 700px;
+    display: block;
+    object-fit: contain;
+    background: #080c12;
+}
+
+.detail-photo-placeholder {
+    min-height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+        radial-gradient(
+            circle at 50% 35%,
+            rgba(117,104,255,.12),
+            transparent 35%
+        ),
+        #0d131b;
+}
+
+.detail-placeholder-inner {
+    text-align: center;
+    color: #515e71;
+}
+
+.detail-placeholder-icon {
+    width: 70px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 12px;
+    color: #7568ff;
+    background: rgba(117,104,255,.07);
+    border: 1px solid rgba(117,104,255,.10);
+    border-radius: 18px;
+    font-size: 30px;
+}
+
+.detail-placeholder-inner p {
+    margin: 0;
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   PHOTO OVERLAY
+   ========================================================= */
+
+.detail-photo-status {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 11px;
+    color: #fff;
+    background: rgba(8,12,18,.78);
+    border: 1px solid rgba(255,255,255,.10);
+    border-radius: 9px;
+    backdrop-filter: blur(12px);
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #e8a33d;
+}
+
+.status-dot.found {
+    background: #3fb950;
+}
+
+.detail-celebration {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+    padding: 14px 16px;
+    background: rgba(63,185,80,.07);
+    border: 1px solid rgba(63,185,80,.18);
+    border-radius: 14px;
+}
+
+.detail-celebration-icon {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(63,185,80,.12);
+    color: #3fb950;
+    font-size: 16px;
+}
+
+.detail-celebration-text strong {
+    display: block;
+    color: #e6edf3;
+    font-size: 13px;
+    margin-bottom: 2px;
+}
+
+.detail-celebration-text span {
+    color: #8b9bab;
+    font-size: 11.5px;
+}
+
+
+/* =========================================================
+   INFO PANEL
+   ========================================================= */
+
+.detail-panel {
+    padding: 24px;
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(117,104,255,.07),
+            transparent 38%
+        ),
+        #121821;
+    border: 1px solid #1f2937;
+    border-radius: 20px;
+}
+
+
+/* =========================================================
+   BADGE
+   ========================================================= */
+
+.detail-type {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 9px;
+    margin-bottom: 13px;
+    color: #a79eff;
+    background: rgba(117,104,255,.08);
+    border: 1px solid rgba(117,104,255,.12);
+    border-radius: 7px;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+}
+
+.detail-type.disparue {
+    color: #e8a33d;
+    background: rgba(232,163,61,.07);
+    border-color: rgba(232,163,61,.12);
+}
+
+.detail-type.retrouvee {
+    color: #3fb950;
+    background: rgba(63,185,80,.07);
+    border-color: rgba(63,185,80,.12);
+}
+
+.detail-type.objet {
+    color: #72a8ff;
+    background: rgba(114,168,255,.07);
+    border-color: rgba(114,168,255,.12);
+}
+
+
+/* =========================================================
+   TITLE
+   ========================================================= */
+
+.detail-title {
+    margin: 0;
+    color: #f0f3f7;
+    font-family: "Manrope", "IBM Plex Sans", sans-serif;
+    font-size: 29px;
+    line-height: 1.08;
+    letter-spacing: -.045em;
+}
+
+
+/* =========================================================
+   AUTHOR
+   ========================================================= */
+
+.detail-author {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 15px;
+    padding-bottom: 19px;
+    border-bottom: 1px solid rgba(255,255,255,.055);
+}
+
+.author-avatar {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
+    color: #fff;
+    background: linear-gradient(135deg,#7568ff,#958aff);
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 900;
+}
+
+.author-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.author-info {
+    min-width: 0;
+}
+
+.author-info span {
+    display: block;
+    margin-bottom: 3px;
+    color: #596679;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+}
+
+.author-info a {
+    color: #a9b2bf;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.author-info a:hover {
+    color: #a79eff;
+}
+
+
+/* =========================================================
+   META
+   ========================================================= */
+
+.detail-meta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin: 18px 0;
+}
+
+.meta-box {
+    padding: 11px;
+    background: rgba(255,255,255,.018);
+    border: 1px solid rgba(255,255,255,.045);
+    border-radius: 10px;
+}
+
+.meta-label {
+    display: block;
+    margin-bottom: 5px;
+    color: #596679;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+.meta-value {
+    display: block;
+    color: #c7ced8;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   EXTRA INFO
+   ========================================================= */
+
+.detail-extra {
+    display: grid;
+    gap: 7px;
+    margin-bottom: 18px;
+}
+
+.extra-line {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,.035);
+    font-size: 11px;
+}
+
+.extra-line span {
+    color: #667286;
+}
+
+.extra-line strong {
+    color: #adb7c5;
+    text-align: right;
+}
+
+
+/* =========================================================
+   DESCRIPTION
+   ========================================================= */
+
+.detail-description {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,.055);
+}
+
+.detail-description h2 {
+    margin: 0 0 9px;
+    color: #dce2e9;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.detail-description p {
+    margin: 0;
+    color: #8995a6;
+    font-size: 12px;
+    line-height: 1.75;
+    white-space: pre-line;
+}
+
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
+
+.detail-actions {
+    display: grid;
+    gap: 8px;
+    margin-top: 20px;
+}
+
+.detail-btn {
+    width: 100%;
+    min-height: 45px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 0 15px;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 800;
+    text-decoration: none;
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+.detail-btn-primary {
+    color: #fff;
+    background: linear-gradient(135deg,#7568ff,#8b7fff);
+    border: 0;
+    box-shadow: 0 9px 24px rgba(117,104,255,.15);
+}
+
+.detail-btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 28px rgba(117,104,255,.22);
+}
+
+.detail-btn-secondary {
+    color: #929eaf;
+    background: rgba(255,255,255,.025);
+    border: 1px solid #293444;
+}
+
+.detail-btn-secondary:hover {
+    color: #d7dde5;
+    background: rgba(255,255,255,.045);
+}
+
+.detail-btn-danger {
+    color: #e5484d;
+    background: rgba(229,72,77,.045);
+    border: 1px solid rgba(229,72,77,.13);
+}
+
+.detail-btn-success {
+    color: #3fb950;
+    background: rgba(63,185,80,.045);
+    border: 1px solid rgba(63,185,80,.13);
+}
+
+
+/* =========================================================
+   FOUND NOTICE
+   ========================================================= */
+
+.found-notice {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    padding: 12px;
+    color: #d1aa67;
+    background: rgba(232,163,61,.045);
+    border: 1px solid rgba(232,163,61,.10);
+    border-radius: 10px;
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.found-notice-icon {
+    flex-shrink: 0;
+}
+
+
+/* =========================================================
+   MATCHES
+   ========================================================= */
+
+.matches-section {
+    margin-top: 18px;
+    padding: 20px;
+    background: #121821;
+    border: 1px solid #1f2937;
+    border-radius: 18px;
+}
+
+.matches-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.matches-header h2 {
+    margin: 0;
+    color: #dfe5ed;
+    font-size: 14px;
+}
+
+.matches-count {
+    padding: 4px 7px;
+    color: #a79eff;
+    background: rgba(117,104,255,.07);
+    border-radius: 6px;
+    font-size: 9px;
+    font-weight: 800;
+}
+
+.match-list {
+    display: grid;
+    gap: 7px;
+}
+
+.match-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 12px;
+    color: inherit;
+    background: rgba(255,255,255,.018);
+    border: 1px solid rgba(255,255,255,.045);
+    border-radius: 10px;
+    text-decoration: none;
+    transition: .2s ease;
+}
+
+.match-card:hover {
+    background: rgba(117,104,255,.035);
+    border-color: rgba(117,104,255,.15);
+}
+
+.match-title {
+    margin: 0 0 4px;
+    color: #bec7d2;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.match-score {
+    margin: 0;
+    color: #647084;
+    font-size: 9px;
+}
+
+.match-arrow {
+    color: #7568ff;
+    font-size: 18px;
+}
+
+
+/* =========================================================
+   DELETE
+   ========================================================= */
+
+.delete-zone {
+    margin-top: 8px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 850px) {
+
+    .detail-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .detail-photo-card,
+    .detail-photo,
+    .detail-photo-placeholder {
+        min-height: 400px;
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .detail-page {
+        padding-bottom: 30px;
+    }
+
+    .detail-panel {
+        padding: 19px;
+        border-radius: 16px;
+    }
+
+    .detail-photo-card {
+        border-radius: 16px;
+    }
+
+    .detail-title {
+        font-size: 24px;
+    }
+
+    .detail-meta-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .detail-actions {
+        gap: 7px;
+    }
+
+}
+
+</style>
+
+<div class="detail-page">
+
+```
+<!-- =====================================================
+     TOP
+====================================================== -->
+
+<div class="detail-topbar">
+
+    <a
+        href="{{ url_for('posts.index') }}"
+        class="detail-back"
+    >
+        <span class="detail-back-arrow">←</span>
+        Retour aux signalements
+    </a>
+
+    <span class="detail-views">
+        <span class="detail-views-icon">◉</span>
+        {{ post.views_count or 0 }} vue{{ 's' if (post.views_count or 0) != 1 }}
+    </span>
+
+</div>
+
+
+
+<!-- =====================================================
+     MAIN
+====================================================== -->
+
+<div class="detail-layout">
+
+
+    <!-- =================================================
+         PHOTO
+    ================================================== -->
+
+    <div class="detail-photo-card">
+
+        {% if post.photo %}
+
+            <img
+                class="detail-photo"
+                src="{{ url_for('static', filename='uploads/' + post.photo) }}"
+                alt="{{ post.title }}"
+            >
+
+        {% else %}
+
+            <div class="detail-photo-placeholder">
+
+                <div class="detail-placeholder-inner">
+
+                    <div class="detail-placeholder-icon">
+                        ◇
+                    </div>
+
+                    <p>
+                        Aucune photo disponible
+                    </p>
+
+                </div>
+
+            </div>
+
+        {% endif %}
+
+
+        <div class="detail-photo-status">
+
+            <span
+                class="status-dot {% if post.status == 'retrouvee' %}found{% endif %}"
+            ></span>
+
+            {% if post.status == "active" %}
+                Signalement actif
+            {% elif post.status == "retrouve_a_confirmer" %}
+                À confirmer
+            {% elif post.status == "retrouvee" %}
+                Retrouvé
+            {% else %}
+                {{ post.status }}
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =================================================
+         INFORMATION
+    ================================================== -->
+
+    <div class="detail-panel">
+
+
+        <!-- CELEBRATION -->
+
+        {% if post.status == "retrouvee" %}
+            <div class="detail-celebration">
+                <span class="detail-celebration-icon">✓</span>
+                <div class="detail-celebration-text">
+                    <strong>Cette histoire se termine bien.</strong>
+                    <span>Ce signalement a été marqué comme retrouvé. Merci à tous ceux qui ont partagé.</span>
+                </div>
+            </div>
+        {% endif %}
+
+
+        <!-- TYPE -->
+
+        <div class="detail-type
+            {% if post.type == 'personne_disparue' %}
+                disparue
+            {% elif post.type in ['personne_retrouvee','objet_retrouve'] %}
+                retrouvee
+            {% elif post.type == 'objet_perdu' %}
+                objet
+            {% endif %}
+        ">
+
+            {% if post.type == "personne_disparue" %}
+                Disparition
+            {% elif post.type == "personne_retrouvee" %}
+                Personne retrouvée
+            {% elif post.type == "objet_perdu" %}
+                Objet perdu
+            {% elif post.type == "objet_retrouve" %}
+                Objet retrouvé
+            {% else %}
+                Information
+            {% endif %}
+
+        </div>
+
+
+
+        <!-- TITLE -->
+
+        <h1 class="detail-title">
+            {{ post.title }}
+        </h1>
+
+
+
+        <!-- AUTHOR -->
+
+        <div class="detail-author">
+
+            <div class="author-avatar">
+
+                {% if post.user.photo %}
+
+                    <img
+                        src="{{ url_for('static', filename='uploads/' + post.user.photo) }}"
+                        alt="{{ post.user.name }}"
+                    >
+
+                {% else %}
+
+                    {{ post.user.name[0] | upper }}
+
+                {% endif %}
+
+            </div>
+
+
+            <div class="author-info">
+
+                <span>
+                    Signalement publié par
+                </span>
+
+                <a
+                    href="{{ url_for('posts.public_profile', user_id=post.user.id) }}"
+                >
+                    {{ post.user.name }}
+                </a>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- META -->
+
+        <div class="detail-meta-grid">
+
+            <div class="meta-box">
+
+                <span class="meta-label">
+                    Localisation
+                </span>
+
+                <span class="meta-value">
+                    {{ post.location or "Non précisée" }}
+                </span>
+
+            </div>
+
+
+            <div class="meta-box">
+
+                <span class="meta-label">
+                    Date
+                </span>
+
+                <span class="meta-value">
+
+                    {% if post.date_event %}
+                        {{ post.date_event.strftime('%d/%m/%Y') }}
+                    {% else %}
+                        Non précisée
+                    {% endif %}
+
+                </span>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- OBJECT INFORMATION -->
+
+        {% if post.brand or post.color %}
+
+            <div class="detail-extra">
+
+                {% if post.brand %}
+
+                    <div class="extra-line">
+
+                        <span>
+                            Marque
+                        </span>
+
+                        <strong>
+                            {{ post.brand }}
+                        </strong>
+
+                    </div>
+
+                {% endif %}
+
+
+                {% if post.color %}
+
+                    <div class="extra-line">
+
+                        <span>
+                            Couleur
+                        </span>
+
+                        <strong>
+                            {{ post.color }}
+                        </strong>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        {% endif %}
+
+
+
+        <!-- DESCRIPTION -->
+
+        <div class="detail-description">
+
+            <h2>
+                Description
+            </h2>
+
+            <p>
+                {{ post.description or "Aucune description fournie." }}
+            </p>
+
+        </div>
+
+
+
+        <!-- ACTIONS -->
+
+        {% if current_user.is_authenticated and current_user.id != post.user_id %}
+
+            <div class="detail-actions">
+
+                <a
+                    href="{{ url_for('messages.conversation', user_id=post.user_id, post_id=post.id) }}"
+                    class="detail-btn detail-btn-primary"
+                >
+                    Contacter le déclarant
+                </a>
+
+
+                <a
+                    href="{{ url_for('posts.report_post', post_id=post.id) }}"
+                    class="detail-btn detail-btn-secondary"
+                >
+                    Signaler cette publication
+                </a>
+
+
+                <button
+                    type="button"
+                    onclick="partagerFiche()"
+                    class="detail-btn detail-btn-secondary"
+                >
+                    Partager le signalement
+                </button>
+
+                {% if current_user.is_authenticated %}
+                    <form method="POST" action="{{ url_for('posts.follow', post_id=post.id) }}">
+                        <button type="submit" class="detail-btn detail-btn-secondary">
+                            {% if current_user.id in post.follows | map(attribute='user_id') | list %}
+                                🔕 Ne plus suivre
+                            {% else %}
+                                🔔 Suivre ce signalement
+                            {% endif %}
+                        </button>
+                    </form>
+                {% endif %}
+
+            </div>
+
+        {% else %}
+
+            <div class="detail-actions">
+
+                <button
+                    type="button"
+                    onclick="partagerFiche()"
+                    class="detail-btn detail-btn-secondary"
+                >
+                    Partager le signalement
+                </button>
+
+                {% if current_user.is_authenticated %}
+                    <form method="POST" action="{{ url_for('posts.follow', post_id=post.id) }}">
+                        <button type="submit" class="detail-btn detail-btn-secondary">
+                            {% if current_user.id in post.follows | map(attribute='user_id') | list %}
+                                🔕 Ne plus suivre
+                            {% else %}
+                                🔔 Suivre ce signalement
+                            {% endif %}
+                        </button>
+                    </form>
+                {% endif %}
+
+            </div>
+
+        {% endif %}
+
+
+
+        <!-- FOUND -->
+
+        {% if post.status == "active" %}
+
+            <div class="detail-actions">
+
+                <a
+                    href="{{ url_for('posts.report_found', post_id=post.id) }}"
+                    class="detail-btn detail-btn-success"
+                >
+                    J'ai retrouvé cet objet / cette personne
+                </a>
+
+            </div>
+
+        {% elif post.status == "retrouve_a_confirmer" %}
+
+            <div class="found-notice">
+
+                <span class="found-notice-icon">
+                    ⏳
+                </span>
+
+                <span>
+                    Quelqu'un a signalé l'avoir retrouvé(e).
+                    Le signalement est actuellement en attente
+                    de vérification.
+                </span>
+
+            </div>
+
+        {% endif %}
+
+
+
+        <!-- OWNER ACTIONS -->
+
+        {% if current_user.is_authenticated and current_user.id == post.user_id %}
+
+            {% if post.status != "retrouvee" %}
+
+                <div class="detail-actions">
+
+                    <form
+                        method="POST"
+                        action="{{ url_for('posts.mark_found', post_id=post.id) }}"
+                    >
+
+                        <button
+                            type="submit"
+                            class="detail-btn detail-btn-success"
+                        >
+                            ✓ Marquer comme retrouvé
+                        </button>
+
+                    </form>
+
+                </div>
+
+            {% endif %}
+
+
+            <div class="delete-zone">
+
+                <form
+                    method="POST"
+                    action="{{ url_for('posts.delete', post_id=post.id) }}"
+                    onsubmit="return confirm('Supprimer définitivement ce signalement ?');"
+                >
+
+                    <button
+                        type="submit"
+                        class="detail-btn detail-btn-danger"
+                    >
+                        Supprimer ce signalement
+                    </button>
+
+                </form>
+
+            </div>
+
+        {% endif %}
+
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     MATCHES
+====================================================== -->
+
+{% if matches %}
+
+    <section class="matches-section">
+
+        <div class="matches-header">
+
+            <h2>
+                Correspondances potentielles
+            </h2>
+
+            <span class="matches-count">
+                {{ matches | length }}
+            </span>
+
+        </div>
+
+
+        <div class="match-list">
+
+            {% for m in matches %}
+
+                {% set other = m.post_2 if m.post_id_1 == post.id else m.post_1 %}
+
+                <a
+                    href="{{ url_for('posts.detail', post_id=other.id) }}"
+                    class="match-card"
+                >
+
+                    <div>
+
+                        <p class="match-title">
+                            {{ other.title }}
+                        </p>
+
+                        <p class="match-score">
+                            Score {{ m.score }} · {{ m.level }}
+                        </p>
+
+                    </div>
+
+                    <span class="match-arrow">
+                        →
+                    </span>
+
+                </a>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+{% endif %}
+```
+
+</div>
+
+<script>
+
+function partagerFiche() {
+
+    const url = window.location.href;
+
+    if (navigator.share) {
+
+        navigator.share({
+            title: "{{ post.title | e }}",
+            url: url
+        });
+
+    } else if (navigator.clipboard) {
+
+        navigator.clipboard.writeText(url);
+
+        alert("Lien du signalement copié !");
+
+    } else {
+
+        prompt(
+            "Copiez le lien du signalement :",
+            url
+        );
+
+    }
+
+}
+
+</script>
+
+{% endblock %}

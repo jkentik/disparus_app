@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+.admin-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 26px;
+}
+.admin-stat-card {
+    padding: 16px;
+    background: var(--r-surface, #12151f);
+    border: 1px solid var(--r-border, #232838);
+    border-radius: 12px;
+}
+.admin-stat-value {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--r-accent-lt, #e0c17a);
+}
+.admin-stat-label {
+    font-size: 0.78rem;
+    color: var(--r-muted, #8b93a7);
+    margin-top: 4px;
+}
+.admin-users-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.admin-users-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+.admin-users-table th {
+    text-align: left;
+    padding: 10px 12px;
+    color: var(--r-muted, #8b93a7);
+    font-size: 0.75rem;
+    border-bottom: 1px solid var(--r-border, #232838);
+}
+.admin-users-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--r-border, #232838);
+}
+.role-tag {
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    background: rgba(255,255,255,.05);
+}
+.role-tag.admin { color: #e0674f; background: rgba(224,103,79,.1); }
+.role-tag.authority { color: #6f8dff; background: rgba(111,141,255,.1); }
+.role-tag.moderator { color: #c9a24d; background: rgba(201,162,77,.1); }
+</style>
+
+<h1>Utilisateurs</h1>
+
+<div class="admin-stats-grid">
+    <div class="admin-stat-card">
+        <div class="admin-stat-value">{{ stats.total_users }}</div>
+        <div class="admin-stat-label">Utilisateurs inscrits</div>
+    </div>
+    <div class="admin-stat-card">
+        <div class="admin-stat-value">{{ stats.total_authorities }}</div>
+        <div class="admin-stat-label">Comptes autorité</div>
+    </div>
+    <div class="admin-stat-card">
+        <div class="admin-stat-value">{{ stats.posts_active }}</div>
+        <div class="admin-stat-label">Signalements actifs</div>
+    </div>
+    <div class="admin-stat-card">
+        <div class="admin-stat-value">{{ stats.posts_resolved }}</div>
+        <div class="admin-stat-label">Signalements résolus</div>
+    </div>
+</div>
+
+<div class="admin-users-toolbar">
+    <span>{{ users|length }} compte{{ 's' if users|length != 1 }}</span>
+    <button type="button" class="btn btn-primary btn-small" onclick="copyAllEmails()">
+        Copier tous les emails
+    </button>
+</div>
+
+<div style="overflow-x:auto;">
+<table class="admin-users-table">
+    <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Email</th>
+            <th>Rôle</th>
+            <th>Inscrit le</th>
+        </tr>
+    </thead>
+    <tbody id="usersTableBody">
+        {% for u in users %}
+        <tr>
+            <td>{{ u.name }}</td>
+            <td class="user-email">{{ u.email }}</td>
+            <td><span class="role-tag {{ u.role }}">{{ u.role }}</span></td>
+            <td>{{ u.created_at.strftime('%d/%m/%Y') if u.created_at else '—' }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+
+<script>
+function copyAllEmails() {
+    const emails = Array.from(document.querySelectorAll('.user-email'))
+        .map(td => td.textContent.trim())
+        .join(', ');
+    navigator.clipboard.writeText(emails).then(function () {
+        alert('Emails copiés (' + emails.split(',').length + ') !');
+    }).catch(function () {
+        prompt('Copiez les emails :', emails);
+    });
+}
+</script>
+
+{% endblock %}

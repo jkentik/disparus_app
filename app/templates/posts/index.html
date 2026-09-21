@@ -1,0 +1,1815 @@
+{% extends "base.html" %}
+
+{% block head %}
+
+<style>
+
+/* =========================================================
+   RETROUVE+ — DISCOVERY PAGE
+   ========================================================= */
+
+.discovery-page {
+
+    --page-bg: #080b12;
+    --panel: #101521;
+    --panel-soft: #0d121d;
+    --border: rgba(255,255,255,.075);
+
+    --text: #f1f4f8;
+    --muted: #8791a5;
+    --muted-light: #aeb7c8;
+
+    --purple: #7568ff;
+    --purple-light: #a79eff;
+
+    --green: #43d99b;
+    --orange: #f2b84b;
+    --red: #ff665f;
+
+    width: 100%;
+}
+
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.discovery-hero {
+
+    position: relative;
+
+    padding:
+        38px 0 30px;
+
+    overflow: hidden;
+
+}
+
+
+.discovery-hero::before {
+
+    content: "";
+
+    position: absolute;
+
+    width: 360px;
+    height: 360px;
+
+    top: -170px;
+    right: 3%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(117,104,255,.13),
+            transparent 68%
+        );
+
+    pointer-events: none;
+
+}
+
+
+.discovery-kicker {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin-bottom: 13px;
+
+    color: var(--purple-light);
+
+    font-size: .61rem;
+
+    font-weight: 800;
+
+    letter-spacing: .18em;
+
+}
+
+
+.discovery-kicker::before {
+
+    content: "";
+
+    width: 18px;
+    height: 1px;
+
+    background: var(--purple);
+
+}
+
+
+.discovery-hero h1 {
+
+    max-width: 720px;
+
+    margin: 0;
+
+    font-family:
+        "Manrope",
+        sans-serif;
+
+    font-size:
+        clamp(
+            2rem,
+            5vw,
+            3.25rem
+        );
+
+    line-height: 1.04;
+
+    letter-spacing: -.055em;
+
+}
+
+
+.discovery-hero h1 span {
+
+    color: var(--purple-light);
+
+}
+
+
+.discovery-hero-description {
+
+    max-width: 590px;
+
+    margin:
+        13px 0 25px;
+
+    color: var(--muted);
+
+    font-size: .84rem;
+
+    line-height: 1.65;
+
+}
+
+
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+.discovery-search {
+
+    position: relative;
+
+    display: flex;
+
+    align-items: stretch;
+
+    max-width: 850px;
+
+    padding: 6px;
+
+    background:
+        rgba(16,21,33,.92);
+
+    border:
+        1px solid
+        rgba(255,255,255,.10);
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 18px 55px
+        rgba(0,0,0,.20);
+
+    backdrop-filter:
+        blur(14px);
+
+}
+
+
+.discovery-search:focus-within {
+
+    border-color:
+        rgba(117,104,255,.45);
+
+    box-shadow:
+        0 18px 55px
+        rgba(0,0,0,.25),
+        0 0 0 4px
+        rgba(117,104,255,.06);
+
+}
+
+
+.discovery-search-input {
+
+    position: relative;
+
+    flex: 1;
+
+    display: flex;
+
+    align-items: center;
+
+}
+
+
+.discovery-search-icon {
+
+    width: 20px;
+    height: 20px;
+
+    margin:
+        0 12px 0 13px;
+
+    color: #657087;
+
+    flex: 0 0 auto;
+
+}
+
+
+.discovery-search input {
+
+    width: 100%;
+
+    height: 50px;
+
+    padding: 0;
+
+    color: var(--text);
+
+    background: transparent;
+
+    border: 0;
+
+    outline: none;
+
+    font-size: .82rem;
+
+}
+
+
+.discovery-search input::placeholder {
+
+    color:
+        #697389;
+
+}
+
+
+.discovery-search button {
+
+    min-width: 112px;
+
+    padding:
+        0 18px;
+
+    color: white;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--purple),
+            #966dff
+        );
+
+    border: 0;
+
+    border-radius: 13px;
+
+    font-size: .70rem;
+
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition: .2s ease;
+
+}
+
+
+.discovery-search button:hover {
+
+    transform:
+        translateY(-1px);
+
+    box-shadow:
+        0 10px 25px
+        rgba(117,104,255,.22);
+
+}
+
+
+
+/* =========================================================
+   QUICK STATS
+   ========================================================= */
+
+.discovery-stats {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 10px;
+
+    max-width: 850px;
+
+    margin-top: 13px;
+
+}
+
+
+.discovery-stat {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 11px 13px;
+
+    background:
+        rgba(255,255,255,.025);
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 13px;
+
+}
+
+
+.discovery-stat-icon {
+
+    width: 30px;
+    height: 30px;
+
+    display: grid;
+
+    place-items: center;
+
+    flex: 0 0 30px;
+
+    color: var(--purple-light);
+
+    background:
+        rgba(117,104,255,.08);
+
+    border-radius: 9px;
+
+    font-size: .8rem;
+
+}
+
+
+.discovery-stat strong {
+
+    display: block;
+
+    color: var(--text);
+
+    font-size: .75rem;
+
+}
+
+
+.discovery-stat span {
+
+    display: block;
+
+    margin-top: 2px;
+
+    color: var(--muted);
+
+    font-size: .57rem;
+
+}
+
+
+
+/* =========================================================
+   FILTERS
+   ========================================================= */
+
+.discovery-navigation {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    margin:
+        12px 0 20px;
+
+}
+
+
+.discovery-filters {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    overflow-x: auto;
+
+    padding-bottom: 2px;
+
+    scrollbar-width: none;
+
+}
+
+
+.discovery-filters::-webkit-scrollbar {
+
+    display: none;
+
+}
+
+
+.discovery-filter {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    min-height: 36px;
+
+    padding:
+        0 13px;
+
+    color: var(--muted);
+
+    background:
+        rgba(255,255,255,.025);
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 10px;
+
+    font-size: .64rem;
+
+    font-weight: 700;
+
+    white-space: nowrap;
+
+    transition: .2s ease;
+
+}
+
+
+.discovery-filter:hover {
+
+    color: var(--text);
+
+    border-color:
+        rgba(255,255,255,.13);
+
+}
+
+
+.discovery-filter.active {
+
+    color: white;
+
+    background:
+        rgba(117,104,255,.12);
+
+    border-color:
+        rgba(117,104,255,.27);
+
+    box-shadow:
+        0 6px 18px
+        rgba(117,104,255,.07);
+
+}
+
+
+.discovery-filter-dot {
+
+    width: 6px;
+    height: 6px;
+
+    border-radius: 50%;
+
+    background: currentColor;
+
+}
+
+
+
+/* =========================================================
+   SECTION HEADER
+   ========================================================= */
+
+.discovery-section-header {
+
+    display: flex;
+
+    align-items: flex-end;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    margin:
+        26px 0 13px;
+
+}
+
+
+.discovery-section-title {
+
+    margin: 0;
+
+    color: var(--text);
+
+    font-family:
+        "Manrope",
+        sans-serif;
+
+    font-size: 1.1rem;
+
+    font-weight: 800;
+
+    letter-spacing: -.025em;
+
+}
+
+
+.discovery-section-subtitle {
+
+    margin-top: 4px;
+
+    color: var(--muted);
+
+    font-size: .62rem;
+
+}
+
+
+.discovery-count {
+
+    color: var(--muted);
+
+    font-size: .63rem;
+
+}
+
+
+
+/* =========================================================
+   GRID
+   ========================================================= */
+
+.discovery-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fill,
+            minmax(245px, 1fr)
+        );
+
+    gap: 15px;
+
+    padding-bottom: 40px;
+
+}
+
+
+
+/* =========================================================
+   CARD
+   ========================================================= */
+
+.discovery-card {
+
+    position: relative;
+
+    display: block;
+
+    overflow: hidden;
+
+    color: inherit;
+
+    text-decoration: none;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(16,21,33,.98),
+            rgba(10,14,23,.98)
+        );
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 8px 28px
+        rgba(0,0,0,.12);
+
+    transition:
+        transform .22s ease,
+        border-color .22s ease,
+        box-shadow .22s ease;
+
+}
+
+
+.discovery-card:hover {
+
+    transform:
+        translateY(-5px);
+
+    border-color:
+        rgba(117,104,255,.23);
+
+    box-shadow:
+        0 20px 45px
+        rgba(0,0,0,.23);
+
+}
+
+
+
+/* =========================================================
+   IMAGE
+   ========================================================= */
+
+.discovery-image {
+
+    position: relative;
+
+    width: 100%;
+
+    aspect-ratio:
+        16 / 10;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 50% 40%,
+            rgba(117,104,255,.11),
+            transparent 65%
+        );
+
+}
+
+
+.discovery-image img {
+
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+
+    transition:
+        transform .4s ease;
+
+}
+
+
+.discovery-card:hover
+.discovery-image img {
+
+    transform:
+        scale(1.055);
+
+}
+
+
+.discovery-image::after {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        linear-gradient(
+            to top,
+            rgba(5,8,14,.48),
+            transparent 48%
+        );
+
+    pointer-events: none;
+
+}
+
+
+.discovery-no-image {
+
+    width: 100%;
+    height: 100%;
+
+    display: grid;
+
+    place-items: center;
+
+    color:
+        rgba(167,158,255,.40);
+
+}
+
+
+.discovery-no-image svg {
+
+    width: 42px;
+    height: 42px;
+
+}
+
+
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+.discovery-status {
+
+    position: absolute;
+
+    top: 10px;
+    left: 10px;
+
+    z-index: 2;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    padding:
+        5px 9px;
+
+    color: white;
+
+    background:
+        rgba(7,10,17,.72);
+
+    border:
+        1px solid
+        rgba(255,255,255,.09);
+
+    border-radius:
+        999px;
+
+    font-size: .56rem;
+
+    font-weight: 800;
+
+    backdrop-filter:
+        blur(10px);
+
+}
+
+
+.discovery-status-dot {
+
+    width: 6px;
+    height: 6px;
+
+    border-radius: 50%;
+
+}
+
+
+.discovery-status.disparition {
+
+    color: var(--red);
+
+}
+
+
+.discovery-status.disparition
+.discovery-status-dot {
+
+    background: var(--red);
+
+    box-shadow:
+        0 0 9px
+        rgba(255,102,95,.55);
+
+}
+
+
+.discovery-status.retrouvee {
+
+    color: var(--green);
+
+}
+
+
+.discovery-status.retrouvee
+.discovery-status-dot {
+
+    background: var(--green);
+
+    box-shadow:
+        0 0 9px
+        rgba(67,217,155,.55);
+
+}
+
+
+.discovery-status.objet {
+
+    color: var(--purple-light);
+
+}
+
+
+.discovery-status.objet
+.discovery-status-dot {
+
+    background: var(--purple-light);
+
+}
+
+
+.discovery-status.info {
+
+    color: var(--orange);
+
+}
+
+
+.discovery-status.info
+.discovery-status-dot {
+
+    background: var(--orange);
+
+}
+
+
+
+/* =========================================================
+   CARD CONTENT
+   ========================================================= */
+
+.discovery-card-body {
+
+    padding:
+        13px 14px 14px;
+
+}
+
+
+.discovery-card-title {
+
+    margin: 0;
+
+    color: var(--text);
+
+    font-family:
+        "Manrope",
+        sans-serif;
+
+    font-size: .88rem;
+
+    font-weight: 800;
+
+    line-height: 1.35;
+
+    display:
+        -webkit-box;
+
+    -webkit-line-clamp: 2;
+
+    -webkit-box-orient: vertical;
+
+    overflow: hidden;
+
+}
+
+
+.discovery-card-description {
+
+    margin:
+        6px 0 10px;
+
+    color: var(--muted);
+
+    font-size: .64rem;
+
+    line-height: 1.5;
+
+    display:
+        -webkit-box;
+
+    -webkit-line-clamp: 2;
+
+    -webkit-box-orient: vertical;
+
+    overflow: hidden;
+
+}
+
+
+.discovery-card-meta {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 8px;
+
+    padding-top:
+        10px;
+
+    border-top:
+        1px solid
+        rgba(255,255,255,.055);
+
+}
+
+
+.discovery-location {
+
+    min-width: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    color: var(--muted-light);
+
+    font-size: .59rem;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+}
+
+
+.discovery-location svg {
+
+    width: 13px;
+    height: 13px;
+
+    flex: 0 0 auto;
+
+    color: #69748a;
+
+}
+
+
+.discovery-date {
+
+    flex: 0 0 auto;
+
+    color:
+        #687188;
+
+    font-size:
+        .56rem;
+
+}
+
+
+.discovery-arrow {
+
+    position: absolute;
+
+    right: 13px;
+    bottom: 49px;
+
+    width: 27px;
+    height: 27px;
+
+    display: grid;
+
+    place-items: center;
+
+    color: white;
+
+    background:
+        rgba(117,104,255,.88);
+
+    border-radius: 9px;
+
+    opacity: 0;
+
+    transform:
+        translateX(-4px);
+
+    transition: .2s ease;
+
+}
+
+
+.discovery-card:hover
+.discovery-arrow {
+
+    opacity: 1;
+
+    transform:
+        translateX(0);
+
+}
+
+
+
+/* =========================================================
+   EMPTY
+   ========================================================= */
+
+.discovery-empty {
+
+    grid-column: 1 / -1;
+
+    min-height: 350px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 40px;
+
+    text-align: center;
+
+    background:
+        rgba(255,255,255,.018);
+
+    border:
+        1px dashed
+        rgba(255,255,255,.10);
+
+    border-radius: 20px;
+
+}
+
+
+.discovery-empty-icon {
+
+    width: 65px;
+    height: 65px;
+
+    display: grid;
+
+    place-items: center;
+
+    margin-bottom: 15px;
+
+    color: var(--purple-light);
+
+    background:
+        rgba(117,104,255,.08);
+
+    border:
+        1px solid
+        rgba(117,104,255,.14);
+
+    border-radius: 20px;
+
+}
+
+
+.discovery-empty-icon svg {
+
+    width: 28px;
+    height: 28px;
+
+}
+
+
+.discovery-empty h2 {
+
+    margin: 0;
+
+    font-family:
+        "Manrope",
+        sans-serif;
+
+    font-size: 1rem;
+
+}
+
+
+.discovery-empty p {
+
+    max-width: 400px;
+
+    margin:
+        7px 0 0;
+
+    color: var(--muted);
+
+    font-size: .67rem;
+
+    line-height: 1.5;
+
+}
+
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    .discovery-hero {
+
+        padding-top:
+            22px;
+
+    }
+
+
+    .discovery-hero h1 {
+
+        font-size:
+            2rem;
+
+    }
+
+
+    .discovery-search {
+
+        display:
+            block;
+
+        padding:
+            6px;
+
+    }
+
+
+    .discovery-search-input {
+
+        height:
+            50px;
+
+    }
+
+
+    .discovery-search button {
+
+        width:
+            100%;
+
+        height:
+            44px;
+
+    }
+
+
+    .discovery-stats {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+
+    .discovery-stat {
+
+        padding:
+            10px 12px;
+
+    }
+
+
+    .discovery-navigation {
+
+        display:
+            block;
+
+    }
+
+
+    .discovery-filters {
+
+        margin-top:
+            5px;
+
+    }
+
+
+    .discovery-grid {
+
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0,1fr)
+            );
+
+        gap:
+            10px;
+
+    }
+
+
+    .discovery-card {
+
+        border-radius:
+            15px;
+
+    }
+
+
+    .discovery-card-body {
+
+        padding:
+            10px;
+
+    }
+
+
+    .discovery-card-title {
+
+        font-size:
+            .75rem;
+
+    }
+
+
+    .discovery-card-description {
+
+        font-size:
+            .59rem;
+
+    }
+
+
+    .discovery-location {
+
+        font-size:
+            .54rem;
+
+    }
+
+
+    .discovery-date {
+
+        display:
+            none;
+
+    }
+
+
+    .discovery-arrow {
+
+        display:
+            none;
+
+    }
+
+}
+
+
+@media (max-width: 390px) {
+
+    .discovery-grid {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+
+    .discovery-image {
+
+        aspect-ratio:
+            16 / 9;
+
+    }
+
+}
+
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="discovery-page">
+
+```
+<!-- =====================================================
+     HERO
+====================================================== -->
+
+<section class="discovery-hero">
+
+    <div class="discovery-kicker">
+        RETROUVE+ / DISCOVERY
+    </div>
+
+
+    <h1>
+        Retrouver commence
+        <span>ici.</span>
+    </h1>
+
+
+    <p class="discovery-hero-description">
+
+        Explorez les signalements de la communauté,
+        recherchez un objet ou une personne et consultez
+        les informations disponibles autour de vous.
+
+    </p>
+
+
+
+    <!-- SEARCH -->
+
+    <form
+        method="GET"
+        action="{{ url_for('posts.search') }}"
+        class="discovery-search"
+    >
+
+        <div class="discovery-search-input">
+
+            <svg
+                class="discovery-search-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+            >
+
+                <circle
+                    cx="11"
+                    cy="11"
+                    r="6.5"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                />
+
+                <path
+                    d="m16 16 5 5"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                />
+
+            </svg>
+
+
+            <input
+                type="search"
+                name="q"
+                placeholder="Rechercher un objet, une personne, un lieu..."
+                autocomplete="off"
+            >
+
+        </div>
+
+
+        <button type="submit">
+            Rechercher
+        </button>
+
+    </form>
+
+
+
+    <!-- STATS -->
+
+    <div class="discovery-stats">
+
+        <div class="discovery-stat">
+
+            <div class="discovery-stat-icon">
+                ◉
+            </div>
+
+            <div>
+
+                <strong>
+                    {{ posts|length }}
+                </strong>
+
+                <span>
+                    signalements affichés
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="discovery-stat">
+
+            <div class="discovery-stat-icon">
+                +
+            </div>
+
+            <div>
+
+                <strong>
+                    Communauté
+                </strong>
+
+                <span>
+                    chacun peut contribuer
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="discovery-stat">
+
+            <div class="discovery-stat-icon">
+                ✓
+            </div>
+
+            <div>
+
+                <strong>
+                    Retrouve+
+                </strong>
+
+                <span>
+                    un espace pour retrouver
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     FILTERS
+====================================================== -->
+
+<nav class="discovery-navigation">
+
+    <div class="discovery-filters">
+
+        <a
+            href="{{ url_for('posts.index', cat='tous') }}"
+            class="discovery-filter {{ 'active' if cat == 'tous' }}"
+        >
+            <span class="discovery-filter-dot"></span>
+            Tous
+        </a>
+
+
+        <a
+            href="{{ url_for('posts.index', cat='disparitions') }}"
+            class="discovery-filter {{ 'active' if cat == 'disparitions' }}"
+        >
+            <span class="discovery-filter-dot"></span>
+            Disparitions
+        </a>
+
+
+        <a
+            href="{{ url_for('posts.index', cat='objets') }}"
+            class="discovery-filter {{ 'active' if cat == 'objets' }}"
+        >
+            <span class="discovery-filter-dot"></span>
+            Objets perdus
+        </a>
+
+
+        <a
+            href="{{ url_for('posts.index', cat='retrouves') }}"
+            class="discovery-filter {{ 'active' if cat == 'retrouves' }}"
+        >
+            <span class="discovery-filter-dot"></span>
+            Retrouvés
+        </a>
+
+    </div>
+
+</nav>
+
+
+
+<!-- =====================================================
+     SECTION
+====================================================== -->
+
+<div class="discovery-section-header">
+
+    <div>
+
+        <h2 class="discovery-section-title">
+            Signalements récents
+        </h2>
+
+        <div class="discovery-section-subtitle">
+            Les dernières publications de la communauté
+        </div>
+
+    </div>
+
+
+    <span class="discovery-count">
+
+        {{ posts|length }}
+        signalement{{ 's' if posts|length != 1 }}
+
+    </span>
+
+</div>
+
+
+
+<!-- =====================================================
+     GRID
+====================================================== -->
+
+<div class="discovery-grid">
+
+
+    {% for post in posts %}
+
+
+        <!-- STATUS -->
+
+        {% if post.type == "personne_disparue" %}
+
+            {% set status_class = "disparition" %}
+            {% set status_label = "Disparition" %}
+
+        {% elif post.type in ["personne_retrouvee", "objet_retrouve"] %}
+
+            {% set status_class = "retrouvee" %}
+            {% set status_label = "Retrouvé" %}
+
+        {% elif post.type == "objet_perdu" %}
+
+            {% set status_class = "objet" %}
+            {% set status_label = "Objet perdu" %}
+
+        {% else %}
+
+            {% set status_class = "info" %}
+            {% set status_label = "Information" %}
+
+        {% endif %}
+
+
+
+        <!-- CARD -->
+
+        <a
+            href="{{ url_for(
+                'posts.detail',
+                post_id=post.id
+            ) }}"
+            class="discovery-card"
+        >
+
+
+            <!-- IMAGE -->
+
+            <div class="discovery-image">
+
+
+                {% if post.photo %}
+
+                    <img
+                        src="{{ url_for(
+                            'static',
+                            filename='uploads/' + post.photo
+                        ) }}"
+                        alt="{{ post.title }}"
+                        loading="lazy"
+                    >
+
+                {% else %}
+
+                    <div class="discovery-no-image">
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                        >
+
+                            <rect
+                                x="4"
+                                y="5"
+                                width="16"
+                                height="14"
+                                rx="2"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                            />
+
+                            <circle
+                                cx="9"
+                                cy="10"
+                                r="1.4"
+                                fill="currentColor"
+                            />
+
+                            <path
+                                d="m5 17 4-4 3 3 2-2 5 4"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            />
+
+                        </svg>
+
+                    </div>
+
+                {% endif %}
+
+
+
+                <!-- STATUS -->
+
+                <span
+                    class="discovery-status {{ status_class }}"
+                >
+
+                    <span
+                        class="discovery-status-dot"
+                    ></span>
+
+                    {{ status_label }}
+
+                </span>
+
+
+            </div>
+
+
+
+            <!-- BODY -->
+
+            <div class="discovery-card-body">
+
+
+                <h3 class="discovery-card-title">
+
+                    {{ post.title }}
+
+                </h3>
+
+
+
+                {% if post.description %}
+
+                    <p class="discovery-card-description">
+
+                        {{ post.description }}
+
+                    </p>
+
+                {% endif %}
+
+
+
+                <div class="discovery-card-meta">
+
+
+                    <span class="discovery-location">
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                        >
+
+                            <path
+                                d="M12 21s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12Z"
+                                stroke="currentColor"
+                                stroke-width="1.6"
+                            />
+
+                            <circle
+                                cx="12"
+                                cy="9"
+                                r="2.2"
+                                stroke="currentColor"
+                                stroke-width="1.6"
+                            />
+
+                        </svg>
+
+
+                        {{ post.location or "Lieu non précisé" }}
+
+                    </span>
+
+
+
+                    {% if post.created_at %}
+
+                        <span class="discovery-date">
+
+                            {{ post.created_at.strftime('%d %b') }}
+
+                        </span>
+
+                    {% endif %}
+
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- ARROW -->
+
+            <span class="discovery-arrow">
+                →
+            </span>
+
+
+        </a>
+
+
+    {% else %}
+
+
+        <!-- EMPTY -->
+
+        <div class="discovery-empty">
+
+            <div class="discovery-empty-icon">
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                >
+
+                    <circle
+                        cx="11"
+                        cy="11"
+                        r="6.5"
+                        stroke="currentColor"
+                        stroke-width="1.7"
+                    />
+
+                    <path
+                        d="m16 16 5 5"
+                        stroke="currentColor"
+                        stroke-width="1.7"
+                        stroke-linecap="round"
+                    />
+
+                </svg>
+
+            </div>
+
+
+            <h2>
+                Aucun signalement pour le moment
+            </h2>
+
+
+            <p>
+                Les nouveaux signalements apparaîtront ici
+                dès qu'ils seront publiés.
+            </p>
+
+        </div>
+
+
+    {% endfor %}
+
+
+</div>
+```
+
+</div>
+
+{% endblock %}

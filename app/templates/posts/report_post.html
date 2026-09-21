@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Signaler cette publication</h1>
+<p>{{ post.title }}</p>
+<form method="POST" class="form-card">
+    <label>Raison</label>
+    <select name="reason" required>
+        <option value="fausse_information">Fausse information</option>
+        <option value="arnaque">Arnaque</option>
+        <option value="contenu_abusif">Contenu abusif</option>
+        <option value="publication_inappropriee">Publication inappropriée</option>
+        <option value="tentative_fraude">Tentative de fraude</option>
+    </select>
+    <button type="submit" class="btn btn-danger">Envoyer le signalement</button>
+</form>
+<a href="{{ url_for('posts.detail', post_id=post.id) }}" class="back-link">← Retour</a>
+{% endblock %}

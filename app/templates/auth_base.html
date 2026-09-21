@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% block title %}Retrouve+{% endblock %}
+    </title>
+
+    <!-- Polices -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+        /* =====================================================
+           AUTHENTIFICATION — RETROUVE+
+           Interface indépendante de l'application principale
+           ===================================================== */
+
+        :root {
+            --auth-bg: #080b12;
+            --auth-bg-2: #0d111b;
+            --auth-surface: #121725;
+            --auth-surface-2: #171c2b;
+
+            --auth-border: rgba(255, 255, 255, 0.08);
+            --auth-border-light: rgba(255, 255, 255, 0.12);
+
+            --auth-text: #f1f4f8;
+            --auth-text-soft: #c9cfdb;
+            --auth-muted: #7f899c;
+
+            --auth-primary: #7568ff;
+            --auth-primary-light: #9a8cff;
+            --auth-primary-soft: rgba(117, 104, 255, 0.12);
+            --auth-primary-glow: rgba(117, 104, 255, 0.25);
+
+            --auth-success: #43d69a;
+
+            --auth-radius: 18px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            width: 100%;
+            min-height: 100%;
+        }
+
+        body {
+            font-family: "DM Sans", sans-serif;
+            color: var(--auth-text);
+            background:
+                radial-gradient(
+                    circle at 15% 20%,
+                    rgba(117, 104, 255, 0.12),
+                    transparent 30%
+                ),
+                radial-gradient(
+                    circle at 85% 80%,
+                    rgba(117, 104, 255, 0.08),
+                    transparent 30%
+                ),
+                linear-gradient(
+                    135deg,
+                    var(--auth-bg),
+                    var(--auth-bg-2)
+                );
+
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button,
+        input {
+            font: inherit;
+        }
+
+        button {
+            border: 0;
+        }
+
+        /* =====================================================
+           PAGE AUTH
+           ===================================================== */
+
+        .auth-body {
+            min-height: 100vh;
+        }
+
+        .auth-page {
+            width: 100%;
+            min-height: 100vh;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 40px 24px;
+
+            position: relative;
+            isolation: isolate;
+        }
+
+        /*
+         * Grille très légère en arrière-plan
+         */
+        .auth-page::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+
+            background-image:
+                linear-gradient(
+                    rgba(255, 255, 255, 0.018) 1px,
+                    transparent 1px
+                ),
+                linear-gradient(
+                    90deg,
+                    rgba(255, 255, 255, 0.018) 1px,
+                    transparent 1px
+                );
+
+            background-size: 42px 42px;
+
+            pointer-events: none;
+            z-index: -2;
+        }
+
+        /*
+         * Halo central
+         */
+        .auth-page::after {
+            content: "";
+            position: fixed;
+
+            width: 520px;
+            height: 520px;
+
+            left: 50%;
+            top: 50%;
+
+            transform: translate(-50%, -50%);
+
+            background: rgba(117, 104, 255, 0.055);
+            filter: blur(100px);
+
+            border-radius: 50%;
+
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* =====================================================
+           LOGO AUTH
+           ===================================================== */
+
+        .auth-logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 11px;
+
+            margin-bottom: 28px;
+        }
+
+        .auth-logo-mark {
+            width: 42px;
+            height: 42px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 12px;
+
+            color: white;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--auth-primary),
+                    var(--auth-primary-light)
+                );
+
+            box-shadow:
+                0 8px 30px rgba(117, 104, 255, 0.25);
+        }
+
+        .auth-logo-name {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 17px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+        }
+
+        .auth-logo-name span {
+            color: var(--auth-primary-light);
+        }
+
+        /* =====================================================
+           ANIMATION
+           ===================================================== */
+
+        .auth-page > * {
+            animation: authAppear 0.45s ease both;
+        }
+
+        @keyframes authAppear {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* =====================================================
+           FLASH MESSAGES
+           ===================================================== */
+
+        .auth-flashes {
+            width: 100%;
+            max-width: 1050px;
+
+            position: absolute;
+            top: 22px;
+            left: 50%;
+            transform: translateX(-50%);
+
+            padding: 0 24px;
+
+            z-index: 20;
+        }
+
+        .auth-flash {
+            padding: 12px 16px;
+
+            border: 1px solid var(--auth-border);
+            border-radius: 10px;
+
+            background: rgba(18, 23, 37, 0.94);
+
+            color: var(--auth-text-soft);
+
+            font-size: 13px;
+            text-align: center;
+
+            backdrop-filter: blur(12px);
+        }
+
+        /* =====================================================
+           RESPONSIVE
+           ===================================================== */
+
+        @media (max-width: 700px) {
+            .auth-page {
+                padding: 28px 16px;
+            }
+
+            .auth-page::after {
+                width: 350px;
+                height: 350px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .auth-page {
+                padding: 20px 12px;
+            }
+        }
+    </style>
+
+    {% block auth_css %}{% endblock %}
+</head>
+
+<body class="auth-body">
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="auth-flashes">
+                {% for message in messages %}
+                    <div class="auth-flash">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <main class="auth-page">
+        {% block content %}{% endblock %}
+    </main>
+
+    {% block scripts %}{% endblock %}
+
+</body>
+</html>

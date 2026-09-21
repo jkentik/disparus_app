@@ -1,0 +1,1482 @@
+{% extends "base.html" %}
+
+{% block title %}Conversation avec {{ other_user.name }}{% endblock %}
+
+{% block content %}
+
+<div class="chat-page">
+
+```
+<!-- =====================================================
+     HEADER CONVERSATION
+====================================================== -->
+
+<div class="chat-header">
+
+    <a
+        href="{{ url_for('messages.inbox') }}"
+        class="chat-back"
+        aria-label="Retour"
+    >
+        ←
+    </a>
+
+
+    <div class="chat-avatar">
+
+        {{ other_user.name[:1]|upper }}
+
+    </div>
+
+
+    <div class="chat-contact">
+
+        <h1>
+            {{ other_user.name }}
+        </h1>
+
+        {% if related_post %}
+
+            <a
+                href="{{ url_for(
+                    'posts.detail',
+                    post_id=related_post.id
+                ) }}"
+                class="chat-related"
+            >
+                <span>À propos de</span>
+                {{ related_post.title }}
+            </a>
+
+        {% else %}
+
+            <span class="chat-status">
+                Conversation
+
+            </span>
+
+        {% endif %}
+
+    </div>
+
+
+    <div class="chat-header-actions">
+
+        <span class="chat-online-dot"></span>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     CONVERSATION
+====================================================== -->
+
+<div class="chat-container">
+
+
+    <div class="chat-messages" id="chatMessages">
+
+
+        <!-- DATE -->
+
+        {% if thread %}
+
+            <div class="chat-date">
+                Conversation
+            </div>
+
+        {% endif %}
+
+
+
+        {% for m in thread %}
+
+
+            <div
+                class="
+                    message-row
+                    {{ 'mine' if m.sender_id == current_user.id else 'theirs' }}
+                "
+            >
+
+
+                <!-- OTHER USER -->
+
+                {% if m.sender_id != current_user.id %}
+
+                    <div class="message-avatar">
+
+                        {{ other_user.name[:1]|upper }}
+
+                    </div>
+
+                {% endif %}
+
+
+
+                <!-- MESSAGE -->
+
+                <div
+                    class="
+                        message-bubble
+                        {{ 'message-mine' if m.sender_id == current_user.id else 'message-theirs' }}
+                    "
+                >
+
+                    <div class="message-content">
+
+                        {{ m.content }}
+
+                    </div>
+
+
+                    <div class="message-meta">
+
+                        {% if m.created_at %}
+
+                            <span>
+
+                                {{ m.created_at.strftime('%H:%M') }}
+
+                            </span>
+
+                        {% endif %}
+
+
+                        {% if m.sender_id == current_user.id %}
+
+                            <span class="message-check">
+                                ✓
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+        {% else %}
+
+
+            <!-- EMPTY CONVERSATION -->
+
+            <div class="chat-empty">
+
+                <div class="chat-empty-icon">
+
+                    <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                    >
+
+                        <path
+                            d="M20 11.5a7.5 7.5 0 0 1-8 7.45
+                               8.3 8.3 0 0 1-3.1-.6L4 20
+                               l1.65-4.35A7.5 7.5 0 1 1 20 11.5Z"
+                            stroke="currentColor"
+                            stroke-width="1.6"
+                            stroke-linejoin="round"
+                        />
+
+                        <path
+                            d="M8 11.5h.01M12 11.5h.01M16 11.5h.01"
+                            stroke="currentColor"
+                            stroke-width="2.2"
+                            stroke-linecap="round"
+                        />
+
+                    </svg>
+
+                </div>
+
+
+                <h2>
+                    Commence la conversation
+                </h2>
+
+
+                <p>
+                    Envoie un premier message à
+                    {{ other_user.name }}.
+                </p>
+
+            </div>
+
+
+        {% endfor %}
+
+
+    </div>
+
+
+
+    <!-- =================================================
+         MESSAGE FORM
+    ================================================== -->
+
+    <div class="chat-composer-wrapper">
+
+        <form
+            method="POST"
+            class="chat-composer"
+        >
+
+
+            {% if related_post %}
+
+                <input
+                    type="hidden"
+                    name="post_id"
+                    value="{{ related_post.id }}"
+                >
+
+            {% endif %}
+
+
+
+            <button
+                type="button"
+                class="composer-action"
+                aria-label="Ajouter"
+            >
+                +
+            </button>
+
+
+
+            <textarea
+                name="content"
+                id="messageInput"
+                placeholder="Écris ton message..."
+                rows="1"
+                required
+            ></textarea>
+
+
+
+            <button
+                type="submit"
+                class="send-button"
+                aria-label="Envoyer"
+            >
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                >
+
+                    <path
+                        d="M21 3 10.2 13.8"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                    />
+
+                    <path
+                        d="m21 3-6.9 18-3.9-7.2L3 9.9 21 3Z"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linejoin="round"
+                    />
+
+                </svg>
+
+            </button>
+
+
+        </form>
+
+    </div>
+
+</div>
+```
+
+</div>
+
+<style>
+
+/* =========================================================
+   CHAT PAGE
+   ========================================================= */
+
+.chat-page {
+
+    width: 100%;
+
+    max-width: 920px;
+
+    height:
+        calc(100vh - 115px);
+
+    min-height: 570px;
+
+    margin:
+        0 auto;
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    overflow:
+        hidden;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(16,21,33,.98),
+            rgba(9,13,21,.98)
+        );
+
+    border:
+        1px solid
+        rgba(255,255,255,.075);
+
+    border-radius:
+        22px;
+
+    box-shadow:
+        0 25px 70px
+        rgba(0,0,0,.24);
+
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.chat-header {
+
+    height:
+        72px;
+
+    flex:
+        0 0 72px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        12px;
+
+    padding:
+        0 18px;
+
+    background:
+        rgba(15,20,31,.96);
+
+    border-bottom:
+        1px solid
+        rgba(255,255,255,.065);
+
+}
+
+
+.chat-back {
+
+    width:
+        34px;
+
+    height:
+        34px;
+
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    flex:
+        0 0 34px;
+
+    color:
+        #8d97aa;
+
+    border-radius:
+        10px;
+
+    font-size:
+        1.15rem;
+
+    text-decoration:
+        none;
+
+    transition:
+        .2s ease;
+
+}
+
+
+.chat-back:hover {
+
+    color:
+        white;
+
+    background:
+        rgba(255,255,255,.05);
+
+}
+
+
+.chat-avatar {
+
+    width:
+        40px;
+
+    height:
+        40px;
+
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    flex:
+        0 0 40px;
+
+    color:
+        white;
+
+    background:
+        linear-gradient(
+            135deg,
+            #7568ff,
+            #9a70ff
+        );
+
+    border:
+        2px solid
+        rgba(255,255,255,.08);
+
+    border-radius:
+        50%;
+
+    font-size:
+        .75rem;
+
+    font-weight:
+        800;
+
+    box-shadow:
+        0 5px 18px
+        rgba(117,104,255,.20);
+
+}
+
+
+.chat-contact {
+
+    min-width:
+        0;
+
+    flex:
+        1;
+
+}
+
+
+.chat-contact h1 {
+
+    margin:
+        0;
+
+    color:
+        #f1f4f8;
+
+    font-family:
+        "Manrope",
+        sans-serif;
+
+    font-size:
+        .84rem;
+
+    font-weight:
+        800;
+
+}
+
+
+.chat-related {
+
+    display:
+        block;
+
+    max-width:
+        450px;
+
+    margin-top:
+        3px;
+
+    overflow:
+        hidden;
+
+    color:
+        #8791a5;
+
+    font-size:
+        .58rem;
+
+    text-overflow:
+        ellipsis;
+
+    white-space:
+        nowrap;
+
+    text-decoration:
+        none;
+
+}
+
+
+.chat-related:hover {
+
+    color:
+        #a79eff;
+
+}
+
+
+.chat-related span {
+
+    color:
+        #596276;
+
+    margin-right:
+        4px;
+
+}
+
+
+.chat-status {
+
+    display:
+        block;
+
+    margin-top:
+        3px;
+
+    color:
+        #667086;
+
+    font-size:
+        .58rem;
+
+}
+
+
+.chat-header-actions {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+}
+
+
+.chat-online-dot {
+
+    width:
+        7px;
+
+    height:
+        7px;
+
+    background:
+        #43d99b;
+
+    border-radius:
+        50%;
+
+    box-shadow:
+        0 0 10px
+        rgba(67,217,155,.55);
+
+}
+
+
+
+/* =========================================================
+   CHAT CONTAINER
+   ========================================================= */
+
+.chat-container {
+
+    position:
+        relative;
+
+    flex:
+        1;
+
+    min-height:
+        0;
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+}
+
+
+
+/* =========================================================
+   MESSAGE AREA
+   ========================================================= */
+
+.chat-messages {
+
+    flex:
+        1;
+
+    min-height:
+        0;
+
+    overflow-y:
+        auto;
+
+    padding:
+        25px 24px 25px;
+
+    scrollbar-width:
+        thin;
+
+    scrollbar-color:
+        #2a3141 transparent;
+
+}
+
+
+.chat-messages::-webkit-scrollbar {
+
+    width:
+        5px;
+
+}
+
+
+.chat-messages::-webkit-scrollbar-thumb {
+
+    background:
+        #2a3141;
+
+    border-radius:
+        20px;
+
+}
+
+
+
+/* =========================================================
+   DATE
+   ========================================================= */
+
+.chat-date {
+
+    width:
+        fit-content;
+
+    margin:
+        0 auto 25px;
+
+    padding:
+        5px 10px;
+
+    color:
+        #697389;
+
+    background:
+        rgba(255,255,255,.035);
+
+    border:
+        1px solid
+        rgba(255,255,255,.055);
+
+    border-radius:
+        999px;
+
+    font-size:
+        .54rem;
+
+    font-weight:
+        700;
+
+}
+
+
+
+/* =========================================================
+   MESSAGE ROW
+   ========================================================= */
+
+.message-row {
+
+    display:
+        flex;
+
+    align-items:
+        flex-end;
+
+    gap:
+        8px;
+
+    margin-bottom:
+        10px;
+
+}
+
+
+.message-row.mine {
+
+    justify-content:
+        flex-end;
+
+}
+
+
+.message-row.theirs {
+
+    justify-content:
+        flex-start;
+
+}
+
+
+.message-avatar {
+
+    width:
+        25px;
+
+    height:
+        25px;
+
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    flex:
+        0 0 25px;
+
+    color:
+        #a79eff;
+
+    background:
+        rgba(117,104,255,.10);
+
+    border:
+        1px solid
+        rgba(117,104,255,.15);
+
+    border-radius:
+        50%;
+
+    font-size:
+        .52rem;
+
+    font-weight:
+        800;
+
+}
+
+
+
+/* =========================================================
+   BUBBLE
+   ========================================================= */
+
+.message-bubble {
+
+    position:
+        relative;
+
+    max-width:
+        min(68%, 530px);
+
+    padding:
+        10px 12px 7px;
+
+    border-radius:
+        15px;
+
+    animation:
+        messageAppear .2s ease;
+
+}
+
+
+@keyframes messageAppear {
+
+    from {
+
+        opacity:
+            0;
+
+        transform:
+            translateY(4px);
+
+    }
+
+    to {
+
+        opacity:
+            1;
+
+        transform:
+            translateY(0);
+
+    }
+
+}
+
+
+.message-mine {
+
+    color:
+        white;
+
+    background:
+        linear-gradient(
+            135deg,
+            #7568ff,
+            #695ce9
+        );
+
+    border-bottom-right-radius:
+        4px;
+
+    box-shadow:
+        0 7px 20px
+        rgba(117,104,255,.14);
+
+}
+
+
+.message-theirs {
+
+    color:
+        #dce2ec;
+
+    background:
+        #171d2a;
+
+    border:
+        1px solid
+        rgba(255,255,255,.055);
+
+    border-bottom-left-radius:
+        4px;
+
+}
+
+
+.message-content {
+
+    font-size:
+        .69rem;
+
+    line-height:
+        1.5;
+
+    white-space:
+        pre-wrap;
+
+    overflow-wrap:
+        anywhere;
+
+}
+
+
+.message-meta {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        flex-end;
+
+    gap:
+        4px;
+
+    margin-top:
+        4px;
+
+    font-size:
+        .49rem;
+
+}
+
+
+.message-mine .message-meta {
+
+    color:
+        rgba(255,255,255,.66);
+
+}
+
+
+.message-theirs .message-meta {
+
+    color:
+        #687389;
+
+}
+
+
+.message-check {
+
+    font-size:
+        .58rem;
+
+}
+
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.chat-empty {
+
+    height:
+        100%;
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    text-align:
+        center;
+
+}
+
+
+.chat-empty-icon {
+
+    width:
+        65px;
+
+    height:
+        65px;
+
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    margin-bottom:
+        14px;
+
+    color:
+        #a79eff;
+
+    background:
+        rgba(117,104,255,.08);
+
+    border:
+        1px solid
+        rgba(117,104,255,.14);
+
+    border-radius:
+        20px;
+
+}
+
+
+.chat-empty-icon svg {
+
+    width:
+        28px;
+
+    height:
+        28px;
+
+}
+
+
+.chat-empty h2 {
+
+    margin:
+        0;
+
+    color:
+        #e8ecf2;
+
+    font-family:
+        "Manrope",
+        sans-serif;
+
+    font-size:
+        .92rem;
+
+}
+
+
+.chat-empty p {
+
+    margin:
+        7px 0 0;
+
+    color:
+        #758095;
+
+    font-size:
+        .63rem;
+
+}
+
+
+
+/* =========================================================
+   COMPOSER
+   ========================================================= */
+
+.chat-composer-wrapper {
+
+    flex:
+        0 0 auto;
+
+    padding:
+        12px 18px 16px;
+
+    background:
+        linear-gradient(
+            to top,
+            rgba(9,13,21,1),
+            rgba(9,13,21,.92)
+        );
+
+    border-top:
+        1px solid
+        rgba(255,255,255,.055);
+
+}
+
+
+.chat-composer {
+
+    display:
+        flex;
+
+    align-items:
+        flex-end;
+
+    gap:
+        8px;
+
+    padding:
+        6px;
+
+    background:
+        #151b28;
+
+    border:
+        1px solid
+        rgba(255,255,255,.075);
+
+    border-radius:
+        16px;
+
+    transition:
+        .2s ease;
+
+}
+
+
+.chat-composer:focus-within {
+
+    border-color:
+        rgba(117,104,255,.35);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(117,104,255,.05);
+
+}
+
+
+.chat-composer textarea {
+
+    flex:
+        1;
+
+    min-width:
+        0;
+
+    max-height:
+        120px;
+
+    min-height:
+        40px;
+
+    padding:
+        11px 4px;
+
+    resize:
+        none;
+
+    color:
+        #edf1f6;
+
+    background:
+        transparent;
+
+    border:
+        0;
+
+    outline:
+        none;
+
+    font-family:
+        inherit;
+
+    font-size:
+        .68rem;
+
+    line-height:
+        1.45;
+
+}
+
+
+.chat-composer textarea::placeholder {
+
+    color:
+        #697389;
+
+}
+
+
+.composer-action {
+
+    width:
+        39px;
+
+    height:
+        39px;
+
+    flex:
+        0 0 39px;
+
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    color:
+        #858fa3;
+
+    background:
+        transparent;
+
+    border:
+        0;
+
+    border-radius:
+        11px;
+
+    font-size:
+        1.1rem;
+
+    cursor:
+        pointer;
+
+}
+
+
+.composer-action:hover {
+
+    color:
+        #b0b8c7;
+
+    background:
+        rgba(255,255,255,.045);
+
+}
+
+
+.send-button {
+
+    width:
+        40px;
+
+    height:
+        40px;
+
+    flex:
+        0 0 40px;
+
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    color:
+        white;
+
+    background:
+        linear-gradient(
+            135deg,
+            #7568ff,
+            #906cff
+        );
+
+    border:
+        0;
+
+    border-radius:
+        12px;
+
+    cursor:
+        pointer;
+
+    transition:
+        .2s ease;
+
+}
+
+
+.send-button:hover {
+
+    transform:
+        translateY(-1px);
+
+    box-shadow:
+        0 8px 20px
+        rgba(117,104,255,.25);
+
+}
+
+
+.send-button svg {
+
+    width:
+        18px;
+
+    height:
+        18px;
+
+}
+
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    .chat-page {
+
+        height:
+            calc(100vh - 82px);
+
+        min-height:
+            500px;
+
+        margin:
+            -5px -10px 0;
+
+        width:
+            calc(100% + 20px);
+
+        border:
+            0;
+
+        border-radius:
+            0;
+
+        box-shadow:
+            none;
+
+    }
+
+
+    .chat-header {
+
+        height:
+            64px;
+
+        flex-basis:
+            64px;
+
+        padding:
+            0 12px;
+
+    }
+
+
+    .chat-messages {
+
+        padding:
+            18px 12px 18px;
+
+    }
+
+
+    .chat-composer-wrapper {
+
+        padding:
+            8px 10px 10px;
+
+    }
+
+
+    .message-bubble {
+
+        max-width:
+            82%;
+
+    }
+
+
+    .message-content {
+
+        font-size:
+            .68rem;
+
+    }
+
+
+    .chat-related {
+
+        max-width:
+            220px;
+
+    }
+
+}
+
+
+@media (max-width: 390px) {
+
+    .message-bubble {
+
+        max-width:
+            86%;
+
+    }
+
+
+    .composer-action {
+
+        display:
+            none;
+
+    }
+
+}
+
+</style>
+
+<script>
+
+/* =========================================================
+   CHAT — SCROLL AUTOMATIQUE
+   ========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const messages =
+            document.getElementById(
+                "chatMessages"
+            );
+
+
+        if (messages) {
+
+            messages.scrollTop =
+                messages.scrollHeight;
+
+        }
+
+
+        /* =================================================
+           TEXTAREA AUTO-GROW
+           ================================================= */
+
+        const textarea =
+            document.getElementById(
+                "messageInput"
+            );
+
+
+        if (textarea) {
+
+            textarea.addEventListener(
+                "input",
+                function () {
+
+                    this.style.height =
+                        "auto";
+
+                    this.style.height =
+                        Math.min(
+                            this.scrollHeight,
+                            120
+                        ) + "px";
+
+                }
+            );
+
+
+            /* ENVOYER AVEC CTRL + ENTER */
+
+            textarea.addEventListener(
+                "keydown",
+                function (event) {
+
+                    if (
+                        event.key === "Enter" &&
+                        event.ctrlKey
+                    ) {
+
+                        event.preventDefault();
+
+                        this.form.submit();
+
+                    }
+
+                }
+            );
+
+        }
+
+    }
+);
+
+</script>
+
+{% endblock %}

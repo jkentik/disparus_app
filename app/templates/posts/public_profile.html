@@ -1,0 +1,1599 @@
+{% extends "base.html" %}
+
+{% block title %}Profil de {{ profile_user.name }} · Retrouve+{% endblock %}
+
+{% block content %}
+
+<div class="profile-page">
+
+```
+<!-- =====================================================
+     PROFILE HERO
+====================================================== -->
+
+<section class="profile-hero">
+
+
+    <div class="profile-identity">
+
+
+        <div class="profile-avatar">
+
+            {{ profile_user.name[:1]|upper }}
+
+        </div>
+
+
+        <div class="profile-main-info">
+
+            <span class="profile-kicker">
+                PROFIL UTILISATEUR
+            </span>
+
+
+            <h1>
+                {{ profile_user.name }}
+            </h1>
+
+
+            <div class="profile-location">
+
+                <span class="location-icon">
+                    ◉
+                </span>
+
+                {% if profile_user.country %}
+
+                    {{ profile_user.country.name }}
+
+                {% else %}
+
+                    Pays non renseigné
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+
+    <a
+        href="{{ url_for('posts.index') }}"
+        class="profile-back"
+    >
+        ← Retour
+    </a>
+
+
+</section>
+
+
+
+<!-- =====================================================
+     STATS
+====================================================== -->
+
+<section class="profile-stats">
+
+
+    <div class="profile-stat">
+
+        <div class="profile-stat-icon purple">
+            ◈
+        </div>
+
+        <div>
+
+            <span>
+                SIGNALements
+            </span>
+
+            <strong>
+                {{ posts|length }}
+            </strong>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="profile-stat">
+
+        <div class="profile-stat-icon green">
+            ✓
+        </div>
+
+        <div>
+
+            <span>
+                ACTIVITÉ
+            </span>
+
+            <strong>
+                Active
+            </strong>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="profile-stat">
+
+        <div class="profile-stat-icon blue">
+            ●
+        </div>
+
+        <div>
+
+            <span>
+                COMPTE
+            </span>
+
+            <strong>
+                Vérifié
+            </strong>
+
+        </div>
+
+    </div>
+
+
+</section>
+
+
+
+<!-- =====================================================
+     PUBLICATIONS
+====================================================== -->
+
+<section class="profile-section">
+
+
+    <div class="profile-section-header">
+
+
+        <div class="profile-section-title">
+
+            <div class="profile-section-icon">
+                ◈
+            </div>
+
+
+            <div>
+
+                <h2>
+                    Signalements publiés
+                </h2>
+
+                <p>
+                    Les signalements publics de cet utilisateur.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <span class="profile-count">
+
+            {{ posts|length }}
+
+        </span>
+
+
+    </div>
+
+
+
+    <div class="profile-posts">
+
+
+        {% for post in posts %}
+
+
+            <a
+                href="{{ url_for(
+                    'posts.detail',
+                    post_id=post.id
+                ) }}"
+                class="profile-post"
+            >
+
+
+                <div class="post-status-indicator">
+
+                    {% if post.status == "retrouvee" %}
+
+                        <span class="status-found"></span>
+
+                    {% elif post.status == "en_attente" %}
+
+                        <span class="status-pending"></span>
+
+                    {% else %}
+
+                        <span class="status-active"></span>
+
+                    {% endif %}
+
+                </div>
+
+
+
+                <div class="profile-post-content">
+
+
+                    <div class="profile-post-top">
+
+                        <h3>
+                            {{ post.title }}
+                        </h3>
+
+
+                        {% if post.status == "retrouvee" %}
+
+                            <span class="post-badge found">
+                                Retrouvé
+                            </span>
+
+                        {% elif post.status == "en_attente" %}
+
+                            <span class="post-badge pending">
+                                En attente
+                            </span>
+
+                        {% else %}
+
+                            <span class="post-badge active">
+                                {{ post.status }}
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="profile-post-meta">
+
+
+                        {% if post.type %}
+
+                            <span>
+                                {{ post.type }}
+                            </span>
+
+                        {% endif %}
+
+
+                        {% if post.location %}
+
+                            <span>
+                                ◉ {{ post.location }}
+                            </span>
+
+                        {% endif %}
+
+
+                        {% if post.created_at %}
+
+                            <span>
+                                {{ post.created_at.strftime('%d/%m/%Y') }}
+                            </span>
+
+                        {% endif %}
+
+
+                    </div>
+
+
+                </div>
+
+
+
+                <div class="profile-post-arrow">
+                    →
+                </div>
+
+
+            </a>
+
+
+        {% else %}
+
+
+            <!-- EMPTY -->
+
+            <div class="profile-empty">
+
+
+                <div class="profile-empty-icon">
+
+                    <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                    >
+
+                        <path
+                            d="M5 4.5h14v15H5z"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                            stroke-linejoin="round"
+                        />
+
+                        <path
+                            d="M8 9h8M8 12h8M8 15h5"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                            stroke-linecap="round"
+                        />
+
+                    </svg>
+
+                </div>
+
+
+                <h3>
+                    Aucun signalement public
+                </h3>
+
+
+                <p>
+                    Cet utilisateur n'a pas encore publié
+                    de signalement public.
+                </p>
+
+
+            </div>
+
+
+        {% endfor %}
+
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     FOOTER
+====================================================== -->
+
+<div class="profile-footer">
+
+
+    <a
+        href="{{ url_for('posts.index') }}"
+        class="profile-footer-link"
+    >
+        ← Retour aux signalements
+    </a>
+
+
+    <span>
+        Profil public · Retrouve+
+    </span>
+
+
+</div>
+```
+
+</div>
+
+<style>
+
+/* =========================================================
+   PROFILE PAGE
+   ========================================================= */
+
+.profile-page {
+
+    width:
+        100%;
+
+    max-width:
+        1050px;
+
+    margin:
+        0 auto;
+
+}
+
+
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.profile-hero {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    gap:
+        20px;
+
+    padding:
+        25px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(18,24,37,.98),
+            rgba(9,13,21,.98)
+        );
+
+    border:
+        1px solid
+        rgba(255,255,255,.07);
+
+    border-radius:
+        21px;
+
+    box-shadow:
+        0 22px 65px
+        rgba(0,0,0,.20);
+
+}
+
+
+.profile-identity {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        17px;
+
+}
+
+
+.profile-avatar {
+
+    width:
+        76px;
+
+    height:
+        76px;
+
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    flex:
+        0 0 76px;
+
+    color:
+        white;
+
+    background:
+        linear-gradient(
+            135deg,
+            #7568ff,
+            #9a70ff
+        );
+
+    border:
+        3px solid
+        rgba(255,255,255,.08);
+
+    border-radius:
+        22px;
+
+    box-shadow:
+        0 12px 30px
+        rgba(117,104,255,.20);
+
+    font-family:
+        "Manrope",
+        sans-serif;
+
+    font-size:
+        1.25rem;
+
+    font-weight:
+        900;
+
+}
+
+
+.profile-kicker {
+
+    display:
+        block;
+
+    margin-bottom:
+        5px;
+
+    color:
+        #a79eff;
+
+    font-size:
+        .53rem;
+
+    font-weight:
+        800;
+
+    letter-spacing:
+        .16em;
+
+}
+
+
+.profile-main-info h1 {
+
+    margin:
+        0;
+
+    color:
+        #f1f4f8;
+
+    font-family:
+        "Manrope",
+        sans-serif;
+
+    font-size:
+        clamp(
+            1.5rem,
+            3vw,
+            2rem
+        );
+
+    letter-spacing:
+        -.045em;
+
+}
+
+
+.profile-location {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        6px;
+
+    margin-top:
+        6px;
+
+    color:
+        #7e899d;
+
+    font-size:
+        .60rem;
+
+}
+
+
+.location-icon {
+
+    color:
+        #a79eff;
+
+    font-size:
+        .65rem;
+
+}
+
+
+.profile-back {
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    min-height:
+        36px;
+
+    padding:
+        0 12px;
+
+    color:
+        #8993a7;
+
+    background:
+        rgba(255,255,255,.025);
+
+    border:
+        1px solid
+        rgba(255,255,255,.07);
+
+    border-radius:
+        10px;
+
+    font-size:
+        .59rem;
+
+    font-weight:
+        700;
+
+    text-decoration:
+        none;
+
+    transition:
+        .2s ease;
+
+}
+
+
+.profile-back:hover {
+
+    color:
+        white;
+
+    background:
+        rgba(255,255,255,.05);
+
+}
+
+
+
+/* =========================================================
+   STATS
+   ========================================================= */
+
+.profile-stats {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap:
+        11px;
+
+    margin:
+        15px 0 20px;
+
+}
+
+
+.profile-stat {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        11px;
+
+    padding:
+        13px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(17,23,35,.96),
+            rgba(10,14,22,.96)
+        );
+
+    border:
+        1px solid
+        rgba(255,255,255,.06);
+
+    border-radius:
+        14px;
+
+}
+
+
+.profile-stat-icon {
+
+    width:
+        37px;
+
+    height:
+        37px;
+
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    flex:
+        0 0 37px;
+
+    border-radius:
+        10px;
+
+    font-size:
+        .72rem;
+
+    font-weight:
+        900;
+
+}
+
+
+.profile-stat-icon.purple {
+
+    color:
+        #a79eff;
+
+    background:
+        rgba(117,104,255,.08);
+
+}
+
+
+.profile-stat-icon.green {
+
+    color:
+        #43d99b;
+
+    background:
+        rgba(67,217,155,.08);
+
+}
+
+
+.profile-stat-icon.blue {
+
+    color:
+        #74b9ff;
+
+    background:
+        rgba(116,185,255,.08);
+
+}
+
+
+.profile-stat span {
+
+    display:
+        block;
+
+    color:
+        #626d81;
+
+    font-size:
+        .48rem;
+
+    font-weight:
+        800;
+
+    letter-spacing:
+        .08em;
+
+}
+
+
+.profile-stat strong {
+
+    display:
+        block;
+
+    margin-top:
+        3px;
+
+    color:
+        #e9edf3;
+
+    font-family:
+        "Manrope",
+        sans-serif;
+
+    font-size:
+        .78rem;
+
+}
+
+
+
+/* =========================================================
+   SECTION
+   ========================================================= */
+
+.profile-section {
+
+    overflow:
+        hidden;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(16,21,33,.98),
+            rgba(9,13,21,.98)
+        );
+
+    border:
+        1px solid
+        rgba(255,255,255,.065);
+
+    border-radius:
+        19px;
+
+    box-shadow:
+        0 20px 55px
+        rgba(0,0,0,.15);
+
+}
+
+
+.profile-section-header {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    gap:
+        15px;
+
+    padding:
+        16px 18px;
+
+    border-bottom:
+        1px solid
+        rgba(255,255,255,.055);
+
+}
+
+
+.profile-section-title {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        10px;
+
+}
+
+
+.profile-section-icon {
+
+    width:
+        35px;
+
+    height:
+        35px;
+
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    color:
+        #a79eff;
+
+    background:
+        rgba(117,104,255,.08);
+
+    border:
+        1px solid
+        rgba(117,104,255,.12);
+
+    border-radius:
+        10px;
+
+    font-size:
+        .72rem;
+
+}
+
+
+.profile-section-title h2 {
+
+    margin:
+        0;
+
+    color:
+        #e9edf3;
+
+    font-family:
+        "Manrope",
+        sans-serif;
+
+    font-size:
+        .78rem;
+
+}
+
+
+.profile-section-title p {
+
+    margin:
+        3px 0 0;
+
+    color:
+        #687389;
+
+    font-size:
+        .53rem;
+
+}
+
+
+.profile-count {
+
+    min-width:
+        27px;
+
+    height:
+        27px;
+
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    color:
+        #a79eff;
+
+    background:
+        rgba(117,104,255,.08);
+
+    border-radius:
+        8px;
+
+    font-size:
+        .57rem;
+
+    font-weight:
+        800;
+
+}
+
+
+
+/* =========================================================
+   POST
+   ========================================================= */
+
+.profile-post {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        12px;
+
+    padding:
+        15px 18px;
+
+    color:
+        inherit;
+
+    text-decoration:
+        none;
+
+    border-bottom:
+        1px solid
+        rgba(255,255,255,.045);
+
+    transition:
+        background .18s ease;
+
+}
+
+
+.profile-post:last-child {
+
+    border-bottom:
+        0;
+
+}
+
+
+.profile-post:hover {
+
+    background:
+        rgba(117,104,255,.035);
+
+}
+
+
+.post-status-indicator {
+
+    width:
+        8px;
+
+    flex:
+        0 0 8px;
+
+}
+
+
+.post-status-indicator span {
+
+    display:
+        block;
+
+    width:
+        7px;
+
+    height:
+        7px;
+
+    border-radius:
+        50%;
+
+}
+
+
+.status-found {
+
+    background:
+        #43d99b;
+
+    box-shadow:
+        0 0 9px
+        rgba(67,217,155,.45);
+
+}
+
+
+.status-pending {
+
+    background:
+        #f2b84b;
+
+    box-shadow:
+        0 0 9px
+        rgba(242,184,75,.35);
+
+}
+
+
+.status-active {
+
+    background:
+        #a79eff;
+
+}
+
+
+.profile-post-content {
+
+    min-width:
+        0;
+
+    flex:
+        1;
+
+}
+
+
+.profile-post-top {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    gap:
+        10px;
+
+}
+
+
+.profile-post-top h3 {
+
+    min-width:
+        0;
+
+    margin:
+        0;
+
+    overflow:
+        hidden;
+
+    color:
+        #e5eaf1;
+
+    font-family:
+        "Manrope",
+        sans-serif;
+
+    font-size:
+        .70rem;
+
+    text-overflow:
+        ellipsis;
+
+    white-space:
+        nowrap;
+
+}
+
+
+.post-badge {
+
+    flex:
+        0 0 auto;
+
+    padding:
+        4px 7px;
+
+    border-radius:
+        6px;
+
+    font-size:
+        .48rem;
+
+    font-weight:
+        800;
+
+}
+
+
+.post-badge.found {
+
+    color:
+        #43d99b;
+
+    background:
+        rgba(67,217,155,.07);
+
+}
+
+
+.post-badge.pending {
+
+    color:
+        #f2b84b;
+
+    background:
+        rgba(242,184,75,.07);
+
+}
+
+
+.post-badge.active {
+
+    color:
+        #a79eff;
+
+    background:
+        rgba(117,104,255,.07);
+
+}
+
+
+.profile-post-meta {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    flex-wrap:
+        wrap;
+
+    gap:
+        10px;
+
+    margin-top:
+        6px;
+
+    color:
+        #657085;
+
+    font-size:
+        .51rem;
+
+}
+
+
+.profile-post-arrow {
+
+    width:
+        27px;
+
+    height:
+        27px;
+
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    flex:
+        0 0 27px;
+
+    color:
+        #697389;
+
+    background:
+        rgba(255,255,255,.035);
+
+    border-radius:
+        8px;
+
+    font-size:
+        .70rem;
+
+    transition:
+        .2s ease;
+
+}
+
+
+.profile-post:hover
+.profile-post-arrow {
+
+    color:
+        #a79eff;
+
+    background:
+        rgba(117,104,255,.08);
+
+    transform:
+        translateX(2px);
+
+}
+
+
+
+/* =========================================================
+   EMPTY
+   ========================================================= */
+
+.profile-empty {
+
+    min-height:
+        300px;
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    padding:
+        35px;
+
+    text-align:
+        center;
+
+}
+
+
+.profile-empty-icon {
+
+    width:
+        58px;
+
+    height:
+        58px;
+
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    margin-bottom:
+        13px;
+
+    color:
+        #a79eff;
+
+    background:
+        rgba(117,104,255,.08);
+
+    border:
+        1px solid
+        rgba(117,104,255,.13);
+
+    border-radius:
+        17px;
+
+}
+
+
+.profile-empty-icon svg {
+
+    width:
+        25px;
+
+    height:
+        25px;
+
+}
+
+
+.profile-empty h3 {
+
+    margin:
+        0;
+
+    color:
+        #e3e8ef;
+
+    font-family:
+        "Manrope",
+        sans-serif;
+
+    font-size:
+        .76rem;
+
+}
+
+
+.profile-empty p {
+
+    max-width:
+        350px;
+
+    margin:
+        6px 0 0;
+
+    color:
+        #6c778c;
+
+    font-size:
+        .58rem;
+
+    line-height:
+        1.5;
+
+}
+
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.profile-footer {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    gap:
+        15px;
+
+    padding:
+        12px 4px 25px;
+
+}
+
+
+.profile-footer-link {
+
+    color:
+        #818ca0;
+
+    font-size:
+        .55rem;
+
+    font-weight:
+        700;
+
+    text-decoration:
+        none;
+
+}
+
+
+.profile-footer-link:hover {
+
+    color:
+        #a79eff;
+
+}
+
+
+.profile-footer > span {
+
+    color:
+        #596477;
+
+    font-size:
+        .50rem;
+
+}
+
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    .profile-hero {
+
+        align-items:
+            flex-start;
+
+        padding:
+            18px;
+
+    }
+
+
+    .profile-identity {
+
+        gap:
+            12px;
+
+    }
+
+
+    .profile-avatar {
+
+        width:
+            61px;
+
+        height:
+            61px;
+
+        flex-basis:
+            61px;
+
+        border-radius:
+            18px;
+
+        font-size:
+            1rem;
+
+    }
+
+
+    .profile-back {
+
+        font-size:
+            .55rem;
+
+    }
+
+
+    .profile-stats {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+
+    .profile-section-title p {
+
+        display:
+            none;
+
+    }
+
+
+    .profile-post {
+
+        padding:
+            13px;
+
+    }
+
+}
+
+
+@media (max-width: 450px) {
+
+    .profile-hero {
+
+        display:
+            block;
+
+    }
+
+
+    .profile-back {
+
+        margin-top:
+            14px;
+
+    }
+
+
+    .profile-main-info h1 {
+
+        font-size:
+            1.35rem;
+
+    }
+
+
+    .profile-post-top {
+
+        align-items:
+            flex-start;
+
+    }
+
+
+    .profile-post-top h3 {
+
+        white-space:
+            normal;
+
+    }
+
+
+    .profile-post-meta {
+
+        gap:
+            6px;
+
+    }
+
+
+    .profile-footer {
+
+        display:
+            block;
+
+    }
+
+
+    .profile-footer > span {
+
+        display:
+            block;
+
+        margin-top:
+            8px;
+
+    }
+
+}
+
+</style>
+
+{% endblock %}

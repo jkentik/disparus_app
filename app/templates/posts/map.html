@@ -1,0 +1,1437 @@
+{% extends "base.html" %}
+
+{% block title %}Carte · Retrouve+{% endblock %}
+
+{% block head %}
+
+<!-- Leaflet -->
+
+<link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="map-page">
+
+```
+<!-- =====================================================
+     HEADER
+====================================================== -->
+
+<div class="map-header">
+
+    <div>
+
+        <a
+            href="{{ url_for('posts.index') }}"
+            class="map-back"
+        >
+            ← Retour
+        </a>
+
+
+        <span class="map-kicker">
+            EXPLORATION
+        </span>
+
+
+        <h1>
+            Carte des signalements
+        </h1>
+
+
+        <p>
+            Explorez les signalements autour des différentes zones.
+        </p>
+
+    </div>
+
+
+    <!-- ACTION -->
+
+    <a
+        href="{{ url_for('posts.create') }}"
+        class="btn map-publish"
+    >
+        <span>＋</span>
+        Publier un signalement
+    </a>
+
+</div>
+
+
+
+<!-- =====================================================
+     MAP CARD
+====================================================== -->
+
+<section class="map-card">
+
+
+    <!-- MAP TOPBAR -->
+
+    <div class="map-card-header">
+
+        <div class="map-live">
+
+            <span class="map-live-dot"></span>
+
+            <span>
+                Carte en direct
+            </span>
+
+        </div>
+
+
+        <div class="map-hint">
+
+            Cliquez sur un marqueur pour voir le signalement
+
+        </div>
+
+    </div>
+
+
+
+    <!-- MAP -->
+
+    <div
+        id="map"
+        class="retouve-map"
+    ></div>
+
+
+    <!-- MAP LEGEND -->
+
+    <div class="map-legend">
+
+        <div class="legend-title">
+            LÉGENDE
+        </div>
+
+
+        <div class="legend-item">
+
+            <span class="legend-dot lost"></span>
+
+            Signalement actif
+
+        </div>
+
+
+        <div class="legend-item">
+
+            <span class="legend-dot found"></span>
+
+            Signalement retrouvé
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     INFORMATION
+====================================================== -->
+
+<section class="map-info-grid">
+
+    <div class="map-info-card">
+
+        <div class="map-info-icon">
+            ⌖
+        </div>
+
+        <div>
+
+            <strong>
+                Explorez
+            </strong>
+
+            <p>
+                Utilisez la carte pour repérer les signalements
+                dans les différentes zones.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="map-info-card">
+
+        <div class="map-info-icon">
+            +
+        </div>
+
+        <div>
+
+            <strong>
+                Vous avez trouvé quelque chose ?
+            </strong>
+
+            <p>
+                Publiez un signalement afin d'aider son propriétaire
+                à le retrouver.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+```
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+
+<!-- Leaflet -->
+
+<script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+
+        /* =================================================
+           INITIALISATION
+        ================================================== */
+
+        const mapElement =
+            document.getElementById("map");
+
+
+        if (!mapElement) {
+            return;
+        }
+
+
+        const map =
+            L.map("map", {
+                zoomControl: false
+            }).setView(
+                [12.3714, -1.5197],
+                6
+            );
+
+
+        /* =================================================
+           CONTROLES
+        ================================================== */
+
+        L.control.zoom({
+            position: "bottomright"
+        }).addTo(map);
+
+
+
+        /* =================================================
+           OPEN STREET MAP
+        ================================================== */
+
+        L.tileLayer(
+            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            {
+                attribution:
+                    "&copy; OpenStreetMap contributors",
+
+                maxZoom: 19
+            }
+        ).addTo(map);
+
+
+
+        /* =================================================
+           ICONES
+        ================================================== */
+
+        const activeIcon =
+            L.divIcon({
+
+                className:
+                    "custom-map-marker",
+
+                html:
+                    `
+                    <div class="map-marker active">
+                        <span></span>
+                    </div>
+                    `,
+
+                iconSize:
+                    [32, 32],
+
+                iconAnchor:
+                    [16, 16],
+
+                popupAnchor:
+                    [0, -17]
+
+            });
+
+
+        const foundIcon =
+            L.divIcon({
+
+                className:
+                    "custom-map-marker",
+
+                html:
+                    `
+                    <div class="map-marker found">
+                        <span>✓</span>
+                    </div>
+                    `,
+
+                iconSize:
+                    [32, 32],
+
+                iconAnchor:
+                    [16, 16],
+
+                popupAnchor:
+                    [0, -17]
+
+            });
+
+
+
+        /* =================================================
+           RECUPERATION DES SIGNALMENTS
+        ================================================== */
+
+        fetch(
+            "{{ url_for('posts.map_data') }}"
+        )
+
+        .then(function (response) {
+
+            if (!response.ok) {
+                throw new Error(
+                    "Impossible de récupérer les signalements."
+                );
+            }
+
+            return response.json();
+
+        })
+
+        .then(function (posts) {
+
+
+            if (!Array.isArray(posts)) {
+                return;
+            }
+
+
+            posts.forEach(function (post) {
+
+
+                if (
+                    post.lat === null ||
+                    post.lng === null ||
+                    post.lat === undefined ||
+                    post.lng === undefined
+                ) {
+                    return;
+                }
+
+
+                const isFound =
+                    post.status === "retrouvee";
+
+
+                const marker =
+                    L.marker(
+                        [
+                            Number(post.lat),
+                            Number(post.lng)
+                        ],
+                        {
+                            icon:
+                                isFound
+                                    ? foundIcon
+                                    : activeIcon
+                        }
+                    )
+                    .addTo(map);
+
+
+
+                /* =================================================
+                   POPUP
+                ================================================== */
+
+                const title =
+                    escapeHtml(
+                        post.title || "Signalement"
+                    );
+
+
+                const type =
+                    escapeHtml(
+                        post.type || ""
+                    );
+
+
+                const status =
+                    isFound
+                        ? "Retrouvé"
+                        : "Signalement actif";
+
+
+                marker.bindPopup(
+
+                    `
+                    <div class="map-popup">
+
+                        <div class="map-popup-status
+                            ${isFound ? "found" : "active"}">
+
+                            <span></span>
+
+                            ${status}
+
+                        </div>
+
+
+                        <strong class="map-popup-title">
+
+                            ${title}
+
+                        </strong>
+
+
+                        ${
+                            type
+                                ? `
+                                <span class="map-popup-type">
+                                    ${type}
+                                </span>
+                                `
+                                : ""
+                        }
+
+
+                        <a
+                            href="/posts/${post.id}"
+                            class="map-popup-link"
+                        >
+
+                            Voir le signalement
+                            <span>→</span>
+
+                        </a>
+
+                    </div>
+                    `
+
+                );
+
+            });
+
+        })
+
+        .catch(function (error) {
+
+            console.error(
+                "Erreur carte :",
+                error
+            );
+
+        });
+
+
+
+        /* =================================================
+           SECURITE HTML
+        ================================================== */
+
+        function escapeHtml(value) {
+
+            return String(value)
+                .replace(
+                    /&/g,
+                    "&amp;"
+                )
+                .replace(
+                    /</g,
+                    "&lt;"
+                )
+                .replace(
+                    />/g,
+                    "&gt;"
+                )
+                .replace(
+                    /"/g,
+                    "&quot;"
+                )
+                .replace(
+                    /'/g,
+                    "&#039;"
+                );
+
+        }
+
+
+        /* =================================================
+           INVALIDATE SIZE
+        ================================================== */
+
+        setTimeout(
+            function () {
+                map.invalidateSize();
+            },
+            250
+        );
+
+    });
+
+</script>
+
+<style>
+
+/* =========================================================
+   MAP PAGE
+========================================================= */
+
+.map-page {
+    width: 100%;
+}
+
+
+.map-header {
+
+    display: flex;
+
+    align-items: flex-end;
+
+    justify-content: space-between;
+
+    gap: 25px;
+
+    margin-bottom: 25px;
+
+}
+
+
+.map-back {
+
+    display: inline-flex;
+
+    margin-bottom: 18px;
+
+    color: var(--muted);
+
+    font-size: .73rem;
+
+    font-weight: 700;
+
+    transition: .2s ease;
+
+}
+
+
+.map-back:hover {
+
+    color: white;
+
+    transform:
+        translateX(-3px);
+
+}
+
+
+.map-kicker {
+
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: var(--primary-light);
+
+    font-size: .62rem;
+
+    font-weight: 800;
+
+    letter-spacing: .16em;
+
+}
+
+
+.map-header h1 {
+
+    margin: 0;
+
+    font-family:
+        "Manrope",
+        sans-serif;
+
+    font-size:
+        clamp(
+            1.8rem,
+            4vw,
+            2.5rem
+        );
+
+    letter-spacing:
+        -.045em;
+
+}
+
+
+.map-header p {
+
+    margin:
+        9px 0 0;
+
+    color:
+        var(--muted);
+
+    font-size:
+        .78rem;
+
+}
+
+
+.map-publish {
+
+    flex:
+        0 0 auto;
+
+}
+
+
+
+/* =========================================================
+   MAP CARD
+========================================================= */
+
+.map-card {
+
+    overflow:
+        hidden;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(20,25,39,.96),
+            rgba(11,15,25,.96)
+        );
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        23px;
+
+    box-shadow:
+        var(--shadow);
+
+}
+
+
+.map-card-header {
+
+    min-height:
+        55px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    gap:
+        15px;
+
+    padding:
+        0 17px;
+
+    border-bottom:
+        1px solid var(--border);
+
+}
+
+
+.map-live {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        8px;
+
+    color:
+        #dbe1ee;
+
+    font-size:
+        .67rem;
+
+    font-weight:
+        700;
+
+}
+
+
+.map-live-dot {
+
+    width:
+        7px;
+
+    height:
+        7px;
+
+    border-radius:
+        50%;
+
+    background:
+        var(--green);
+
+    box-shadow:
+        0 0 12px
+        rgba(67,217,155,.65);
+
+    animation:
+        mapPulse 2s infinite;
+
+}
+
+
+@keyframes mapPulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: .35;
+    }
+
+}
+
+
+.map-hint {
+
+    color:
+        var(--muted-dark);
+
+    font-size:
+        .62rem;
+
+}
+
+
+
+/* =========================================================
+   MAP
+========================================================= */
+
+.retrouve-map {
+
+    width:
+        100%;
+
+    height:
+        min(
+            65vh,
+            600px
+        );
+
+    min-height:
+        430px;
+
+    background:
+        #111622;
+
+}
+
+
+.leaflet-container {
+
+    font-family:
+        "DM Sans",
+        sans-serif;
+
+    background:
+        #111622;
+
+}
+
+
+.leaflet-control-zoom {
+
+    border:
+        1px solid
+        rgba(255,255,255,.10) !important;
+
+    box-shadow:
+        0 10px 25px
+        rgba(0,0,0,.30) !important;
+
+}
+
+
+.leaflet-control-zoom a {
+
+    width:
+        34px !important;
+
+    height:
+        34px !important;
+
+    line-height:
+        34px !important;
+
+    color:
+        #dbe1ee !important;
+
+    background:
+        #151a28 !important;
+
+    border:
+        0 !important;
+
+}
+
+
+.leaflet-control-zoom a:hover {
+
+    color:
+        white !important;
+
+    background:
+        #20263a !important;
+
+}
+
+
+
+/* =========================================================
+   CUSTOM MARKERS
+========================================================= */
+
+.custom-map-marker {
+
+    background:
+        transparent;
+
+    border:
+        0;
+
+}
+
+
+.map-marker {
+
+    width:
+        32px;
+
+    height:
+        32px;
+
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    border:
+        3px solid
+        rgba(255,255,255,.92);
+
+    border-radius:
+        50%;
+
+    box-shadow:
+        0 5px 20px
+        rgba(0,0,0,.40);
+
+}
+
+
+.map-marker.active {
+
+    background:
+        var(--primary);
+
+}
+
+
+.map-marker.active span {
+
+    width:
+        8px;
+
+    height:
+        8px;
+
+    border-radius:
+        50%;
+
+    background:
+        white;
+
+}
+
+
+.map-marker.found {
+
+    background:
+        var(--green);
+
+    color:
+        #06130e;
+
+    font-size:
+        .78rem;
+
+    font-weight:
+        900;
+
+}
+
+
+
+/* =========================================================
+   POPUP
+========================================================= */
+
+.leaflet-popup-content-wrapper {
+
+    padding:
+        0 !important;
+
+    overflow:
+        hidden;
+
+    color:
+        var(--text);
+
+    background:
+        #121725;
+
+    border:
+        1px solid
+        rgba(255,255,255,.10);
+
+    border-radius:
+        15px;
+
+    box-shadow:
+        0 20px 50px
+        rgba(0,0,0,.42);
+
+}
+
+
+.leaflet-popup-tip {
+
+    background:
+        #121725;
+
+}
+
+
+.leaflet-popup-content {
+
+    margin:
+        0 !important;
+
+}
+
+
+.map-popup {
+
+    width:
+        230px;
+
+    padding:
+        15px;
+
+}
+
+
+.map-popup-status {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        6px;
+
+    margin-bottom:
+        8px;
+
+    font-size:
+        .58rem;
+
+    font-weight:
+        800;
+
+}
+
+
+.map-popup-status span {
+
+    width:
+        6px;
+
+    height:
+        6px;
+
+    border-radius:
+        50%;
+
+}
+
+
+.map-popup-status.active {
+    color:
+        var(--primary-light);
+}
+
+
+.map-popup-status.active span {
+    background:
+        var(--primary-light);
+}
+
+
+.map-popup-status.found {
+    color:
+        var(--green);
+}
+
+
+.map-popup-status.found span {
+    background:
+        var(--green);
+}
+
+
+.map-popup-title {
+
+    display:
+        block;
+
+    margin-bottom:
+        5px;
+
+    color:
+        white;
+
+    font-family:
+        "Manrope",
+        sans-serif;
+
+    font-size:
+        .86rem;
+
+}
+
+
+.map-popup-type {
+
+    display:
+        inline-block;
+
+    margin-bottom:
+        12px;
+
+    padding:
+        4px 7px;
+
+    color:
+        var(--muted);
+
+    background:
+        rgba(255,255,255,.05);
+
+    border-radius:
+        6px;
+
+    font-size:
+        .56rem;
+
+}
+
+
+.map-popup-link {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    padding:
+        9px 10px;
+
+    color:
+        white;
+
+    background:
+        rgba(117,104,255,.10);
+
+    border:
+        1px solid
+        rgba(117,104,255,.15);
+
+    border-radius:
+        9px;
+
+    font-size:
+        .64rem;
+
+    font-weight:
+        800;
+
+}
+
+
+.map-popup-link:hover {
+
+    background:
+        rgba(117,104,255,.18);
+
+}
+
+
+
+/* =========================================================
+   LEGEND
+========================================================= */
+
+.map-legend {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        17px;
+
+    min-height:
+        51px;
+
+    padding:
+        0 17px;
+
+    border-top:
+        1px solid var(--border);
+
+}
+
+
+.legend-title {
+
+    color:
+        #4e566a;
+
+    font-size:
+        .58rem;
+
+    font-weight:
+        800;
+
+    letter-spacing:
+        .1em;
+
+}
+
+
+.legend-item {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        6px;
+
+    color:
+        var(--muted);
+
+    font-size:
+        .61rem;
+
+}
+
+
+.legend-dot {
+
+    width:
+        7px;
+
+    height:
+        7px;
+
+    border-radius:
+        50%;
+
+}
+
+
+.legend-dot.lost {
+
+    background:
+        var(--primary);
+
+}
+
+
+.legend-dot.found {
+
+    background:
+        var(--green);
+
+}
+
+
+
+/* =========================================================
+   INFO
+========================================================= */
+
+.map-info-grid {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap:
+        12px;
+
+    margin-top:
+        14px;
+
+}
+
+
+.map-info-card {
+
+    display:
+        flex;
+
+    align-items:
+        flex-start;
+
+    gap:
+        13px;
+
+    padding:
+        16px;
+
+    background:
+        rgba(255,255,255,.025);
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        17px;
+
+}
+
+
+.map-info-icon {
+
+    width:
+        37px;
+
+    height:
+        37px;
+
+    flex:
+        0 0 37px;
+
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    color:
+        var(--primary-light);
+
+    background:
+        rgba(117,104,255,.08);
+
+    border:
+        1px solid
+        rgba(117,104,255,.13);
+
+    border-radius:
+        11px;
+
+    font-weight:
+        800;
+
+}
+
+
+.map-info-card strong {
+
+    display:
+        block;
+
+    margin-bottom:
+        4px;
+
+    font-size:
+        .74rem;
+
+}
+
+
+.map-info-card p {
+
+    margin:
+        0;
+
+    color:
+        var(--muted);
+
+    font-size:
+        .65rem;
+
+    line-height:
+        1.5;
+
+}
+
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+
+    .map-header {
+
+        display:
+            block;
+
+    }
+
+
+    .map-publish {
+
+        width:
+            100%;
+
+        margin-top:
+            17px;
+
+    }
+
+
+    .map-card-header {
+
+        min-height:
+            50px;
+
+    }
+
+
+    .map-hint {
+
+        display:
+            none;
+
+    }
+
+
+    .retrouve-map {
+
+        height:
+            60vh;
+
+        min-height:
+            400px;
+
+    }
+
+
+    .map-legend {
+
+        flex-wrap:
+            wrap;
+
+        gap:
+            10px;
+
+        padding:
+            11px 13px;
+
+    }
+
+
+    .map-info-grid {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+}
+
+
+@media (max-width: 430px) {
+
+    .map-header h1 {
+
+        font-size:
+            1.65rem;
+
+    }
+
+
+    .retrouve-map {
+
+        min-height:
+            360px;
+
+    }
+
+}
+
+</style>
+
+{% endblock %}

@@ -1,0 +1,1841 @@
+{% extends "auth_base.html" %}
+
+{% block title %}Créer un compte · Retrouve+{% endblock %}
+
+{% block content %}
+
+<div class="register-page">
+
+    <!-- =========================
+         COLONNE INTRODUCTION
+         ========================= -->
+    <section class="register-intro">
+
+        <div class="register-brand-mark">R+</div>
+
+        <span class="register-kicker">
+            REJOINDRE RETROUVE+
+        </span>
+
+        <h1>
+            Un compte.<br>
+            Une communauté.<br>
+            Plus de chances de retrouver.
+        </h1>
+
+        <p>
+            Créez votre compte pour publier des signalements,
+            échanger avec la communauté et être informé
+            lorsqu'une situation évolue.
+        </p>
+
+        <div class="register-points">
+
+            <div class="register-point">
+                <div class="point-icon">✓</div>
+                <div>
+                    <strong>Signalez facilement</strong>
+                    <span>Objets ou personnes disparues.</span>
+                </div>
+            </div>
+
+            <div class="register-point">
+                <div class="point-icon">✓</div>
+                <div>
+                    <strong>Restez informé</strong>
+                    <span>Recevez les notifications importantes.</span>
+                </div>
+            </div>
+
+            <div class="register-point">
+                <div class="point-icon">✓</div>
+                <div>
+                    <strong>Agissez ensemble</strong>
+                    <span>Une communauté pour retrouver plus vite.</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="register-mini-status">
+            <span class="status-dot"></span>
+            <span>Plateforme active</span>
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         FORMULAIRE INSCRIPTION
+         ========================= -->
+    <section class="register-panel">
+
+        <div class="register-card">
+
+            <!-- HEADER -->
+            <div class="register-header">
+
+                <div class="register-icon">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <circle
+                            cx="9"
+                            cy="8"
+                            r="3"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                        />
+
+                        <path
+                            d="M3.5 20c.7-3.3 2.5-5 5.5-5s4.8 1.7 5.5 5"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                            stroke-linecap="round"
+                        />
+
+                        <path
+                            d="M17 8v6M14 11h6"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                            stroke-linecap="round"
+                        />
+                    </svg>
+                </div>
+
+                <span class="register-form-kicker">
+                    NOUVEAU COMPTE
+                </span>
+
+                <h2>Créer votre compte</h2>
+
+                <p>
+                    Quelques informations suffisent pour commencer.
+                </p>
+
+            </div>
+
+
+            <!-- FLASH MESSAGES -->
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+
+                    <div class="register-flashes">
+
+                        {% for message in messages %}
+
+                            <div class="register-flash">
+                                <span>!</span>
+                                <p>{{ message }}</p>
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% endif %}
+            {% endwith %}
+
+
+            <!-- FORMULAIRE -->
+            <form method="POST" class="register-form" id="registerForm">
+
+                <!-- NOM -->
+                <div class="register-field">
+
+                    <label for="name">
+                        Nom
+                    </label>
+
+                    <div class="register-input">
+
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <circle
+                                cx="12"
+                                cy="8"
+                                r="3"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                            />
+
+                            <path
+                                d="M5.5 20c.7-3.3 2.8-5 6.5-5s5.8 1.7 6.5 5"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                                stroke-linecap="round"
+                            />
+                        </svg>
+
+                        <input
+                            id="name"
+                            type="text"
+                            name="name"
+                            placeholder="Votre nom"
+                            autocomplete="name"
+                            minlength="2"
+                            maxlength="100"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- EMAIL -->
+                <div class="register-field">
+
+                    <label for="email">
+                        Adresse email
+                    </label>
+
+                    <div class="register-input">
+
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <rect
+                                x="3"
+                                y="5"
+                                width="18"
+                                height="14"
+                                rx="2"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                            />
+
+                            <path
+                                d="m4 7 8 6 8-6"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                                stroke-linejoin="round"
+                            />
+                        </svg>
+
+                        <input
+                            id="email"
+                            type="email"
+                            name="email"
+                            placeholder="vous@exemple.com"
+                            autocomplete="email"
+                            maxlength="150"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- MOT DE PASSE -->
+                <div class="register-field">
+
+                    <label for="password">
+                        Mot de passe
+                    </label>
+
+                    <div class="register-input password-input">
+
+                        <svg
+                            class="field-icon"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                        >
+                            <rect
+                                x="4"
+                                y="10"
+                                width="16"
+                                height="10"
+                                rx="2"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                            />
+
+                            <path
+                                d="M8 10V7a4 4 0 0 1 8 0v3"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                                stroke-linecap="round"
+                            />
+                        </svg>
+
+                        <input
+                            id="password"
+                            type="password"
+                            name="password"
+                            placeholder="Créer un mot de passe"
+                            autocomplete="new-password"
+                            minlength="8"
+                            required
+                            oninput="checkPasswordStrength()"
+                        >
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            onclick="togglePassword('password', this)"
+                            aria-label="Afficher le mot de passe"
+                        >
+                            <svg viewBox="0 0 24 24" fill="none">
+
+                                <path
+                                    d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"
+                                    stroke="currentColor"
+                                    stroke-width="1.5"
+                                />
+
+                                <circle
+                                    cx="12"
+                                    cy="12"
+                                    r="2.5"
+                                    stroke="currentColor"
+                                    stroke-width="1.5"
+                                />
+
+                            </svg>
+                        </button>
+
+                    </div>
+
+
+                    <div class="password-strength">
+
+                        <div class="strength-bars">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+
+                        <span
+                            id="passwordStrengthText"
+                            class="strength-text"
+                        >
+                            Minimum 8 caractères
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- CONFIRMATION -->
+                <div class="register-field">
+
+                    <label for="confirm_password">
+                        Confirmer le mot de passe
+                    </label>
+
+                    <div class="register-input password-input">
+
+                        <svg
+                            class="field-icon"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                        >
+                            <path
+                                d="M6 11h12v9H6z"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                            />
+
+                            <path
+                                d="M8 11V8a4 4 0 0 1 8 0v3"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                                stroke-linecap="round"
+                            />
+                        </svg>
+
+                        <input
+                            id="confirm_password"
+                            type="password"
+                            name="confirm_password"
+                            placeholder="Répétez votre mot de passe"
+                            autocomplete="new-password"
+                            minlength="8"
+                            required
+                            oninput="checkPasswordMatch()"
+                        >
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            onclick="togglePassword('confirm_password', this)"
+                            aria-label="Afficher le mot de passe"
+                        >
+                            <svg viewBox="0 0 24 24" fill="none">
+
+                                <path
+                                    d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"
+                                    stroke="currentColor"
+                                    stroke-width="1.5"
+                                />
+
+                                <circle
+                                    cx="12"
+                                    cy="12"
+                                    r="2.5"
+                                    stroke="currentColor"
+                                    stroke-width="1.5"
+                                />
+
+                            </svg>
+                        </button>
+
+                    </div>
+
+                    <small
+                        id="passwordMatch"
+                        class="password-match"
+                    ></small>
+
+                </div>
+
+
+                <!-- PAYS -->
+                <div class="register-field">
+
+                    <label for="country_id">
+                        Pays
+                    </label>
+
+                    <div class="register-input select-input">
+
+                        <svg viewBox="0 0 24 24" fill="none">
+
+                            <circle
+                                cx="12"
+                                cy="12"
+                                r="8"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                            />
+
+                            <path
+                                d="M4 12h16"
+                                stroke="currentColor"
+                                stroke-width="1.3"
+                            />
+
+                            <path
+                                d="M12 4c2 2.2 3 4.8 3 8s-1 5.8-3 8c-2-2.2-3-4.8-3-8s1-5.8 3-8Z"
+                                stroke="currentColor"
+                                stroke-width="1.3"
+                            />
+
+                        </svg>
+
+                        <select
+                            id="country_id"
+                            name="country_id"
+                            required
+                        >
+
+                            <option value="">
+                                Choisir votre pays
+                            </option>
+
+                            {% for c in countries %}
+
+                                <option value="{{ c.id }}">
+                                    {{ c.name }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- BOUTON -->
+                <button
+                    type="submit"
+                    class="register-submit"
+                >
+                    <span>Créer mon compte</span>
+                    <strong>→</strong>
+                </button>
+
+            </form>
+
+
+            <!-- CONNEXION -->
+            <div class="already-account">
+
+                <span>
+                    Vous avez déjà un compte ?
+                </span>
+
+                <a href="{{ url_for('auth.login') }}">
+                    Se connecter
+                </a>
+
+            </div>
+
+
+            <!-- SÉCURITÉ -->
+            <div class="register-security">
+
+                <div class="security-icon">
+                    ✓
+                </div>
+
+                <span>
+                    Vos informations sont protégées.
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<script>
+
+function togglePassword(id, button) {
+
+    const input = document.getElementById(id);
+
+    if (input.type === "password") {
+
+        input.type = "text";
+
+        button.setAttribute(
+            "aria-label",
+            "Masquer le mot de passe"
+        );
+
+    } else {
+
+        input.type = "password";
+
+        button.setAttribute(
+            "aria-label",
+            "Afficher le mot de passe"
+        );
+
+    }
+}
+
+
+function checkPasswordStrength() {
+
+    const password =
+        document.getElementById("password").value;
+
+    const bars =
+        document.querySelectorAll(".strength-bars span");
+
+    const text =
+        document.getElementById("passwordStrengthText");
+
+    let strength = 0;
+
+
+    if (password.length >= 8) {
+        strength++;
+    }
+
+    if (/[A-Z]/.test(password)) {
+        strength++;
+    }
+
+    if (/[0-9]/.test(password)) {
+        strength++;
+    }
+
+    if (/[^A-Za-z0-9]/.test(password)) {
+        strength++;
+    }
+
+
+    bars.forEach((bar, index) => {
+
+        bar.classList.toggle(
+            "active",
+            index < strength
+        );
+
+    });
+
+
+    if (password.length === 0) {
+
+        text.textContent =
+            "Minimum 8 caractères";
+
+        text.className =
+            "strength-text";
+
+    }
+
+    else if (strength <= 1) {
+
+        text.textContent =
+            "Mot de passe faible";
+
+        text.className =
+            "strength-text weak";
+
+    }
+
+    else if (strength === 2) {
+
+        text.textContent =
+            "Mot de passe moyen";
+
+        text.className =
+            "strength-text medium";
+
+    }
+
+    else if (strength === 3) {
+
+        text.textContent =
+            "Mot de passe solide";
+
+        text.className =
+            "strength-text good";
+
+    }
+
+    else {
+
+        text.textContent =
+            "Mot de passe très solide";
+
+        text.className =
+            "strength-text strong";
+
+    }
+
+
+    checkPasswordMatch();
+}
+
+
+function checkPasswordMatch() {
+
+    const password =
+        document.getElementById("password").value;
+
+    const confirmation =
+        document.getElementById("confirm_password").value;
+
+    const message =
+        document.getElementById("passwordMatch");
+
+
+    if (confirmation.length === 0) {
+
+        message.textContent = "";
+
+        message.className =
+            "password-match";
+
+        return;
+    }
+
+
+    if (password === confirmation) {
+
+        message.textContent =
+            "✓ Les mots de passe correspondent";
+
+        message.className =
+            "password-match success";
+
+    } else {
+
+        message.textContent =
+            "Les mots de passe ne correspondent pas";
+
+        message.className =
+            "password-match error";
+
+    }
+
+}
+
+
+document
+    .getElementById("registerForm")
+    .addEventListener("submit", function(event) {
+
+        const password =
+            document.getElementById("password").value;
+
+        const confirmation =
+            document.getElementById("confirm_password").value;
+
+
+        if (password !== confirmation) {
+
+            event.preventDefault();
+
+            alert(
+                "Les deux mots de passe ne correspondent pas."
+            );
+
+        }
+
+    });
+
+</script>
+
+
+<style>
+
+/* =========================================================
+   PAGE INSCRIPTION
+   ========================================================= */
+
+.register-page {
+
+    width: 100%;
+    max-width: 1120px;
+
+    margin: 0 auto;
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        minmax(420px, 470px);
+
+    gap: 70px;
+
+    align-items: start;
+
+    padding: 20px 0;
+
+    align-self: flex-start;
+
+}
+
+
+/* =========================================================
+   INTRODUCTION
+   ========================================================= */
+
+.register-intro {
+
+    padding-top: 25px;
+
+    position: sticky;
+
+    top: 25px;
+
+}
+
+
+.register-brand-mark {
+
+    width: 52px;
+    height: 52px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 15px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #7c3aed,
+            #a855f7
+        );
+
+    color: white;
+
+    font-size: 18px;
+
+    font-weight: 800;
+
+    letter-spacing: -1px;
+
+    box-shadow:
+        0 12px 35px rgba(124,58,237,.25);
+
+    margin-bottom: 22px;
+
+}
+
+
+.register-kicker {
+
+    display: block;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    letter-spacing: .18em;
+
+    color: #a855f7;
+
+    margin-bottom: 14px;
+
+}
+
+
+.register-intro h1 {
+
+    margin: 0;
+
+    max-width: 650px;
+
+    color: #f8fafc;
+
+    font-size: clamp(
+        2.2rem,
+        4vw,
+        3.5rem
+    );
+
+    line-height: 1.02;
+
+    letter-spacing: -0.045em;
+
+    font-weight: 750;
+
+}
+
+
+.register-intro p {
+
+    max-width: 500px;
+
+    margin: 22px 0 30px;
+
+    color: #94a3b8;
+
+    font-size: 14px;
+
+    line-height: 1.75;
+
+}
+
+
+.register-points {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 15px;
+
+    max-width: 500px;
+
+}
+
+
+.register-point {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+}
+
+
+.point-icon {
+
+    flex: 0 0 auto;
+
+    width: 30px;
+    height: 30px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 9px;
+
+    background:
+        rgba(124,58,237,.12);
+
+    border:
+        1px solid rgba(168,85,247,.22);
+
+    color: #c084fc;
+
+    font-size: 13px;
+
+    font-weight: 800;
+
+}
+
+
+.register-point strong {
+
+    display: block;
+
+    color: #e2e8f0;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    margin-bottom: 3px;
+
+}
+
+
+.register-point span {
+
+    display: block;
+
+    color: #64748b;
+
+    font-size: 11px;
+
+}
+
+
+.register-mini-status {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin-top: 32px;
+
+    color: #64748b;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: .08em;
+
+    text-transform: uppercase;
+
+}
+
+
+.status-dot {
+
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: #22c55e;
+
+    box-shadow:
+        0 0 0 4px rgba(34,197,94,.08),
+        0 0 12px rgba(34,197,94,.45);
+
+}
+
+
+/* =========================================================
+   PANNEAU
+   ========================================================= */
+
+.register-panel {
+
+    width: 100%;
+
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: center;
+
+}
+
+
+.register-card {
+
+    width: 100%;
+
+    max-width: 470px;
+
+    padding: 31px;
+
+    border-radius: 22px;
+
+    background:
+        rgba(15, 23, 42, .88);
+
+    border:
+        1px solid rgba(148,163,184,.12);
+
+    box-shadow:
+        0 30px 80px rgba(0,0,0,.28),
+        inset 0 1px 0 rgba(255,255,255,.025);
+
+    backdrop-filter: blur(18px);
+
+}
+
+
+/* =========================================================
+   HEADER FORMULAIRE
+   ========================================================= */
+
+.register-header {
+
+    text-align: center;
+
+    margin-bottom: 24px;
+
+}
+
+
+.register-icon {
+
+    width: 46px;
+    height: 46px;
+
+    margin: 0 auto 14px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 13px;
+
+    background:
+        rgba(124,58,237,.12);
+
+    border:
+        1px solid rgba(168,85,247,.22);
+
+    color: #c084fc;
+
+}
+
+
+.register-icon svg {
+
+    width: 24px;
+    height: 24px;
+
+}
+
+
+.register-form-kicker {
+
+    display: block;
+
+    color: #a855f7;
+
+    font-size: 9px;
+
+    font-weight: 800;
+
+    letter-spacing: .17em;
+
+    margin-bottom: 7px;
+
+}
+
+
+.register-header h2 {
+
+    margin: 0;
+
+    color: #f8fafc;
+
+    font-size: 25px;
+
+    line-height: 1.15;
+
+    letter-spacing: -.025em;
+
+}
+
+
+.register-header p {
+
+    margin: 8px 0 0;
+
+    color: #64748b;
+
+    font-size: 11px;
+
+}
+
+
+/* =========================================================
+   FLASH
+   ========================================================= */
+
+.register-flashes {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+
+    margin-bottom: 18px;
+
+}
+
+
+.register-flash {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 10px 12px;
+
+    border-radius: 10px;
+
+    background:
+        rgba(239,68,68,.08);
+
+    border:
+        1px solid rgba(239,68,68,.18);
+
+    color: #fca5a5;
+
+}
+
+
+.register-flash span {
+
+    width: 20px;
+    height: 20px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background:
+        rgba(239,68,68,.15);
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+}
+
+
+.register-flash p {
+
+    margin: 0;
+
+    font-size: 11px;
+
+    line-height: 1.4;
+
+}
+
+
+/* =========================================================
+   FORMULAIRE
+   ========================================================= */
+
+.register-form {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 15px;
+
+}
+
+
+.register-field {
+
+    width: 100%;
+
+}
+
+
+.register-field label {
+
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #cbd5e1;
+
+    font-size: 11px;
+
+    font-weight: 650;
+
+}
+
+
+.register-input {
+
+    width: 100%;
+
+    height: 46px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    padding: 0 13px;
+
+    border-radius: 11px;
+
+    background:
+        rgba(2,6,23,.55);
+
+    border:
+        1px solid rgba(148,163,184,.14);
+
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease,
+        background .2s ease;
+
+    box-sizing: border-box;
+
+}
+
+
+.register-input:focus-within {
+
+    border-color:
+        rgba(168,85,247,.65);
+
+    background:
+        rgba(2,6,23,.72);
+
+    box-shadow:
+        0 0 0 3px rgba(124,58,237,.09);
+
+}
+
+
+.register-input > svg {
+
+    flex: 0 0 auto;
+
+    width: 17px;
+    height: 17px;
+
+    color: #64748b;
+
+}
+
+
+.register-input input,
+.register-input select {
+
+    min-width: 0;
+
+    flex: 1;
+
+    width: 100%;
+
+    height: 100%;
+
+    border: 0;
+
+    outline: 0;
+
+    background: transparent;
+
+    color: #e2e8f0;
+
+    font-family: inherit;
+
+    font-size: 12px;
+
+}
+
+
+.register-input input::placeholder {
+
+    color: #475569;
+
+}
+
+
+.register-input select {
+
+    cursor: pointer;
+
+    appearance: none;
+
+}
+
+
+.register-input select option {
+
+    background: #0f172a;
+
+    color: #e2e8f0;
+
+}
+
+
+/* =========================================================
+   MOT DE PASSE
+   ========================================================= */
+
+.password-input {
+
+    position: relative;
+
+}
+
+
+.password-input .field-icon {
+
+    width: 17px;
+    height: 17px;
+
+    flex: 0 0 auto;
+
+}
+
+
+.password-toggle {
+
+    flex: 0 0 auto;
+
+    width: 30px;
+    height: 30px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border: 0;
+
+    background: transparent;
+
+    color: #64748b;
+
+    cursor: pointer;
+
+    border-radius: 7px;
+
+    transition:
+        color .2s ease,
+        background .2s ease;
+
+}
+
+
+.password-toggle:hover {
+
+    color: #c084fc;
+
+    background:
+        rgba(124,58,237,.08);
+
+}
+
+
+.password-toggle svg {
+
+    width: 17px;
+    height: 17px;
+
+}
+
+
+/* =========================================================
+   FORCE MOT DE PASSE
+   ========================================================= */
+
+.password-strength {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    margin-top: 7px;
+
+}
+
+
+.strength-bars {
+
+    display: flex;
+
+    gap: 3px;
+
+}
+
+
+.strength-bars span {
+
+    width: 25px;
+
+    height: 3px;
+
+    border-radius: 10px;
+
+    background: #1e293b;
+
+    transition:
+        background .2s ease;
+
+}
+
+
+.strength-bars span.active {
+
+    background: #8b5cf6;
+
+}
+
+
+.strength-text {
+
+    color: #64748b;
+
+    font-size: 9px;
+
+}
+
+
+.strength-text.weak {
+
+    color: #ef4444;
+
+}
+
+
+.strength-text.medium {
+
+    color: #f59e0b;
+
+}
+
+
+.strength-text.good {
+
+    color: #22c55e;
+
+}
+
+
+.strength-text.strong {
+
+    color: #34d399;
+
+}
+
+
+.password-match {
+
+    display: block;
+
+    min-height: 14px;
+
+    margin-top: 6px;
+
+    font-size: 9px;
+
+}
+
+
+.password-match.success {
+
+    color: #22c55e;
+
+}
+
+
+.password-match.error {
+
+    color: #ef4444;
+
+}
+
+
+/* =========================================================
+   BOUTON INSCRIPTION
+   ========================================================= */
+
+.register-submit {
+
+    width: 100%;
+
+    height: 48px;
+
+    margin-top: 3px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 0 16px;
+
+    border: 0;
+
+    border-radius: 11px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #7c3aed,
+            #9333ea
+        );
+
+    color: white;
+
+    font-family: inherit;
+
+    font-size: 12px;
+
+    font-weight: 750;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 12px 28px rgba(124,58,237,.22);
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease,
+        filter .2s ease;
+
+}
+
+
+.register-submit:hover {
+
+    transform: translateY(-1px);
+
+    filter: brightness(1.08);
+
+    box-shadow:
+        0 16px 34px rgba(124,58,237,.30);
+
+}
+
+
+.register-submit:active {
+
+    transform: translateY(0);
+
+}
+
+
+.register-submit strong {
+
+    width: 28px;
+    height: 28px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 8px;
+
+    background:
+        rgba(255,255,255,.12);
+
+    font-size: 17px;
+
+}
+
+
+/* =========================================================
+   COMPTE EXISTANT
+   ========================================================= */
+
+.already-account {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 6px;
+
+    margin-top: 20px;
+
+    color: #64748b;
+
+    font-size: 10px;
+
+}
+
+
+.already-account a {
+
+    color: #c084fc;
+
+    font-weight: 700;
+
+    text-decoration: none;
+
+}
+
+
+.already-account a:hover {
+
+    color: #d8b4fe;
+
+}
+
+
+/* =========================================================
+   SÉCURITÉ
+   ========================================================= */
+
+.register-security {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    margin-top: 17px;
+
+    padding-top: 15px;
+
+    border-top:
+        1px solid rgba(148,163,184,.08);
+
+    color: #475569;
+
+    font-size: 9px;
+
+}
+
+
+.security-icon {
+
+    width: 17px;
+    height: 17px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background:
+        rgba(34,197,94,.10);
+
+    color: #22c55e;
+
+    font-size: 9px;
+
+    font-weight: 800;
+
+}
+
+
+/* =========================================================
+   RESPONSIVE TABLETTE
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    .register-page {
+
+        grid-template-columns:
+            minmax(0, 1fr)
+            minmax(380px, 440px);
+
+        gap: 35px;
+
+    }
+
+    .register-intro h1 {
+
+        font-size: 2.45rem;
+
+    }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE MOBILE
+   ========================================================= */
+
+@media (max-width: 850px) {
+
+    .register-page {
+
+        grid-template-columns: 1fr;
+
+        gap: 30px;
+
+        align-self: flex-start;
+
+        padding: 0;
+
+    }
+
+
+    .register-intro {
+
+        position: static;
+
+        padding-top: 0;
+
+        text-align: center;
+
+    }
+
+
+    .register-brand-mark {
+
+        margin-left: auto;
+        margin-right: auto;
+
+    }
+
+
+    .register-intro h1 {
+
+        font-size: 2.25rem;
+
+    }
+
+
+    .register-intro p {
+
+        margin-left: auto;
+        margin-right: auto;
+
+    }
+
+
+    .register-points {
+
+        display: none;
+
+    }
+
+
+    .register-mini-status {
+
+        justify-content: center;
+
+        margin-top: 20px;
+
+    }
+
+
+    .register-panel {
+
+        width: 100%;
+
+    }
+
+
+    .register-card {
+
+        max-width: 520px;
+
+        margin: 0 auto;
+
+    }
+
+}
+
+
+/* =========================================================
+   PETIT MOBILE
+   ========================================================= */
+
+@media (max-width: 500px) {
+
+    .register-page {
+
+        gap: 22px;
+
+    }
+
+
+    .register-intro h1 {
+
+        font-size: 1.85rem;
+
+    }
+
+
+    .register-intro p {
+
+        font-size: 12px;
+
+        line-height: 1.6;
+
+    }
+
+
+    .register-card {
+
+        padding: 23px 18px;
+
+        border-radius: 18px;
+
+    }
+
+
+    .register-header h2 {
+
+        font-size: 22px;
+
+    }
+
+
+    .register-form {
+
+        gap: 13px;
+
+    }
+
+
+    .register-input {
+
+        height: 45px;
+
+    }
+
+
+    .already-account {
+
+        flex-direction: column;
+
+        gap: 4px;
+
+    }
+
+}
+
+</style>
+
+{% endblock %}

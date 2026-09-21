@@ -1,0 +1,1962 @@
+
+{% extends "base.html" %}
+
+{% block title %}Nouveau signalement · Retrouve+{% endblock %}
+
+{% block content %}
+
+<style>
+/* =========================================================
+   RETROUVE+ — CRÉATION D'UN SIGNALEMENT
+   ========================================================= */
+
+.create-page {
+    width: 100%;
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 25px 0 50px;
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.create-header {
+    margin-bottom: 25px;
+}
+
+.create-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    color: #a79eff;
+    font-size: .52rem;
+    font-weight: 900;
+    letter-spacing: .16em;
+}
+
+.create-kicker-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #43d99b;
+    box-shadow: 0 0 9px rgba(67,217,155,.45);
+}
+
+.create-header h1 {
+    margin: 8px 0 7px;
+
+    color: #eef1f6;
+
+    font-family:
+        "Manrope",
+        "DM Sans",
+        Arial,
+        sans-serif;
+
+    font-size: clamp(1.8rem, 3vw, 2.55rem);
+    line-height: 1.05;
+    letter-spacing: -.055em;
+}
+
+.create-header p {
+    max-width: 650px;
+    margin: 0;
+
+    color: #778296;
+    font-size: .63rem;
+    line-height: 1.7;
+}
+
+/* =========================================================
+   LAYOUT
+   ========================================================= */
+
+.create-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 20px;
+    align-items: start;
+}
+
+/* =========================================================
+   CARD
+   ========================================================= */
+
+.create-card {
+    width: 100%;
+    padding: 25px;
+
+    box-sizing: border-box;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(18,24,37,.99),
+            rgba(9,13,21,.99)
+        );
+
+    border: 1px solid rgba(255,255,255,.07);
+    border-radius: 18px;
+
+    box-shadow:
+        0 25px 65px rgba(0,0,0,.18);
+}
+
+/* =========================================================
+   SECTION
+   ========================================================= */
+
+.form-section {
+    padding-bottom: 23px;
+    margin-bottom: 23px;
+
+    border-bottom: 1px solid rgba(255,255,255,.055);
+}
+
+.form-section:last-child {
+    padding-bottom: 0;
+    margin-bottom: 0;
+    border-bottom: 0;
+}
+
+.section-heading {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+
+    margin-bottom: 18px;
+}
+
+.section-number {
+    width: 29px;
+    height: 29px;
+
+    flex: 0 0 29px;
+
+    display: grid;
+    place-items: center;
+
+    color: #a79eff;
+
+    background: rgba(117,104,255,.07);
+
+    border: 1px solid rgba(117,104,255,.11);
+    border-radius: 9px;
+
+    font-size: .52rem;
+    font-weight: 900;
+}
+
+.section-heading h2 {
+    margin: 0;
+
+    color: #dce2ea;
+
+    font-size: .68rem;
+    font-weight: 800;
+}
+
+.section-heading p {
+    margin: 3px 0 0;
+
+    color: #596579;
+    font-size: .46rem;
+}
+
+/* =========================================================
+   GRID
+   ========================================================= */
+
+.fields-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.field-full {
+    grid-column: 1 / -1;
+}
+
+/* =========================================================
+   FIELD
+   ========================================================= */
+
+.create-field {
+    min-width: 0;
+}
+
+.create-field label {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: #aeb7c4;
+
+    font-size: .52rem;
+    font-weight: 700;
+}
+
+.create-field label .optional {
+    color: #586477;
+    font-weight: 500;
+}
+
+/* =========================================================
+   INPUT WRAPPER
+   ========================================================= */
+
+.create-input {
+    position: relative;
+}
+
+.create-input > svg {
+    position: absolute;
+
+    top: 50%;
+    left: 12px;
+
+    width: 16px;
+    height: 16px;
+
+    color: #606c80;
+
+    transform: translateY(-50%);
+
+    pointer-events: none;
+}
+
+.create-input input,
+.create-input select,
+.create-input textarea {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    color: #e1e6ed;
+
+    background: rgba(255,255,255,.025);
+
+    border: 1px solid rgba(255,255,255,.065);
+
+    border-radius: 10px;
+
+    outline: none;
+
+    font-family: inherit;
+    font-size: .56rem;
+
+    transition:
+        border-color .2s ease,
+        background .2s ease,
+        box-shadow .2s ease;
+}
+
+.create-input input,
+.create-input select {
+    height: 43px;
+    padding: 0 39px;
+}
+
+.create-input textarea {
+    min-height: 105px;
+    padding: 12px 13px;
+
+    resize: vertical;
+    line-height: 1.6;
+}
+
+.create-input input::placeholder,
+.create-input textarea::placeholder {
+    color: #596477;
+}
+
+.create-input input:focus,
+.create-input select:focus,
+.create-input textarea:focus {
+    background: rgba(117,104,255,.025);
+
+    border-color: rgba(167,158,255,.35);
+
+    box-shadow:
+        0 0 0 3px rgba(117,104,255,.055);
+}
+
+/* =========================================================
+   SELECT
+   ========================================================= */
+
+.create-input select {
+    appearance: none;
+    cursor: pointer;
+}
+
+.select-arrow {
+    position: absolute;
+
+    top: 50%;
+    right: 12px;
+
+    color: #697489;
+
+    font-size: .72rem;
+
+    transform: translateY(-55%);
+
+    pointer-events: none;
+}
+
+/* =========================================================
+   TYPE CARDS
+   ========================================================= */
+
+.type-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 7px;
+}
+
+.type-option {
+    position: relative;
+}
+
+.type-option input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.type-option label {
+    min-height: 68px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    padding: 7px;
+
+    color: #727e91;
+
+    background: rgba(255,255,255,.018);
+
+    border: 1px solid rgba(255,255,255,.055);
+    border-radius: 10px;
+
+    text-align: center;
+
+    font-size: .43rem;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: .2s ease;
+}
+
+.type-icon {
+    width: 25px;
+    height: 25px;
+
+    display: grid;
+    place-items: center;
+
+    color: #687388;
+
+    background: rgba(255,255,255,.035);
+
+    border-radius: 7px;
+
+    font-size: .62rem;
+}
+
+.type-option label:hover {
+    border-color: rgba(117,104,255,.18);
+    color: #aeb6c5;
+}
+
+.type-option input:checked + label {
+    color: #c5c0ff;
+
+    background: rgba(117,104,255,.07);
+
+    border-color: rgba(117,104,255,.30);
+
+    box-shadow:
+        0 0 0 2px rgba(117,104,255,.035);
+}
+
+.type-option input:checked + label .type-icon {
+    color: #a79eff;
+    background: rgba(117,104,255,.10);
+}
+
+/* =========================================================
+   MAP
+   ========================================================= */
+
+.map-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 7px;
+}
+
+.map-label strong {
+    color: #aeb7c4;
+    font-size: .52rem;
+}
+
+.map-label span {
+    color: #586477;
+    font-size: .43rem;
+}
+
+.map-wrapper {
+    overflow: hidden;
+
+    border: 1px solid rgba(255,255,255,.065);
+    border-radius: 12px;
+
+    background: #0c111a;
+}
+
+#pick-map {
+    width: 100%;
+    height: 300px;
+}
+
+/* =========================================================
+   PHOTO
+   ========================================================= */
+
+.photo-zone {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 125px;
+
+    padding: 20px;
+
+    background: rgba(255,255,255,.018);
+
+    border: 1px dashed rgba(255,255,255,.10);
+    border-radius: 12px;
+
+    text-align: center;
+
+    transition: .2s ease;
+}
+
+.photo-zone:hover {
+    border-color: rgba(117,104,255,.25);
+    background: rgba(117,104,255,.025);
+}
+
+.photo-zone.has-file {
+    border-style: solid;
+    border-color: rgba(67,217,155,.20);
+}
+
+.photo-content {
+    pointer-events: none;
+}
+
+.photo-icon {
+    width: 36px;
+    height: 36px;
+
+    display: grid;
+    place-items: center;
+
+    margin: 0 auto 8px;
+
+    color: #a79eff;
+
+    background: rgba(117,104,255,.07);
+
+    border-radius: 10px;
+
+    font-size: .8rem;
+}
+
+.photo-zone strong {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #aeb7c4;
+
+    font-size: .54rem;
+}
+
+.photo-zone small {
+    color: #596579;
+    font-size: .44rem;
+}
+
+.photo-zone input {
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    opacity: 0;
+
+    cursor: pointer;
+}
+
+.photo-preview {
+    display: none;
+
+    width: 100%;
+    max-height: 180px;
+
+    object-fit: cover;
+
+    border-radius: 9px;
+}
+
+.photo-zone.has-file .photo-content {
+    display: none;
+}
+
+.photo-zone.has-file .photo-preview {
+    display: block;
+}
+
+/* =========================================================
+   CHECKBOX IMPORTANT
+   ========================================================= */
+
+.international-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+
+    padding: 13px;
+
+    background: rgba(232,163,61,.035);
+
+    border: 1px solid rgba(232,163,61,.10);
+
+    border-radius: 11px;
+}
+
+.international-box input {
+    width: 16px;
+    height: 16px;
+
+    flex: 0 0 16px;
+
+    margin-top: 1px;
+
+    accent-color: #7568ff;
+
+    cursor: pointer;
+}
+
+.international-box label {
+    margin: 0;
+
+    color: #8b95a6;
+
+    font-size: .47rem;
+    line-height: 1.55;
+
+    cursor: pointer;
+}
+
+.international-box strong {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #c5a76a;
+
+    font-size: .51rem;
+}
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
+
+.create-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    margin-top: 22px;
+}
+
+.create-security {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    color: #586477;
+
+    font-size: .43rem;
+}
+
+.security-dot {
+    width: 5px;
+    height: 5px;
+
+    border-radius: 50%;
+
+    background: #43d99b;
+
+    box-shadow:
+        0 0 7px rgba(67,217,155,.4);
+}
+
+.create-submit {
+    min-width: 185px;
+    height: 45px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 12px 0 16px;
+
+    color: #fff;
+
+    background:
+        linear-gradient(
+            135deg,
+            #7568ff,
+            #8376ff
+        );
+
+    border: 0;
+    border-radius: 10px;
+
+    font-family: inherit;
+
+    font-size: .55rem;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 9px 25px rgba(117,104,255,.16);
+
+    transition: .2s ease;
+}
+
+.create-submit:hover {
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 13px 30px rgba(117,104,255,.24);
+}
+
+.create-submit strong {
+    width: 27px;
+    height: 27px;
+
+    display: grid;
+    place-items: center;
+
+    background: rgba(255,255,255,.12);
+
+    border-radius: 7px;
+
+    font-size: .72rem;
+}
+
+/* =========================================================
+   SIDE INFO
+   ========================================================= */
+
+.create-side {
+    display: grid;
+    gap: 14px;
+}
+
+.side-card {
+    padding: 20px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(18,24,37,.96),
+            rgba(9,13,21,.96)
+        );
+
+    border: 1px solid rgba(255,255,255,.065);
+    border-radius: 16px;
+}
+
+.side-card-header {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    margin-bottom: 14px;
+}
+
+.side-card-icon {
+    width: 31px;
+    height: 31px;
+
+    display: grid;
+    place-items: center;
+
+    color: #a79eff;
+
+    background: rgba(117,104,255,.07);
+
+    border-radius: 9px;
+
+    font-size: .65rem;
+}
+
+.side-card h3 {
+    margin: 0;
+
+    color: #dce1e9;
+
+    font-size: .62rem;
+}
+
+.side-card p {
+    margin: 0;
+
+    color: #687388;
+
+    font-size: .48rem;
+    line-height: 1.65;
+}
+
+.side-list {
+    display: grid;
+    gap: 12px;
+}
+
+.side-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+}
+
+.side-item-number {
+    width: 22px;
+    height: 22px;
+
+    flex: 0 0 22px;
+
+    display: grid;
+    place-items: center;
+
+    color: #a79eff;
+
+    background: rgba(117,104,255,.06);
+
+    border-radius: 7px;
+
+    font-size: .42rem;
+    font-weight: 900;
+}
+
+.side-item strong {
+    display: block;
+
+    margin-bottom: 2px;
+
+    color: #aeb7c4;
+
+    font-size: .49rem;
+}
+
+.side-item span {
+    color: #596579;
+    font-size: .43rem;
+    line-height: 1.5;
+}
+
+/* =========================================================
+   MAP LEAFLET
+   ========================================================= */
+
+.leaflet-container {
+    font-family: "DM Sans", Arial, sans-serif;
+    background: #0c111a;
+}
+
+.leaflet-control-zoom a {
+    background: #121821 !important;
+    color: #cdd4df !important;
+    border-color: #252d3a !important;
+}
+
+.leaflet-control-attribution {
+    background: rgba(10,13,20,.8) !important;
+    color: #7b8595 !important;
+}
+
+.leaflet-control-attribution a {
+    color: #a79eff !important;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 950px) {
+
+    .create-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .create-side {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 700px) {
+
+    .create-page {
+        padding-top: 15px;
+    }
+
+    .create-card {
+        padding: 18px;
+        border-radius: 15px;
+    }
+
+    .fields-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .field-full {
+        grid-column: auto;
+    }
+
+    .type-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .create-side {
+        grid-template-columns: 1fr;
+    }
+
+    .create-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .create-security {
+        justify-content: center;
+    }
+
+    .create-submit {
+        width: 100%;
+    }
+}
+
+@media (max-width: 450px) {
+
+    .create-header h1 {
+        font-size: 1.75rem;
+    }
+
+    .type-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    #pick-map {
+        height: 240px;
+    }
+
+    .create-card {
+        padding: 15px;
+    }
+}
+</style>
+
+
+<div class="create-page">
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="create-header">
+
+        <div class="create-kicker">
+            <span class="create-kicker-dot"></span>
+            NOUVEAU SIGNALEMENT
+        </div>
+
+        <h1>
+            Publier un signalement
+        </h1>
+
+        <p>
+            Décrivez précisément ce qui a été perdu, retrouvé
+            ou signalé afin d'aider la communauté à agir
+            rapidement.
+        </p>
+
+    </header>
+
+
+    <!-- =====================================================
+         LAYOUT
+    ====================================================== -->
+
+    <div class="create-layout">
+
+
+        <!-- =================================================
+             FORMULAIRE
+        ================================================== -->
+
+        <section class="create-card">
+
+            <form
+                method="POST"
+                enctype="multipart/form-data"
+                id="createPostForm"
+            >
+
+
+                <!-- =========================================
+                     TYPE
+                ========================================== -->
+
+                <div class="form-section">
+
+                    <div class="section-heading">
+
+                        <div class="section-number">
+                            01
+                        </div>
+
+                        <div>
+                            <h2>
+                                Type de signalement
+                            </h2>
+
+                            <p>
+                                Choisissez la situation concernée.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="type-grid">
+
+
+                        <div class="type-option">
+
+                            <input
+                                type="radio"
+                                id="type_objet_perdu"
+                                name="type"
+                                value="objet_perdu"
+                                checked
+                            >
+
+                            <label for="type_objet_perdu">
+
+                                <span class="type-icon">
+                                    ◇
+                                </span>
+
+                                Objet perdu
+
+                            </label>
+
+                        </div>
+
+
+                        <div class="type-option">
+
+                            <input
+                                type="radio"
+                                id="type_objet_retrouve"
+                                name="type"
+                                value="objet_retrouve"
+                            >
+
+                            <label for="type_objet_retrouve">
+
+                                <span class="type-icon">
+                                    ✓
+                                </span>
+
+                                Objet retrouvé
+
+                            </label>
+
+                        </div>
+
+
+                        <div class="type-option">
+
+                            <input
+                                type="radio"
+                                id="type_personne_disparue"
+                                name="type"
+                                value="personne_disparue"
+                            >
+
+                            <label for="type_personne_disparue">
+
+                                <span class="type-icon">
+                                    !
+                                </span>
+
+                                Personne disparue
+
+                            </label>
+
+                        </div>
+
+
+                        <div class="type-option">
+
+                            <input
+                                type="radio"
+                                id="type_personne_retrouvee"
+                                name="type"
+                                value="personne_retrouvee"
+                            >
+
+                            <label for="type_personne_retrouvee">
+
+                                <span class="type-icon">
+                                    +
+                                </span>
+
+                                Personne retrouvée
+
+                            </label>
+
+                        </div>
+
+
+                        <div class="type-option">
+
+                            <input
+                                type="radio"
+                                id="type_information"
+                                name="type"
+                                value="information"
+                            >
+
+                            <label for="type_information">
+
+                                <span class="type-icon">
+                                    i
+                                </span>
+
+                                Information
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================================
+                     INFORMATIONS
+                ========================================== -->
+
+                <div class="form-section">
+
+                    <div class="section-heading">
+
+                        <div class="section-number">
+                            02
+                        </div>
+
+                        <div>
+                            <h2>
+                                Informations principales
+                            </h2>
+
+                            <p>
+                                Donnez les détails permettant d'identifier le signalement.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="fields-grid">
+
+
+                        <!-- TITRE -->
+
+                        <div class="create-field field-full">
+
+                            <label for="title">
+                                Titre du signalement
+                            </label>
+
+                            <div class="create-input">
+
+                                <svg viewBox="0 0 24 24" fill="none">
+
+                                    <path
+                                        d="M5 5h14M5 10h14M5 15h9"
+                                        stroke="currentColor"
+                                        stroke-width="1.5"
+                                        stroke-linecap="round"
+                                    />
+
+                                </svg>
+
+                                <input
+                                    id="title"
+                                    type="text"
+                                    name="title"
+                                    placeholder="Ex. Téléphone perdu près du marché"
+                                    maxlength="200"
+                                    required
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- DESCRIPTION -->
+
+                        <div class="create-field field-full">
+
+                            <label for="description">
+                                Description
+                                <span class="optional">
+                                    · facultatif
+                                </span>
+                            </label>
+
+                            <div class="create-input">
+
+                                <textarea
+                                    id="description"
+                                    name="description"
+                                    placeholder="Décrivez les caractéristiques, circonstances, signes distinctifs..."
+                                    maxlength="3000"
+                                ></textarea>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- LIEU -->
+
+                        <div class="create-field">
+
+                            <label for="location">
+                                Lieu
+                                <span class="optional">
+                                    · facultatif
+                                </span>
+                            </label>
+
+                            <div class="create-input">
+
+                                <svg viewBox="0 0 24 24" fill="none">
+
+                                    <path
+                                        d="M12 21s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12Z"
+                                        stroke="currentColor"
+                                        stroke-width="1.5"
+                                    />
+
+                                    <circle
+                                        cx="12"
+                                        cy="9"
+                                        r="2.2"
+                                        stroke="currentColor"
+                                        stroke-width="1.5"
+                                    />
+
+                                </svg>
+
+                                <input
+                                    id="location"
+                                    type="text"
+                                    name="location"
+                                    placeholder="Ex. Ouagadougou, marché..."
+                                    maxlength="250"
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- MARQUE -->
+
+                        <div class="create-field">
+
+                            <label for="brand">
+                                Marque
+                                <span class="optional">
+                                    · facultatif
+                                </span>
+                            </label>
+
+                            <div class="create-input">
+
+                                <svg viewBox="0 0 24 24" fill="none">
+
+                                    <rect
+                                        x="4"
+                                        y="6"
+                                        width="16"
+                                        height="12"
+                                        rx="2"
+                                        stroke="currentColor"
+                                        stroke-width="1.5"
+                                    />
+
+                                    <path
+                                        d="M8 6V4h8v2"
+                                        stroke="currentColor"
+                                        stroke-width="1.5"
+                                    />
+
+                                </svg>
+
+                                <input
+                                    id="brand"
+                                    type="text"
+                                    name="brand"
+                                    placeholder="Ex. Samsung, Apple..."
+                                    maxlength="100"
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- COULEUR -->
+
+                        <div class="create-field">
+
+                            <label for="color">
+                                Couleur
+                                <span class="optional">
+                                    · facultatif
+                                </span>
+                            </label>
+
+                            <div class="create-input">
+
+                                <svg viewBox="0 0 24 24" fill="none">
+
+                                    <circle
+                                        cx="12"
+                                        cy="12"
+                                        r="7"
+                                        stroke="currentColor"
+                                        stroke-width="1.5"
+                                    />
+
+                                    <circle
+                                        cx="12"
+                                        cy="12"
+                                        r="3"
+                                        fill="currentColor"
+                                    />
+
+                                </svg>
+
+                                <input
+                                    id="color"
+                                    type="text"
+                                    name="color"
+                                    placeholder="Ex. Noir, bleu..."
+                                    maxlength="50"
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- PAYS -->
+
+                        <div class="create-field">
+
+                            <label for="country_id">
+                                Pays
+                            </label>
+
+                            <div class="create-input">
+
+                                <svg viewBox="0 0 24 24" fill="none">
+
+                                    <circle
+                                        cx="12"
+                                        cy="12"
+                                        r="8"
+                                        stroke="currentColor"
+                                        stroke-width="1.5"
+                                    />
+
+                                    <path
+                                        d="M4 12h16"
+                                        stroke="currentColor"
+                                        stroke-width="1.3"
+                                    />
+
+                                    <path
+                                        d="M12 4c2 2.2 3 4.8 3 8s-1 5.8-3 8c-2-2.2-3-4.8-3-8s1-5.8 3-8Z"
+                                        stroke="currentColor"
+                                        stroke-width="1.3"
+                                    />
+
+                                </svg>
+
+                                <select
+                                    id="country_id"
+                                    name="country_id"
+                                >
+
+                                    <option value="">
+                                        Utiliser mon pays
+                                    </option>
+
+                                    {% for c in countries %}
+
+                                        <option value="{{ c.id }}">
+                                            {{ c.name }}
+                                        </option>
+
+                                    {% endfor %}
+
+                                </select>
+
+                                <span class="select-arrow">
+                                    ⌄
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- REGION -->
+
+                        <div class="create-field">
+
+                            <label for="region_id">
+                                Région / Province
+                            </label>
+
+                            <div class="create-input">
+
+                                <svg viewBox="0 0 24 24" fill="none">
+
+                                    <path
+                                        d="M4 19h16M6 19V9l6-4 6 4v10"
+                                        stroke="currentColor"
+                                        stroke-width="1.5"
+                                        stroke-linejoin="round"
+                                    />
+
+                                    <path
+                                        d="M9 19v-5h6v5"
+                                        stroke="currentColor"
+                                        stroke-width="1.5"
+                                    />
+
+                                </svg>
+
+                                <select
+                                    id="region_id"
+                                    name="region_id"
+                                >
+
+                                    <option value="">
+                                        Choisir une région
+                                    </option>
+
+                                    {% for r in regions %}
+
+                                        <option value="{{ r.id }}">
+                                            {{ r.name }} ({{ r.country.name }})
+                                        </option>
+
+                                    {% endfor %}
+
+                                </select>
+
+                                <span class="select-arrow">
+                                    ⌄
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================================
+                     LOCALISATION
+                ========================================== -->
+
+                <div class="form-section">
+
+                    <div class="section-heading">
+
+                        <div class="section-number">
+                            03
+                        </div>
+
+                        <div>
+                            <h2>
+                                Localisation précise
+                            </h2>
+
+                            <p>
+                                Optionnel · cliquez directement sur la carte.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="map-label">
+
+                        <strong>
+                            Position du signalement
+                        </strong>
+
+                        <span id="map-status">
+                            Aucune position sélectionnée
+                        </span>
+
+                    </div>
+
+
+                    <div class="map-wrapper">
+
+                        <div id="pick-map"></div>
+
+                    </div>
+
+
+                    <input
+                        type="hidden"
+                        name="latitude"
+                        id="latitude"
+                    >
+
+                    <input
+                        type="hidden"
+                        name="longitude"
+                        id="longitude"
+                    >
+
+                </div>
+
+
+                <!-- =========================================
+                     PHOTO
+                ========================================== -->
+
+                <div class="form-section">
+
+                    <div class="section-heading">
+
+                        <div class="section-number">
+                            04
+                        </div>
+
+                        <div>
+                            <h2>
+                                Ajouter une photo
+                            </h2>
+
+                            <p>
+                                Une photo peut aider à identifier plus facilement le signalement.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="photo-zone"
+                        id="photoZone"
+                    >
+
+                        <div class="photo-content">
+
+                            <div class="photo-icon">
+                                +
+                            </div>
+
+                            <strong>
+                                Ajouter une photo
+                            </strong>
+
+                            <small>
+                                Cliquez ici · JPG, PNG ou WEBP
+                            </small>
+
+                        </div>
+
+                        <img
+                            id="photoPreview"
+                            class="photo-preview"
+                            alt="Aperçu de la photo"
+                        >
+
+                        <input
+                            type="file"
+                            name="photo"
+                            id="photo"
+                            accept="image/*"
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================================
+                     DIFFUSION
+                ========================================== -->
+
+                <div class="form-section">
+
+                    <div class="section-heading">
+
+                        <div class="section-number">
+                            05
+                        </div>
+
+                        <div>
+                            <h2>
+                                Diffusion
+                            </h2>
+
+                            <p>
+                                Une option destinée aux situations nécessitant une portée plus large.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="international-box">
+
+                        <input
+                            type="checkbox"
+                            name="request_international"
+                            id="request_international"
+                            value="1"
+                        >
+
+                        <label for="request_international">
+
+                            <strong>
+                                Demander une diffusion régionale
+                            </strong>
+
+                            Affaire grave (vol à main armée, enlèvement)
+                            ou objet de très grande valeur — demander une
+                            diffusion dans toute la région.
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================================
+                     ACTION
+                ========================================== -->
+
+                <div class="create-actions">
+
+                    <div class="create-security">
+
+                        <span class="security-dot"></span>
+
+                        Votre signalement sera transmis de manière sécurisée.
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="create-submit"
+                    >
+
+                        <span>
+                            Publier le signalement
+                        </span>
+
+                        <strong>
+                            →
+                        </strong>
+
+                    </button>
+
+                </div>
+
+
+            </form>
+
+        </section>
+
+
+        <!-- =================================================
+             SIDE PANEL
+        ================================================== -->
+
+        <aside class="create-side">
+
+
+            <div class="side-card">
+
+                <div class="side-card-header">
+
+                    <div class="side-card-icon">
+                        +
+                    </div>
+
+                    <h3>
+                        Comment ça fonctionne ?
+                    </h3>
+
+                </div>
+
+
+                <div class="side-list">
+
+                    <div class="side-item">
+
+                        <div class="side-item-number">
+                            01
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Décrivez
+                            </strong>
+
+                            <span>
+                                Donnez les informations permettant
+                                d'identifier clairement la situation.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="side-item">
+
+                        <div class="side-item-number">
+                            02
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Localisez
+                            </strong>
+
+                            <span>
+                                Ajoutez le lieu ou sélectionnez
+                                directement une position sur la carte.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="side-item">
+
+                        <div class="side-item-number">
+                            03
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Publiez
+                            </strong>
+
+                            <span>
+                                Votre signalement sera traité selon
+                                les règles de la plateforme.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="side-card">
+
+                <div class="side-card-header">
+
+                    <div class="side-card-icon">
+                        !
+                    </div>
+
+                    <h3>
+                        Conseil
+                    </h3>
+
+                </div>
+
+                <p>
+                    Plus votre description est précise, plus il sera
+                    facile pour les autres utilisateurs de reconnaître
+                    l'objet ou la personne concernée.
+                </p>
+
+            </div>
+
+
+            <div class="side-card">
+
+                <div class="side-card-header">
+
+                    <div class="side-card-icon">
+                        ✓
+                    </div>
+
+                    <h3>
+                        Avant de publier
+                    </h3>
+
+                </div>
+
+                <p>
+                    Vérifiez le titre, la description, le lieu et la
+                    photo avant d'envoyer votre signalement.
+                </p>
+
+            </div>
+
+
+        </aside>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     LEAFLET
+========================================================= -->
+
+<link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+
+<script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
+
+
+<script>
+
+/* =========================================================
+   CARTE
+   ========================================================= */
+
+const pickMap =
+    L.map("pick-map").setView(
+        [12.3714, -1.5197],
+        6
+    );
+
+
+L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {
+        attribution:
+            "&copy; OpenStreetMap contributors"
+    }
+).addTo(pickMap);
+
+
+let marker = null;
+
+
+pickMap.on("click", function(e) {
+
+    const latitude =
+        e.latlng.lat;
+
+    const longitude =
+        e.latlng.lng;
+
+
+    document.getElementById("latitude").value =
+        latitude;
+
+    document.getElementById("longitude").value =
+        longitude;
+
+
+    if (marker) {
+        pickMap.removeLayer(marker);
+    }
+
+
+    marker =
+        L.marker(e.latlng)
+            .addTo(pickMap);
+
+
+    document.getElementById("map-status")
+        .textContent =
+            latitude.toFixed(5)
+            + " · "
+            + longitude.toFixed(5);
+
+});
+
+
+/* =========================================================
+   PHOTO PREVIEW
+   ========================================================= */
+
+const photoInput =
+    document.getElementById("photo");
+
+const photoZone =
+    document.getElementById("photoZone");
+
+const photoPreview =
+    document.getElementById("photoPreview");
+
+
+photoInput.addEventListener(
+    "change",
+    function() {
+
+        const file =
+            this.files[0];
+
+
+        if (!file) {
+
+            photoZone.classList.remove(
+                "has-file"
+            );
+
+            photoPreview.removeAttribute(
+                "src"
+            );
+
+            return;
+        }
+
+
+        if (!file.type.startsWith("image/")) {
+
+            alert(
+                "Veuillez sélectionner une image."
+            );
+
+            this.value = "";
+
+            return;
+        }
+
+
+        const reader =
+            new FileReader();
+
+
+        reader.onload =
+            function(event) {
+
+                photoPreview.src =
+                    event.target.result;
+
+                photoZone.classList.add(
+                    "has-file"
+                );
+
+            };
+
+
+        reader.readAsDataURL(file);
+
+    }
+);
+
+
+/* =========================================================
+   VALIDATION
+   ========================================================= */
+
+document
+    .getElementById("createPostForm")
+    .addEventListener(
+        "submit",
+        function(event) {
+
+            const title =
+                document
+                    .getElementById("title")
+                    .value
+                    .trim();
+
+
+            if (!title) {
+
+                event.preventDefault();
+
+                alert(
+                    "Veuillez saisir un titre pour le signalement."
+                );
+
+                return;
+            }
+
+        }
+    );
+
+</script>
+
+{% endblock %}
+

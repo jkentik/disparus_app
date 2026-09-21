@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Inscription — Compte autorité</h1>
+
+{% if invite.agency_name %}
+    <p>Invitation pour : <strong>{{ invite.agency_name }}</strong></p>
+{% endif %}
+
+<form method="POST">
+    <input type="hidden" name="code" value="{{ code }}">
+
+    <label>Nom complet</label>
+    <input type="text" name="name" required><br>
+
+    <label>Email professionnel</label>
+    <input type="email" name="email" required><br>
+
+    <label>Mot de passe</label>
+    <input type="password" name="password" required minlength="8"><br>
+
+    {% if not invite.country_id %}
+        <label>Pays de compétence</label>
+        <select name="country_id" required>
+            <option value="">-- Choisir --</option>
+            {% for c in countries %}
+                <option value="{{ c.id }}">{{ c.name }}</option>
+            {% endfor %}
+        </select><br>
+    {% endif %}
+
+    {% if not invite.region_id %}
+        <label>Région de compétence</label>
+        <select name="region_id">
+            <option value="">-- Toutes les régions du pays --</option>
+            {% for r in regions %}
+                <option value="{{ r.id }}">{{ r.name }} ({{ r.country.name }})</option>
+            {% endfor %}
+        </select><br>
+    {% endif %}
+
+    <button type="submit" class="btn btn-primary">Créer le compte autorité</button>
+</form>
+{% endblock %}

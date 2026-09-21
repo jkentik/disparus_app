@@ -1,0 +1,397 @@
+{% extends "base.html" %}
+
+{% block title %}Mon profil · Retrouve+{% endblock %}
+
+{% block content %}
+
+<div class="profile-page">
+
+```
+<!-- =====================================================
+     RETOUR
+====================================================== -->
+
+<a href="{{ url_for('posts.index') }}" class="back-link">
+    ← Retour à l'accueil
+</a>
+
+
+<!-- =====================================================
+     PROFIL
+====================================================== -->
+
+<section class="form-card" style="max-width:100%; margin-bottom:20px;">
+
+    <div class="profile-header">
+
+        <div class="avatar">
+
+            {% if user.photo %}
+
+                <img
+                    src="{{ url_for('static', filename='uploads/' + user.photo) }}"
+                    alt="{{ user.name }}"
+                    style="width:100%;height:100%;object-fit:cover;"
+                >
+
+            {% else %}
+
+                {{ user.name[0] | upper }}
+
+            {% endif %}
+
+        </div>
+
+
+        <div style="min-width:0; flex:1;">
+
+            <span style="
+                display:block;
+                margin-bottom:4px;
+                color:var(--accent);
+                font-size:.68rem;
+                font-weight:800;
+                letter-spacing:.08em;
+            ">
+                MON COMPTE
+            </span>
+
+            <h1 style="margin-bottom:4px;">
+                {{ user.name }}
+            </h1>
+
+            <p class="muted" style="margin:0;">
+                {{ user.email }}
+            </p>
+
+            <p class="muted" style="margin:5px 0 0;">
+
+                {% if user.country %}
+                    📍 {{ user.country.name }}
+                {% else %}
+                    📍 Pays non renseigné
+                {% endif %}
+
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div style="
+        display:flex;
+        gap:9px;
+        flex-wrap:wrap;
+        margin-top:18px;
+    ">
+
+        <a
+            href="{{ url_for('auth.edit_profile') }}"
+            class="btn"
+        >
+            ✎ Modifier mon profil
+        </a>
+
+        <a
+            href="{{ url_for('auth.logout') }}"
+            class="btn btn-outline"
+        >
+            ↪ Se déconnecter
+        </a>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     STATISTIQUES
+====================================================== -->
+
+<section class="profile-stats">
+
+    <div>
+
+        <strong>
+            {{ posts | length }}
+        </strong>
+
+        <span>
+            Signalements
+        </span>
+
+    </div>
+
+
+    <div>
+
+        <strong>
+            {{ posts | selectattr("status", "equalto", "retrouvee") | list | length }}
+        </strong>
+
+        <span>
+            Retrouvés
+        </span>
+
+    </div>
+
+
+    <div>
+
+        <strong>
+            {{ posts | selectattr("status", "equalto", "en_attente") | list | length }}
+        </strong>
+
+        <span>
+            En attente
+        </span>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     MES SIGNALEMENTS
+====================================================== -->
+
+<section style="margin-top:28px;">
+
+    <div style="
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:15px;
+        margin-bottom:15px;
+    ">
+
+        <div>
+
+            <span style="
+                color:var(--accent);
+                font-size:.68rem;
+                font-weight:800;
+                letter-spacing:.08em;
+            ">
+                ACTIVITÉ
+            </span>
+
+            <h2 style="margin:4px 0 0;">
+                Mes signalements
+            </h2>
+
+        </div>
+
+        <span class="badge">
+            {{ posts | length }}
+        </span>
+
+    </div>
+
+
+    <div class="feed">
+
+        {% for post in posts %}
+
+            <a
+                href="{{ url_for('posts.detail', post_id=post.id) }}"
+                class="row-card"
+            >
+
+                <!-- IMAGE -->
+
+                {% if post.photo %}
+
+                    <img
+                        src="{{ url_for('static', filename='uploads/' + post.photo) }}"
+                        alt="{{ post.title }}"
+                        class="row-thumb"
+                    >
+
+                {% else %}
+
+                    <div
+                        class="row-thumb"
+                        style="
+                            display:flex;
+                            align-items:center;
+                            justify-content:center;
+                            color:var(--muted-2);
+                            font-size:1.3rem;
+                        "
+                    >
+                        ◈
+                    </div>
+
+                {% endif %}
+
+
+                <!-- INFORMATIONS -->
+
+                <div class="row-body">
+
+                    <p class="row-title">
+                        {{ post.title }}
+                    </p>
+
+
+                    <p class="row-meta">
+
+                        {% if post.type == "personne_disparue" %}
+                            Personne disparue
+
+                        {% elif post.type == "personne_retrouvee" %}
+                            Personne retrouvée
+
+                        {% elif post.type == "objet_perdu" %}
+                            Objet perdu
+
+                        {% elif post.type == "objet_retrouve" %}
+                            Objet retrouvé
+
+                        {% else %}
+                            {{ post.type or "Information" }}
+
+                        {% endif %}
+
+                        {% if post.location %}
+                            · {{ post.location }}
+                        {% endif %}
+
+                    </p>
+
+
+                    <div style="
+                        margin-top:7px;
+                        display:flex;
+                        align-items:center;
+                        gap:7px;
+                        flex-wrap:wrap;
+                    ">
+
+                        {% if post.status == "retrouvee" %}
+
+                            <span class="badge badge-retrouvee">
+                                Retrouvé
+                            </span>
+
+                        {% elif post.status == "en_attente" %}
+
+                            <span class="badge badge-disparue">
+                                En attente
+                            </span>
+
+                        {% elif post.status == "active" %}
+
+                            <span class="badge badge-objet">
+                                Actif
+                            </span>
+
+                        {% elif post.status == "retrouve_a_confirmer" %}
+
+                            <span class="badge">
+                                À confirmer
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge badge-defaut">
+                                {{ post.status }}
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+                <span class="row-chevron">
+                    ›
+                </span>
+
+            </a>
+
+        {% else %}
+
+            <div class="post-card empty">
+
+                <h3>
+                    Aucun signalement
+                </h3>
+
+                <p>
+                    Vous n'avez encore publié aucun signalement.
+                </p>
+
+                <a
+                    href="{{ url_for('posts.create') }}"
+                    class="btn"
+                    style="margin-top:12px;"
+                >
+                    + Créer un signalement
+                </a>
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     ZONE DANGEREUSE
+====================================================== -->
+
+<section
+    class="form-card"
+    style="
+        max-width:100%;
+        margin-top:35px;
+        border-color:rgba(224,103,79,.20);
+    "
+>
+
+    <span style="
+        color:var(--danger);
+        font-size:.68rem;
+        font-weight:800;
+        letter-spacing:.08em;
+    ">
+        ZONE SENSIBLE
+    </span>
+
+    <h3 style="margin:5px 0 0;">
+        Supprimer mon compte
+    </h3>
+
+    <p class="muted" style="margin:0 0 8px;">
+        Cette action supprimera définitivement votre compte
+        et vos signalements.
+    </p>
+
+
+    <form
+        method="POST"
+        action="{{ url_for('auth.delete_account') }}"
+        onsubmit="return confirm('Supprimer définitivement ton compte et toutes tes données ?');"
+    >
+
+        <button
+            type="submit"
+            class="btn btn-danger"
+        >
+            Supprimer définitivement mon compte
+        </button>
+
+    </form>
+
+</section>
+```
+
+</div>
+
+{% endblock %}

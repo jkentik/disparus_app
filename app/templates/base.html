@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    >
+
+    <meta name="theme-color" content="#080A12">
+    <meta
+        name="description"
+        content="Retrouve+ — retrouver ce qui compte."
+    >
+
+    <title>{% block title %}Retrouve+{% endblock %}</title>
+
+    <!-- Polices -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- CSS -->
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+    {% block head %}{% endblock %}
+</head>
+
+
+<body>
+
+<!-- =====================================================
+     APP
+===================================================== -->
+
+<div class="app-shell">
+
+
+    <!-- =================================================
+         SIDEBAR
+    ================================================== -->
+
+    <aside class="sidebar" id="sidebar">
+
+        <!-- BRAND -->
+
+        <div class="sidebar-top">
+
+            <a
+                href="{{ url_for('posts.index') }}"
+                class="brand"
+            >
+
+                <span class="brand-symbol">
+
+                    <svg
+                        viewBox="0 0 48 48"
+                        aria-hidden="true"
+                    >
+                        <circle
+                            cx="24"
+                            cy="24"
+                            r="17"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="3"
+                        />
+
+                        <circle
+                            cx="24"
+                            cy="24"
+                            r="5"
+                            fill="currentColor"
+                        />
+
+                        <path
+                            d="M24 4v8M24 36v8M4 24h8M36 24h8"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                        />
+                    </svg>
+
+                </span>
+
+
+                <span class="brand-text">
+                    Retrouve<span>+</span>
+                </span>
+
+            </a>
+
+
+            <!-- MOBILE CLOSE -->
+
+            <button
+                class="sidebar-close"
+                id="sidebarClose"
+                type="button"
+                aria-label="Fermer le menu"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+
+        <!-- =================================================
+             PROFILE MINI
+        ================================================== -->
+
+        {% if current_user.is_authenticated %}
+
+        <a
+            href="{{ url_for('auth.profile') }}"
+            class="profile-mini"
+        >
+
+            <div class="profile-mini-avatar">
+
+                {% if current_user.photo %}
+
+                    <img
+                        src="{{ url_for(
+                            'static',
+                            filename='uploads/' + current_user.photo
+                        ) }}"
+                        alt="Photo de profil"
+                    >
+
+                {% else %}
+
+                    {{ current_user.name[0] | upper }}
+
+                {% endif %}
+
+            </div>
+
+
+            <div class="profile-mini-info">
+
+                <strong>
+                    {{ current_user.name }}
+                </strong>
+
+                <span>
+                    Voir mon profil
+                </span>
+
+            </div>
+
+
+            <span class="profile-mini-arrow">
+                ›
+            </span>
+
+        </a>
+
+        {% endif %}
+
+
+
+        <!-- =================================================
+             NAVIGATION
+        ================================================== -->
+
+        <div class="nav-section">
+
+            <span class="nav-section-title">
+                ESPACE PRINCIPAL
+            </span>
+
+
+            <nav class="sidebar-nav">
+
+
+                <!-- ACCUEIL -->
+
+                <a
+                    href="{{ url_for('posts.index') }}"
+                    class="sidebar-link
+                    {% if request.endpoint == 'posts.index' %}
+                        active
+                    {% endif %}"
+                >
+
+                    <span class="sidebar-icon">
+
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M3 10.5 12 3l9 7.5"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            />
+
+                            <path
+                                d="M5 9.5V21h14V9.5"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                                stroke-linejoin="round"
+                            />
+
+                            <path
+                                d="M9 21v-6h6v6"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                            />
+                        </svg>
+
+                    </span>
+
+                    <span>Accueil</span>
+
+                </a>
+
+
+
+                <!-- CARTE -->
+
+                <a
+                    href="{{ url_for('posts.map_view') }}"
+                    class="sidebar-link
+                    {% if request.endpoint == 'posts.map_view' %}
+                        active
+                    {% endif %}"
+                >
+
+                    <span class="sidebar-icon">
+
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M9 18 3 21V6l6-3 6 3 6-3v15l-6 3-6-3Z"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                                stroke-linejoin="round"
+                            />
+
+                            <path
+                                d="M9 3v15M15 6v15"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                            />
+                        </svg>
+
+                    </span>
+
+                    <span>Explorer la carte</span>
+
+                </a>
+
+
+
+                {% if current_user.is_authenticated %}
+
+
+                <!-- PUBLIER -->
+
+                <a
+                    href="{{ url_for('posts.create') }}"
+                    class="sidebar-link
+                    {% if request.endpoint == 'posts.create' %}
+                        active
+                    {% endif %}"
+                >
+
+                    <span class="sidebar-icon">
+
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 5v14M5 12h14"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                            />
+                        </svg>
+
+                    </span>
+
+                    <span>Publier un signalement</span>
+
+                </a>
+
+
+
+                <!-- MESSAGES -->
+
+                <a
+                    href="{{ url_for('messages.inbox') }}"
+                    class="sidebar-link
+                    {% if request.endpoint == 'messages.inbox' %}
+                        active
+                    {% endif %}"
+                >
+
+                    <span class="sidebar-icon">
+
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M4 5h16v12H8l-4 4V5Z"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                                stroke-linejoin="round"
+                            />
+
+                            <path
+                                d="M8 9h8M8 13h5"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                                stroke-linecap="round"
+                            />
+                        </svg>
+
+                    </span>
+
+                    <span>Messages</span>
+
+                </a>
+
+
+
+                <!-- NOTIFICATIONS -->
+
+                <a
+                    href="{{ url_for('notifications.index') }}"
+                    class="sidebar-link
+                    {% if request.endpoint == 'notifications.index' %}
+                        active
+                    {% endif %}"
+                >
+
+                    <span class="sidebar-icon">
+
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            />
+
+                            <path
+                                d="M10 21h4"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                                stroke-linecap="round"
+                            />
+                        </svg>
+
+                    </span>
+
+                    <span>Notifications</span>
+
+                </a>
+
+
+                {% endif %}
+
+            </nav>
+
+        </div>
+
+
+
+        <!-- =================================================
+             ESPACE ADMINISTRATION
+        ================================================== -->
+
+        {% if current_user.is_authenticated %}
+
+            {% if current_user.role in ("moderator", "admin") %}
+
+            <div class="nav-section">
+
+                <span class="nav-section-title">
+                    MODÉRATION
+                </span>
+
+                <nav class="sidebar-nav">
+
+                    <a
+                        href="{{ url_for('moderation.index') }}"
+                        class="sidebar-link"
+                    >
+
+                        <span class="sidebar-icon">
+
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M12 3 20 6v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3Z"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                    stroke-linejoin="round"
+                                />
+
+                                <path
+                                    d="m8.5 12 2.2 2.2 4.8-5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                />
+                            </svg>
+
+                        </span>
+
+                        <span>Modération</span>
+
+                    </a>
+
+                </nav>
+
+            </div>
+
+            {% endif %}
+
+
+            {% if current_user.role in ("authority", "admin") %}
+
+            <div class="nav-section">
+
+                <span class="nav-section-title">
+                    ESPACE AUTORITÉS
+                </span>
+
+                <nav class="sidebar-nav">
+
+                    <a
+                        href="{{ url_for('authority.index') }}"
+                        class="sidebar-link"
+                    >
+
+                        <span class="sidebar-icon">
+
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M4 20h16M6 20V9h12v11M4 9h16L12 4 4 9Z"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                    stroke-linejoin="round"
+                                />
+
+                                <path
+                                    d="M9 13h6M9 16h6"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                    stroke-linecap="round"
+                                />
+                            </svg>
+
+                        </span>
+
+                        <span>Autorités</span>
+
+                    </a>
+
+                </nav>
+
+            </div>
+
+            {% endif %}
+
+
+            {% if current_user.role == "admin" %}
+
+            <div class="nav-section">
+
+                <span class="nav-section-title">
+                    SYSTÈME
+                </span>
+
+                <nav class="sidebar-nav">
+
+                    <a
+                        href="{{ url_for('admin.index') }}"
+                        class="sidebar-link"
+                    >
+
+                        <span class="sidebar-icon">
+
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                    stroke-linecap="round"
+                                />
+
+                                <circle
+                                    cx="12"
+                                    cy="12"
+                                    r="4"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                />
+                            </svg>
+
+                        </span>
+
+                        <span>Administration</span>
+
+                    </a>
+
+                </nav>
+
+            </div>
+
+            {% endif %}
+
+        {% endif %}
+
+
+
+        <!-- =================================================
+             SIDEBAR FOOTER
+        ================================================== -->
+
+        <div class="sidebar-footer">
+
+            {% if current_user.is_authenticated %}
+
+                <a
+                    href="{{ url_for('auth.profile') }}"
+                    class="footer-link"
+                >
+                    Paramètres du profil
+                </a>
+
+            {% else %}
+
+                <a
+                    href="{{ url_for('auth.login') }}"
+                    class="footer-link"
+                >
+                    Se connecter
+                </a>
+
+            {% endif %}
+
+            <div class="footer-version">
+                RETROUVE+ · 1.0
+            </div>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- =================================================
+         MAIN
+    ================================================== -->
+
+    <main class="main-content">
+
+
+        <!-- =================================================
+             TOPBAR
+        ================================================== -->
+
+        <header class="topbar">
+
+            <div class="topbar-left">
+
+                <button
+                    type="button"
+                    class="mobile-menu-button"
+                    id="menuToggle"
+                    aria-label="Ouvrir le menu"
+                    aria-expanded="false"
+                >
+
+                    <span></span>
+                    <span></span>
+                    <span></span>
+
+                </button>
+
+
+                <div class="mobile-brand">
+
+                    <span class="mobile-brand-symbol">
+
+                        <svg viewBox="0 0 48 48">
+                            <circle
+                                cx="24"
+                                cy="24"
+                                r="17"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="3"
+                            />
+
+                            <circle
+                                cx="24"
+                                cy="24"
+                                r="5"
+                                fill="currentColor"
+                            />
+                        </svg>
+
+                    </span>
+
+                    <strong>
+                        Retrouve<span>+</span>
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="topbar-actions">
+
+
+                {% if current_user.is_authenticated %}
+
+                <!-- NOTIFICATIONS RAPIDES -->
+
+                <a
+                    href="{{ url_for('notifications.index') }}"
+                    class="topbar-icon"
+                    aria-label="Notifications"
+                >
+
+                    <svg viewBox="0 0 24 24">
+
+                        <path
+                            d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                            stroke-linecap="round"
+                        />
+
+                        <path
+                            d="M10 21h4"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                            stroke-linecap="round"
+                        />
+
+                    </svg>
+
+                </a>
+
+
+                <!-- PUBLIER RAPIDEMENT -->
+
+                <a
+                    href="{{ url_for('posts.create') }}"
+                    class="topbar-publish"
+                >
+
+                    <span>＋</span>
+
+                    <span>Publier</span>
+
+                </a>
+
+
+                {% else %}
+
+                <a
+                    href="{{ url_for('auth.login') }}"
+                    class="topbar-login"
+                >
+                    Connexion
+                </a>
+
+                <a
+                    href="{{ url_for('auth.register') }}"
+                    class="topbar-publish"
+                >
+                    Créer un compte
+                </a>
+
+                {% endif %}
+
+            </div>
+
+        </header>
+
+
+
+        <!-- =================================================
+             PAGE CONTENT
+        ================================================== -->
+
+        <section class="page-container">
+
+
+            <!-- FLASH -->
+
+            {% with messages = get_flashed_messages() %}
+
+                {% if messages %}
+
+                    <div
+                        class="flash-container"
+                        aria-live="polite"
+                    >
+
+                        {% for message in messages %}
+
+                            <div class="flash-message">
+
+                                <span class="flash-icon">
+                                    ✓
+                                </span>
+
+                                <span class="flash-text">
+                                    {{ message }}
+                                </span>
+
+                                <button
+                                    type="button"
+                                    class="flash-close"
+                                    onclick="this.parentElement.remove()"
+                                    aria-label="Fermer"
+                                >
+                                    ×
+                                </button>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% endif %}
+
+            {% endwith %}
+
+
+
+            <!-- CONTENU DES PAGES -->
+
+            {% block content %}
+            {% endblock %}
+
+        </section>
+
+    </main>
+
+</div>
+
+
+
+<!-- =====================================================
+     MOBILE OVERLAY
+===================================================== -->
+
+<div
+    class="mobile-overlay"
+    id="mobileOverlay"
+></div>
+
+
+
+<!-- =====================================================
+     MOBILE BOTTOM NAVIGATION
+===================================================== -->
+
+{% if current_user.is_authenticated %}
+
+<nav class="mobile-bottom-nav">
+
+
+    <a
+        href="{{ url_for('posts.index') }}"
+        class="{% if request.endpoint == 'posts.index' %}active{% endif %}"
+    >
+
+        <svg viewBox="0 0 24 24">
+
+            <path
+                d="M3 10.5 12 3l9 7.5"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            />
+
+            <path
+                d="M5 9.5V21h14V9.5"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+            />
+
+        </svg>
+
+        <span>Accueil</span>
+
+    </a>
+
+
+
+    <a
+        href="{{ url_for('posts.map_view') }}"
+        class="{% if request.endpoint == 'posts.map_view' %}active{% endif %}"
+    >
+
+        <svg viewBox="0 0 24 24">
+
+            <path
+                d="M9 18 3 21V6l6-3 6 3 6-3v15l-6 3-6-3Z"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+            />
+
+            <path
+                d="M9 3v15M15 6v15"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+            />
+
+        </svg>
+
+        <span>Carte</span>
+
+    </a>
+
+
+
+    <a
+        href="{{ url_for('posts.create') }}"
+        class="mobile-publish"
+        aria-label="Publier"
+    >
+
+        <span>＋</span>
+
+    </a>
+
+
+
+    <a
+        href="{{ url_for('notifications.index') }}"
+        class="{% if request.endpoint == 'notifications.index' %}active{% endif %}"
+    >
+
+        <svg viewBox="0 0 24 24">
+
+            <path
+                d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+            />
+
+            <path
+                d="M10 21h4"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+            />
+
+        </svg>
+
+        <span>Alertes</span>
+
+    </a>
+
+
+
+    <a
+        href="{{ url_for('auth.profile') }}"
+        class="{% if request.endpoint == 'auth.profile' %}active{% endif %}"
+    >
+
+        {% if current_user.photo %}
+
+            <img
+                src="{{ url_for(
+                    'static',
+                    filename='uploads/' + current_user.photo
+                ) }}"
+                alt=""
+            >
+
+        {% else %}
+
+            <span class="bottom-avatar">
+                {{ current_user.name[0] | upper }}
+            </span>
+
+        {% endif %}
+
+        <span>Profil</span>
+
+    </a>
+
+</nav>
+
+{% endif %}
+
+
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+
+<script>
+
+(function () {
+
+    const sidebar =
+        document.getElementById("sidebar");
+
+    const toggle =
+        document.getElementById("menuToggle");
+
+    const closeButton =
+        document.getElementById("sidebarClose");
+
+    const overlay =
+        document.getElementById("mobileOverlay");
+
+
+    if (!sidebar || !toggle || !overlay) {
+        return;
+    }
+
+
+    function openMenu() {
+
+        sidebar.classList.add("is-open");
+
+        overlay.classList.add("is-visible");
+
+        toggle.classList.add("is-active");
+
+        toggle.setAttribute(
+            "aria-expanded",
+            "true"
+        );
+
+        document.body.classList.add(
+            "menu-open"
+        );
+    }
+
+
+    function closeMenu() {
+
+        sidebar.classList.remove("is-open");
+
+        overlay.classList.remove("is-visible");
+
+        toggle.classList.remove("is-active");
+
+        toggle.setAttribute(
+            "aria-expanded",
+            "false"
+        );
+
+        document.body.classList.remove(
+            "menu-open"
+        );
+    }
+
+
+    toggle.addEventListener(
+        "click",
+        function () {
+
+            if (
+                sidebar.classList.contains(
+                    "is-open"
+                )
+            ) {
+                closeMenu();
+            } else {
+                openMenu();
+            }
+
+        }
+    );
+
+
+    if (closeButton) {
+
+        closeButton.addEventListener(
+            "click",
+            closeMenu
+        );
+
+    }
+
+
+    overlay.addEventListener(
+        "click",
+        closeMenu
+    );
+
+
+    sidebar
+        .querySelectorAll("a")
+        .forEach(function (link) {
+
+            link.addEventListener(
+                "click",
+                function () {
+
+                    if (
+                        window.innerWidth <= 900
+                    ) {
+                        closeMenu();
+                    }
+
+                }
+            );
+
+        });
+
+
+    window.addEventListener(
+        "resize",
+        function () {
+
+            if (
+                window.innerWidth > 900
+            ) {
+                closeMenu();
+            }
+
+        }
+    );
+
+})();
+
+</script>
+
+
+{% block scripts %}
+{% endblock %}
+
+
+</body>
+</html>
